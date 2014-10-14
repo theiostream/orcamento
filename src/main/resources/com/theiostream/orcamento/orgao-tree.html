@@ -113,7 +113,11 @@ d3.json("orgaos.json", function(error, root) {
 			});
 		})
 		.enter().append('td')
-		.text(function(d) { console.log('text ' + d.value); return d.value; });
+		.text(function(d) { console.log('text ' + d.value); return d.value; })
+		.on('mouseover', function(d) {
+			cells.style('opacity', .5);
+			d3.select(this).style('opacity', 1);
+		});
 });
 
 function position() {
