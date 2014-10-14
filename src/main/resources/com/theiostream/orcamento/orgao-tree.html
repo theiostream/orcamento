@@ -5,9 +5,13 @@
 <style>
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  margin: 0;
+  padding: 0;
+
+  height: 100%;
   //margin: auto;
   //position: relative;
-  width: 960px;
 }
 
 .node {
@@ -22,6 +26,8 @@ body {
 #legendac {
 	float: left;
 	width: 35%;
+	overflow: auto;
+	height: 100vh;
 }
 </style>
 
@@ -39,9 +45,18 @@ body {
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
+// Treemap.
+var div = d3.select("#treemap")
+	.style("position", "relative")
+	.style("width", "65%")
+	.style("height", window.innerHeight + "px")
+	.style("left", "35%");
+	//.style("top", margin.top + "px")
+
 var margin = {top: 20, right: 0, bottom: 0, left: 320};
-var width = window.innerWidth * 0.65;
-var height = window.innerHeight - margin.top - margin.bottom;
+var width = document.getElementById('treemap').offsetWidth;
+var height = document.getElementById('treemap').offsetHeight;
+console.log("wid " + width + ", height " + height);
 
 var color = d3.scale.category20();
 
@@ -50,14 +65,7 @@ var treemap = d3.layout.treemap()
 	.sticky(true)
 	.value(function(d) { return d.size; });
 
-var div = d3.select("#treemap")
-	.style("position", "relative")
-	.style("width", "65%")
-	.style("height", height + "px")
-	//.style("left", "25%")
-	//.style("top", margin.top + "px")
-	.style("left", "35%");
-
+// Table
 var table = d3.select("#legenda")
 	.style('width', '100%');
 var tbody = table.append('tbody');
