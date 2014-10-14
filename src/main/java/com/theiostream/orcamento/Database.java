@@ -1,85 +1,86 @@
 package com.theiostream.orcamento;
 
-import com.hp.hpl.jena.query.*;
-import com.hp.hpl.jena.sparql.syntax.*;
-import com.hp.hpl.jena.sparql.core.Var;
-import com.hp.hpl.jena.graph.NodeFactory;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.tdb.TDBFactory;
+import static com.theiostream.orcamento.OrcamentoUtils.*;
 
-import java.util.ArrayList;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ResIteratorImpl;
+import com.hp.hpl.jena.tdb.TDBFactory;
+import com.hp.hpl.jena.query.*;
+
+import java.util.ArrayDeque;
 
 public class Database {
 	protected Dataset dataset;
-	
-	private String RDF(String s) { return "http://www.w3.org/1999/02/22-rdf-syntax-ns#" + s; }
-	private String RDF2(String s) { return "http://www.w3.org/2000/01/rdf-schema#" + s; }
-	private String LOA(String s) { return "http://vocab.e.gov.br/2013/09/loa#" + s; }
-	
-	private Query queryFromBlock(ElementTriplesBlock block) {
-		ElementGroup body = new ElementGroup();
-		body.addElement(block);
-
-		Query q = QueryFactory.make();
-		q.setQueryPattern(body);
-		q.setQuerySelectType();
-
-		return q;
-	}
+	protected Model model;
 
 	public Database(String year) {
 		dataset = TDBFactory.createDataset("/Users/BobNelson/Downloads/apache-jena-2.12.0/tdb");
+		model = dataset.getDefaultModel();
 	}
 	
+	// Orgao
+	public ResIterator getAllOrgaos() {
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("Orgao")));
+	}
+	
+	public ResIterator getUnidadesForOrgao(Resource orgao) {
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temOrgao")), orgao);
+	}
 
-	public ArrayList getOrgans() {
-		ArrayList<String> ret = new ArrayList<String>();
-		
-		ElementTriplesBlock block = new ElementTriplesBlock();
-		Var m = Var.alloc("ministerio");
-		block.addTriple(Triple.create(m, NodeFactory.createURI(RDF("type")), NodeFactory.createURI(LOA("Orgao"))));
-		block.addTriple(Triple.create(m, NodeFactory.createURI(RDF2("label")), Var.alloc("nome")));
-
-		Query q = queryFromBlock(block);
-		q.addResultVar("ministerio");
-		q.addResultVar("nome");
-
-		QueryExecution qexec = QueryExecutionFactory.create(q, dataset);
-		try {
-			ResultSet results = qexec.execSelect();
-			for (; results.hasNext(); ) {
-				QuerySolution soln = results.nextSolution();
-				ret.add(soln.getLiteral("nome").getString());
+	public ResIterator getDespesasForOrgao(Resource orgao) {
+		// This may be less stylish than making a query, but it's way faster.
+		ArrayDeque d = new ArrayDeque<Resource>();
+		ResIterator unidades = getUnidadesForOrgao(orgao);
+		while (unidades.hasNext()) {
+			Resource unidade = unidades.nextResource();
+			ResIterator despesas = getDespesasForUnidade(unidade);
+			
+			while (despesas.hasNext()) {
+				d.add(despesas.nextResource());
 			}
-		} finally { qexec.close(); }
+		}
+		
+		return new ResIteratorImpl(d.iterator());
+	}
+
+	// Unidade Orçamentária
+	public ResIterator getAllUnidades() {
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("UnidadeOrcamentaria")));
+	}
+
+	public ResIterator getDespesasForUnidade(Resource unidade) {
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temUnidadeOrcamentaria")), unidade);
+	}
+
+	public Resource getOrgaoForUnidade(Resource unidade) {
+		return model.getProperty(unidade, ResourceFactory.createProperty(LOA("temOrgao"))).getResource();
+	}
+
+	// ItemDespesa
+	public Resource getPropertyForDespesa(Resource despesa, String property) {
+		if (property.equals("Orgao")) {
+			Resource unidade = getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
+			return getOrgaoForUnidade(unidade);
+		}
+
+		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + property)));
+		return stmt.getResource();
+	}
+	public double getValorPropertyForDespesa(Resource despesa, String property) {
+		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("valor" + property)));
+		return stmt.getDouble();
+	}
+
+	public double valueForDespesas(ResIterator despesas) {
+		double ret = 0.0;
+		while (despesas.hasNext()) {
+			ret += getValorPropertyForDespesa(despesas.nextResource(), "DotacaoInicial");
+		}
 
 		return ret;
 	}
 
 	public void executeTest() {
-		String sparqlTest = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n"
-				  + "PREFIX loa: <http://vocab.e.gov.br/2013/09/loa#>\n"
-				  + "SELECT (SUM(?dotacaoInicial) AS ?somaDotacaoInicial) WHERE\n"
-				  + "{\n"
-				  + "?itemBlankNode loa:temExercicio ?exercicioURI .\n"
-				  + "?exercicioURI loa:identificador 2013 .\n"
-				  + "?itemBlankNode loa:temGND ?gndURI .\n"
-				  + "?gndURI loa:codigo \"1\" .\n"
-				  + "?itemBlankNode loa:temUnidadeOrcamentaria ?uoURI .\n"
-				  + "?uoURI loa:temOrgao ?orgaoURI .\n"
-				  + "?orgaoURI loa:codigo \"26000\" .\n"
-				  + "?itemBlankNode loa:valorDotacaoInicial ?dotacaoInicial .\n"
-				  + "}";
-
-		Query query = QueryFactory.create(sparqlTest);
-		QueryExecution qexec = QueryExecutionFactory.create(query, dataset);
-		try {
-			ResultSet results = qexec.execSelect();
-			for (; results.hasNext(); ) {
-				QuerySolution soln = results.nextSolution();
-				System.out.println(soln);
-			}
-		} finally { qexec.close(); }
+		System.out.println(model.getProperty(ResourceFactory.createResource("http://orcamento.dados.gov.br/id/2013/UnidadeOrcamentaria/26255"), ResourceFactory.createProperty(RDF2("label"))).getString());
 	}
 }

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+<style>
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  //margin: auto;
+  //position: relative;
+  width: 960px;
+}
+
+.node {
+  border: solid 1px white;
+  font: 10px sans-serif;
+  line-height: 12px;
+  overflow: hidden;
+  position: absolute;
+  text-indent: 2px;
+}
+
+#legendac {
+	float: left;
+	width: 35%;
+}
+</style>
+
+<title>Orçamento</title>
+</head>
+
+<body>
+<div style="width: 100%; overflow: hidden;">
+
+<div id="legendac"><table id="legenda"></table></div>
+<div id="treemap"></div>
+
+</div>
+</body>
+
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+var margin = {top: 20, right: 0, bottom: 0, left: 320};
+var width = window.innerWidth * 0.65;
+var height = window.innerHeight - margin.top - margin.bottom;
+
+var color = d3.scale.category20();
+
+var treemap = d3.layout.treemap()
+	.size([width, height])
+	.sticky(true)
+	.value(function(d) { return d.size; });
+
+var div = d3.select("#treemap")
+	.style("position", "relative")
+	.style("width", "65%")
+	.style("height", height + "px")
+	//.style("left", "25%")
+	//.style("top", margin.top + "px")
+	.style("left", "35%");
+
+var table = d3.select("#legenda")
+	.style('width', '100%');
+var tbody = table.append('tbody');
+var thead = table.append('thead');
+
+d3.json("orgaos.json", function(error, root) {
+	var node = div.datum(root).selectAll(".node")
+		.data(treemap.nodes)
+		.enter().append("div")
+		.attr("class", "node")
+		.call(position)
+		.style("background", function(d) { return d.children ? color(d.name) : null; })
+		.text(function(d) {
+			if (this.offsetWidth*this.offsetHeight < getTextWidth(d.name)*10) return null;
+			return d.children ? null : d.name;
+		})
+		.on('mouseover', function(d) {
+			this.parentNode.appendChild(this);
+			// highlight
+		})
+		.on('mouseout', function(d) {
+			// unhighlight
+		})
+		.on('click', function(d) {
+			// k
+		});
+	
+	var columns = ["name", "value"];
+	
+	thead.append('tr')
+		.selectAll('th')
+		.data(columns)
+		.enter().append('th')
+		.text(function(column) { return column; });
+
+	console.log(root);
+	var rows = tbody.selectAll('tr')
+		.data(root.children)
+		.enter().append('tr');
+	var cells = rows.selectAll('td')
+		.data(function(row) {
+			console.log(row);
+			return columns.map(function(column) {
+				return {column: column, value: row[column]};
+			});
+		})
+		.enter().append('td')
+		.text(function(d) { console.log('text ' + d.value); return d.value; });
+});
+
+function position() {
+  this.style("left", function(d) { return d.x + "px"; })
+      .style("top", function(d) { return d.y + "px"; })
+      .style("width", function(d) { return Math.max(0, d.dx - 1) + "px"; })
+      .style("height", function(d) { return Math.max(0, d.dy - 1) + "px"; });
+}
+
+function getTextWidth(text) {
+	ctx = document.createElement('canvas').getContext('2d');
+	ctx.font = "10px sans-serif";
+	return ctx.measureText(text).width;
+}
+
+</script>
