@@ -1,0 +1,5 @@
+Welcome to Orçamento.
+
+This is a website written in Java (using Apache Jena) to browse the Brazilian Federal Government's expenses database in RDF format.
+
+I need a Java project manager to... manage this. Seriously, I'm just adding everything to one package and manually importing stuff with vim and so on. Please help.
