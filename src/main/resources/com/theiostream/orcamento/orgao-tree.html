@@ -25,8 +25,17 @@ body {
 
 #legendac {
 	float: left;
-	width: 35%;
 	overflow: auto;
+	
+	width: 35%;
+	height: 100vh;
+}
+
+#treemap {
+	position: relative;
+
+	left: 35%;
+	width: 65%;
 	height: 100vh;
 }
 </style>
@@ -46,41 +55,39 @@ body {
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 // Treemap.
-var div = d3.select("#treemap")
-	.style("position", "relative")
-	.style("width", "65%")
-	.style("height", window.innerHeight + "px")
-	.style("left", "35%");
-	//.style("top", margin.top + "px")
+var div = d3.select("#treemap");
 
-var margin = {top: 20, right: 0, bottom: 0, left: 320};
-var width = document.getElementById('treemap').offsetWidth;
-var height = document.getElementById('treemap').offsetHeight;
-console.log("wid " + width + ", height " + height);
+var tmWidth = document.getElementById('treemap').offsetWidth;
+var tmHeight = document.getElementById('treemap').offsetHeight;
 
 var color = d3.scale.category20();
 
 var treemap = d3.layout.treemap()
-	.size([width, height])
+	.size([tmWidth, tmHeight])
 	.sticky(true)
 	.value(function(d) { return d.size; });
 
 // Table
-var table = d3.select("#legenda")
-	.style('width', '100%');
+var table = d3.select("#legenda");
 var tbody = table.append('tbody');
 var thead = table.append('thead');
 
 d3.json("orgaos.json", function(error, root) {
-	var node = div.datum(root).selectAll(".node")
+	var nodz = {};
+
+	
+	var nodes = div.datum(root).selectAll(".node")
 		.data(treemap.nodes)
 		.enter().append("div")
 		.attr("class", "node")
 		.call(position)
 		.style("background", function(d) { return d.children ? color(d.name) : null; })
 		.text(function(d) {
-			if (this.offsetWidth*this.offsetHeight < getTextWidth(d.name)*10) return null;
-			return d.children ? null : d.name;
+			if (!d.children) return null;
+			
+			nodz[d.name] = this;
+			if (this.offsetWidth*this.offsetHeight < getTextWidth(d.name)*10) return ".";
+			return d.name;
 		})
 		.on('mouseover', function(d) {
 			this.parentNode.appendChild(this);
@@ -92,32 +99,30 @@ d3.json("orgaos.json", function(error, root) {
 		.on('click', function(d) {
 			// k
 		});
+	console.log(nodz);
 	
 	var columns = ["name", "value"];
-	
 	thead.append('tr')
 		.selectAll('th')
 		.data(columns)
 		.enter().append('th')
 		.text(function(column) { return column; });
 
-	console.log(root);
 	var rows = tbody.selectAll('tr')
 		.data(root.children)
 		.enter().append('tr');
 	var cells = rows.selectAll('td')
 		.data(function(row) {
-			console.log(row);
 			return columns.map(function(column) {
 				return {column: column, value: row[column]};
 			});
 		})
 		.enter().append('td')
-		.text(function(d) { console.log('text ' + d.value); return d.value; })
-		.on('mouseover', function(d) {
-			cells.style('opacity', .5);
-			d3.select(this).style('opacity', 1);
-		});
+		.text(function(d) { return d.value; })
+		/*.on('mouseover', function(d) {
+			nodes.style('opacity', .1);
+			d3.select(nodz[d.value]).style('opacity', 1);
+		})*/;
 });
 
 function position() {
