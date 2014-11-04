@@ -8,13 +8,15 @@ import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.query.*;
 
 import java.util.ArrayDeque;
+import java.util.HashMap;
 
 public class Database {
 	protected Dataset dataset;
 	protected Model model;
 
 	public Database(String year) {
-		dataset = TDBFactory.createDataset("/Users/BobNelson/Downloads/apache-jena-2.12.0/tdb");
+		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
+		dataset = TDBFactory.createDataset("/Users/BobNelson/test/orcamento/tdbtest/" + year);
 		model = dataset.getDefaultModel();
 	}
 	
@@ -71,13 +73,21 @@ public class Database {
 		return stmt.getDouble();
 	}
 
-	public double valueForDespesas(ResIterator despesas) {
-		double ret = 0.0;
+	public HashMap<String, Double> valueForDespesas(ResIterator despesas) {
+		HashMap<String, Double> hm = new HashMap<String, Double>();
+		
+		double dotInicial = 0.0;
+		double pago = 0.0;
 		while (despesas.hasNext()) {
-			ret += getValorPropertyForDespesa(despesas.nextResource(), "DotacaoInicial");
+			Resource r = despesas.nextResource();
+			dotInicial += getValorPropertyForDespesa(r, "DotacaoInicial");
+			pago += getValorPropertyForDespesa(r, "Pago");
 		}
+		
+		hm.put("DotacaoInicial", dotInicial);
+		hm.put("Pago", pago);
 
-		return ret;
+		return hm;
 	}
 
 	public void executeTest() {

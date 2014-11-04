@@ -2,6 +2,8 @@
 <meta charset="utf-8">
 
 <head>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
 <style>
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -24,19 +26,19 @@ body {
 }
 
 #legendac {
-	float: left;
-	overflow: auto;
-	
+	display: table-cell;
 	width: 35%;
-	height: 100vh;
+}
+#legenda {
+	height: 90%;
+	display: block;
+	overflow-y: scroll;
 }
 
 #treemap {
 	position: relative;
-
-	left: 35%;
+	display: table-cell;
 	width: 65%;
-	height: 100vh;
 }
 </style>
 
@@ -44,12 +46,20 @@ body {
 </head>
 
 <body>
-<div style="width: 100%; overflow: hidden;">
+<div style="display: table; width: 100%; height: 90vh;">
 
-<div id="legendac"><table id="legenda"></table></div>
+<div id="legendac" class="panel panel-default">
+	<div class="panel-heading">asd</div>
+	<table id="legenda"></table>
+</div>
 <div id="treemap"></div>
 
 </div>
+
+<form>
+  <label><input type="radio" name="mode" value="size" checked> LOA</label>
+  <label><input type="radio" name="mode" value="real"> V. Pago</label>
+</form>
 </body>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -74,7 +84,6 @@ var thead = table.append('thead');
 
 d3.json("orgaos.json", function(error, root) {
 	var nodz = {};
-
 	
 	var nodes = div.datum(root).selectAll(".node")
 		.data(treemap.nodes)
@@ -90,7 +99,7 @@ d3.json("orgaos.json", function(error, root) {
 			return d.name;
 		})
 		.on('mouseover', function(d) {
-			this.parentNode.appendChild(this);
+			//this.parentNode.appendChild(this);
 			// highlight
 		})
 		.on('mouseout', function(d) {
@@ -99,7 +108,6 @@ d3.json("orgaos.json", function(error, root) {
 		.on('click', function(d) {
 			// k
 		});
-	console.log(nodz);
 	
 	var columns = ["name", "value"];
 	thead.append('tr')
@@ -118,11 +126,23 @@ d3.json("orgaos.json", function(error, root) {
 			});
 		})
 		.enter().append('td')
-		.text(function(d) { return d.value; })
+		.text(function(d) {
+			if (isNaN(d.value)) return d.value;
+			return d.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+		})
 		/*.on('mouseover', function(d) {
 			nodes.style('opacity', .1);
 			d3.select(nodz[d.value]).style('opacity', 1);
 		})*/;
+	
+	d3.selectAll("input").on('change', function() {
+		var f = this.value === 'real' ? function(d){ return d.real; } : function(d){ return d.size; };
+		nodes
+			.data(treemap.value(f).nodes)
+			.transition()
+			.duration(1000)
+			.call(position);
+	});	
 });
 
 function position() {
