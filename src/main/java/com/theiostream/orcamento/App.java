@@ -10,88 +10,119 @@ import com.theiostream.orcamento.Database;
 import java.util.ArrayList;
 import com.hp.hpl.jena.rdf.model.*;
 import static com.theiostream.orcamento.OrcamentoUtils.*;
+import com.theiostream.orcamento.OResource;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.lang.StringBuilder;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class App  {
 	public static void main(String[] args) {
+		Database db = new Database("2001");
+
 		get("/", (request, response) -> {
-			String ret;
-			
 			URL str = App.class.getResource("orgao-tree.html");
-			
-			try (BufferedReader br = new BufferedReader(new FileReader(str.getPath()))) {
-				StringBuilder sb = new StringBuilder();
-
-				String line = br.readLine();
-				while (line != null) {
-					sb.append(line);
-					sb.append(System.lineSeparator());
-					line = br.readLine();
-				}
-
-				ret = sb.toString();
-			}
-			catch (Exception exception) {
-				System.out.println(exception);
-				ret = "EXCEPTION.";
-			}
-
-			return ret;
+			return readFile(str);
 		});
-		
 		get("/orgaos.json", (request, response) -> {
-if(true){
-			String ret = "{\"name\": \"flare\", \"children\": [";
-			Database db = new Database("");
-			
-			ResIterator orgaos = db.getAllOrgaos();
-			while (orgaos.hasNext()) {
-				Resource orgao = orgaos.nextResource();
-				Statement stmt = orgao.getProperty(ResourceFactory.createProperty(RDF2("label")));
+			if(true){
+				String ret = "{\"name\": \"flare\", \"children\": [";
 				
-				String name = stmt.getString();
-				HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForOrgao(orgao));
+				ResIterator orgaos = db.getAllOrgaos();
+				while (orgaos.hasNext()) {
+					Resource orgao = orgaos.nextResource();
+					Statement stmt = orgao.getProperty(ResourceFactory.createProperty(RDF2("label")));
+					
+					String name = stmt.getString();
+					HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForOrgao(orgao));
+					
+					String codigo = db.getCodigoForResource(orgao);
 
-				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + "}] }");
-				if (orgaos.hasNext()) ret += ",";
-			}
-
-			return ret.concat("]}");
-}
-
-			/* DEBUG {{{ */
-			else if(false) {
-			String ret;
-			
-			URL str = App.class.getResource("orgaos.json");
-			
-			try (BufferedReader br = new BufferedReader(new FileReader(str.getPath()))) {
-				StringBuilder sb = new StringBuilder();
-
-				String line = br.readLine();
-				while (line != null) {
-					sb.append(line);
-					sb.append(System.lineSeparator());
-					line = br.readLine();
+					ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] }");
+					if (orgaos.hasNext()) ret += ",";
 				}
 
-				ret = sb.toString();
-			}
-			catch (Exception exception) {
-				System.out.println(exception);
-				ret = "EXCEPTION.";
+				return ret.concat("]}");
 			}
 
-			return ret;
+			else if(false) {
+				URL str = App.class.getResource("orgaos.json");
+				return readFile(str);
 			}
 
 			return null;
-			/* }}} */
+		});
+
+		get("/o/:org", (request, response) -> {
+			/*Resource orgao = db.getOrgaoForCodigo(request.params(":org"));
+			Statement stmt = orgao.getProperty(ResourceFactory.createProperty(RDF2("label")));
+			return "Name is " + stmt.getString();*/
+
+			URL str = App.class.getResource("unidade-tree.html");
+			return readFile(str);
+		});
+		get("/o/:org/uo.json", (request, response) -> {
+			String ret = "{\"name\": \"flare\", \"children\": [";
+			Resource orgao = db.getOrgaoForCodigo(request.params(":org"));
+
+			ResIterator unidades = db.getUnidadesForOrgao(orgao);
+			while (unidades.hasNext()) {
+				Resource unidade = unidades.nextResource();
+				Statement stmt = unidade.getProperty(ResourceFactory.createProperty(RDF2("label")));
+					
+				String name = stmt.getString();
+				HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForUnidade(unidade));
+				
+				String codigo = db.getCodigoForResource(unidade);
+
+				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] }");
+				if (unidades.hasNext()) ret += ",";
+			}
+
+			return ret.concat("]}");
+		});
+		get("/o/:org/fn.json", (request, response) -> {
+			String ret = "{\"name\": \"flare\", \"children\": [";
+			Resource orgao = db.getOrgaoForCodigo(request.params(":org"));
+			
+			Iterator<OResource> functions = db.getResourcesForOrgao("Funcao", orgao);
+			while (functions.hasNext()) {
+				OResource function = functions.next();
+				Statement stmt = function.getResource().getProperty(ResourceFactory.createProperty(RDF2("label")));
+					
+				String name = stmt.getString();
+				HashMap<String, Double> value = db.valueForDespesas(function.getDespesas());
+				
+				String codigo = db.getCodigoForResource(function.getResource());
+
+				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] }");
+				if (functions.hasNext()) ret += ",";
+			}
+
+			return ret.concat("]}");
+		});
+		get("/o/:org/pr.json", (request, response) -> {
+			String ret = "{\"name\": \"flare\", \"children\": [";
+			Resource orgao = db.getOrgaoForCodigo(request.params(":org"));
+			
+			Iterator<OResource> functions = db.getResourcesForOrgao("Programa", orgao);
+			while (functions.hasNext()) {
+				OResource function = functions.next();
+				Statement stmt = function.getResource().getProperty(ResourceFactory.createProperty(RDF2("label")));
+					
+				String name = stmt.getString();
+				HashMap<String, Double> value = db.valueForDespesas(function.getDespesas());
+				
+				String codigo = db.getCodigoForResource(function.getResource());
+
+				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] }");
+				if (functions.hasNext()) ret += ",";
+			}
+
+			return ret.concat("]}");
 		});
 	}
 }
