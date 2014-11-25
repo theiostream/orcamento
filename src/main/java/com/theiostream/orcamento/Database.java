@@ -23,17 +23,62 @@ public class Database {
 		model = dataset.getDefaultModel();
 	}
 	
+	// General
+	public Resource getResourceForCodigo(String cod) {
+		ResIterator res = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(cod, false));
+		return res.nextResource();
+	}	
+
 	public String getCodigoForResource(Resource despesa) {
 		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("codigo")));
 		return stmt.getString();
 	}
 
-	// Orgao
-	public Resource getOrgaoForCodigo(String cod) {
-		ResIterator orgao = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(cod, false));
-		return orgao.nextResource();
+	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao) {
+		HashMap map = new HashMap<Resource, OResource>();
+		
+		ResIterator despesas = getDespesasForResource(orgao);
+		while (despesas.hasNext()) {
+			Resource despesa = despesas.nextResource();
+			
+			Resource r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
+			if (map.containsKey(r)) {
+				OResource resource = (OResource)map.get(r);
+				resource.addDespesa(despesa);
+			}
+			else {
+				OResource resource = new OResource(r);
+				map.put(r, resource);
+			}
+		}
+
+		return map.values().iterator();
+	}	
+
+	public ResIterator getDespesasForResource(Resource resource) {
+		Resource type = model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getResource();
+		String[] s = type.getURI().split("#");
+		String typeString = s[1];
+		
+		if (typeString.equals("Orgao")) {
+			ArrayDeque<Resource> d = new ArrayDeque<Resource>();
+
+			ResIterator unidades = getUnidadesForOrgao(resource);
+			while (unidades.hasNext()) {
+				Resource unidade = unidades.nextResource();
+				ResIterator despesas = getDespesasForResource(unidade);
+				
+				while (despesas.hasNext())
+					d.add(despesas.nextResource());
+			}
+
+			return new ResIteratorImpl(d.iterator());
+		}
+
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("tem" + typeString)), resource);
 	}
 
+	// Orgao
 	public ResIterator getAllOrgaos() {
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("Orgao")));
 	}
@@ -42,141 +87,9 @@ public class Database {
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temOrgao")), orgao);
 	}
 
-	public ResIterator getDespesasForOrgao(Resource orgao) {
-		// This may be less stylish than making a query, but it's way faster.
-		ArrayDeque d = new ArrayDeque<Resource>();
-		
-		ResIterator unidades = getUnidadesForOrgao(orgao);
-		while (unidades.hasNext()) {
-			Resource unidade = unidades.nextResource();
-			ResIterator despesas = getDespesasForUnidade(unidade);
-			
-			while (despesas.hasNext()) {
-				d.add(despesas.nextResource());
-			}
-		}
-		
-		return new ResIteratorImpl(d.iterator());
-	}
-	public ResIterator getFunctionsForOrgao(Resource orgao) {
-		HashSet d = new HashSet<Resource>();
-		
-		ResIterator unidades = getUnidadesForOrgao(orgao);
-		while (unidades.hasNext()) {
-			Resource unidade = unidades.nextResource();
-			ResIterator functions = getFunctionsForUnidade(unidade);
-
-			while (functions.hasNext()) {
-				d.add(functions.nextResource());
-			}
-		}
-
-		return new ResIteratorImpl(d.iterator());
-	}
-
-	public ResIterator getDespesasForFunctionInOrgao(Resource function, Resource orgao) {
-		ArrayDeque d = new ArrayDeque<Resource>();
-
-		ResIterator unidades = getUnidadesForOrgao(orgao);
-		while (unidades.hasNext()) {
-			Resource unidade = unidades.nextResource();
-			ResIterator despesas = getDespesasForFunctionInUnidade(function, unidade);
-			while (despesas.hasNext()) {
-				d.add(despesas.nextResource());
-			}
-		}
-
-		return new ResIteratorImpl(d.iterator());
-	}
-
 	// Unidade Orçamentária
 	public ResIterator getAllUnidades() {
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("UnidadeOrcamentaria")));
-	}
-
-	public ResIterator getDespesasForUnidade(Resource unidade) {
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temUnidadeOrcamentaria")), unidade);
-	}
-	
-	/* ****** */
-	
-	public Iterator<OResource> getResourcesForOrgao(String rname, Resource orgao) {
-		HashMap map = new HashMap<Resource, OResource>();
-		
-		ResIterator despesas = getDespesasForOrgao(orgao);
-		while (despesas.hasNext()) {
-			Resource despesa = despesas.nextResource();
-			
-			Resource r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
-			if (map.containsKey(r)) {
-				OResource resource = (OResource)map.get(r);
-				resource.addDespesa(despesa);
-			}
-			else {
-				OResource resource = new OResource(r);
-				map.put(r, resource);
-			}
-		}
-
-		return map.values().iterator();
-
-	}
-
-	public Iterator<OResource> getResourcesForUnidade(String rname, Resource unidade) {
-		HashMap map = new HashMap<Resource, OResource>();
-		
-		ResIterator despesas = getDespesasForUnidade(unidade);
-		while (despesas.hasNext()) {
-			Resource despesa = despesas.nextResource();
-			
-			Resource r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
-			if (map.containsKey(r)) {
-				OResource resource = (OResource)map.get(r);
-				resource.addDespesa(despesa);
-			}
-			else {
-				OResource resource = new OResource(r);
-				map.put(r, resource);
-			}
-		}
-
-		return map.values().iterator();
-	}
-
-	/* ***** */
-
-	public ResIterator getFunctionsForUnidade(Resource unidade) {
-		HashSet d = new HashSet<Resource>();
-		
-		int i = 0;
-		ResIterator despesas = getDespesasForUnidade(unidade);
-		while (despesas.hasNext()) {
-			Resource despesa = despesas.nextResource();
-			Resource function = model.getProperty(despesa, ResourceFactory.createProperty(LOA("temFuncao"))).getResource();
-
-			d.add(function);
-			i++;
-		}
-
-		System.out.println("Functions for Unidade: " + i);
-		System.out.println("Count for set: " + d.size());
-
-		return new ResIteratorImpl(d.iterator());
-	}
-
-	public ResIterator getDespesasForFunctionInUnidade(Resource function, Resource unidade) {
-		ArrayDeque d = new ArrayDeque<Resource>();
-		
-		ResIterator despesas = getDespesasForUnidade(unidade);
-		while (despesas.hasNext()) {
-			Resource despesa = despesas.nextResource();
-			Resource fn = model.getProperty(despesa, ResourceFactory.createProperty(LOA("temFuncao"))).getResource();
-			if (function.equals(fn)) {
-				d.add(despesa);
-			}
-		}
-
-		return new ResIteratorImpl(d.iterator());
 	}
 
 	public Resource getOrgaoForUnidade(Resource unidade) {

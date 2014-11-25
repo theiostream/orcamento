@@ -97,7 +97,7 @@ var uoTable = d3.select("#uoLegenda");
 var uoTbody = uoTable.append('tbody');
 var uoThead = uoTable.append('thead');
 
-d3.json(document.URL + "/uo.json", function(error, root) {
+d3.json(document.URL + "/UnidadeOrcamentaria", function(error, root) {
 	var nodz = {};
 	
 	console.log("yay");
@@ -172,7 +172,7 @@ var fnTable = d3.select("#fnLegenda");
 var fnTbody = fnTable.append('tbody');
 var fnThead = fnTable.append('thead');
 
-d3.json(document.URL + "/fn.json", function(error, root) {
+d3.json(document.URL + "/Funcao", function(error, root) {
 	var nodz = {};
 	
 	var fnNodes = fnDiv.datum(root).selectAll(".node")
@@ -245,7 +245,7 @@ var prTable = d3.select("#prLegenda");
 var prTbody = prTable.append('tbody');
 var prThead = prTable.append('thead');
 
-d3.json(document.URL + "/pr.json", function(error, root) {
+d3.json(document.URL + "/Programa", function(error, root) {
 	var nodz = {};
 	
 	var prNodes = prDiv.datum(root).selectAll(".node")
