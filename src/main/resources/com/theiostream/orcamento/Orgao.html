@@ -65,7 +65,7 @@ body {
 
 <div style="display: table; width: 50%; height: 50vh;">
 	<div class="panel panel-default legendac">
-		<div class="panel-heading"><b>Funções</b></div>
+		<div class="panel-heading"><b>Programas</b></div>
 		<table id="prLegenda" class="table-striped legenda"></table>
 	</div>
 	<div id="prTreemap" class="treemap"></div>
@@ -123,7 +123,7 @@ d3.json(document.URL + "/UnidadeOrcamentaria", function(error, root) {
 			// unhighlight
 		})
 		.on('click', function(d) {
-			window.location = "/u/" + d.cod;
+			window.location = "/r/" + d.cod;
 		});
 	
 	var columns = ["name", "value"];
@@ -196,7 +196,7 @@ d3.json(document.URL + "/Funcao", function(error, root) {
 			// unhighlight
 		})
 		.on('click', function(d) {
-			window.location = "/f/" + d.cod;
+			window.location = "/r/" + d.cod;
 		});
 	
 	var columns = ["name", "value"];
@@ -269,7 +269,7 @@ d3.json(document.URL + "/Programa", function(error, root) {
 			// unhighlight
 		})
 		.on('click', function(d) {
-			window.location = "/f/" + d.cod;
+			window.location = "/r/" + d.cod;
 		});
 	
 	var columns = ["name", "value"];

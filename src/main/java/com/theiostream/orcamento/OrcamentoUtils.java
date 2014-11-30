@@ -42,7 +42,7 @@ public class OrcamentoUtils {
 		}
 		catch (Exception exception) {
 			System.out.println(exception);
-			ret = "EXCEPTION.";
+			ret = "Fuck you why are you looking for something unimplemented?";
 		}
 
 		return ret;

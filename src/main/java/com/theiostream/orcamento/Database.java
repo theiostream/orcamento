@@ -24,6 +24,12 @@ public class Database {
 	}
 	
 	// General
+	public String getTypeForResource(Resource resource) {
+		Resource type = model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getResource();
+		String[] s = type.getURI().split("#");
+		return s[1];	
+	}
+
 	public Resource getResourceForCodigo(String cod) {
 		ResIterator res = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(cod, false));
 		return res.nextResource();
@@ -56,9 +62,7 @@ public class Database {
 	}	
 
 	public ResIterator getDespesasForResource(Resource resource) {
-		Resource type = model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getResource();
-		String[] s = type.getURI().split("#");
-		String typeString = s[1];
+		String typeString = getTypeForResource(resource);
 		
 		if (typeString.equals("Orgao")) {
 			ArrayDeque<Resource> d = new ArrayDeque<Resource>();
