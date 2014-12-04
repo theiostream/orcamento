@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.lang.StringBuilder;
 import java.net.URL;
 
+import java.lang.Thread;
+
 public class OrcamentoUtils {
 	public static String RDF(String s) { return "http://www.w3.org/1999/02/22-rdf-syntax-ns#" + s; }
 	public static String RDF2(String s) { return "http://www.w3.org/2000/01/rdf-schema#" + s; }
@@ -42,7 +44,7 @@ public class OrcamentoUtils {
 		}
 		catch (Exception exception) {
 			System.out.println(exception);
-			ret = "Fuck you why are you looking for something unimplemented?";
+			ret = "Fuck you why are you looking for something unimplemented? " + str;
 		}
 
 		return ret;

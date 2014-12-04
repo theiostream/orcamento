@@ -1,0 +1,95 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-bottom: 0px;
+}
+
+.rect {
+	-webkit-border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	border-radius: 0 !important;
+}
+
+.well {
+	margin-bottom: 0px;
+	border-bottom: none;
+}
+
+.node {
+  font: 10px sans-serif;
+  line-height: 12px;
+  overflow: hidden;
+  position: absolute;
+  text-indent: 2px;
+}
+
+.legendac {
+	display: table-cell;
+	width: 35%;
+}
+.legenda {
+	/*display: table;
+	overflow-y: scroll;
+	width: 100%;
+	
+	margin-left: 1px;
+	margin-right: 1px;*/
+}
+
+.treemap {
+	position: relative;
+	display: table-cell;
+	width: 65%;
+
+	overflow: hidden;
+}
+
+.main {
+	margin-left: 10px;
+	margin-right: 10px;
+}
+
+.maintable {
+	display: table;
+	border-spacing: 5px;
+}
+
+.row {
+	display: table-row;
+}
+.cell {
+	display: table-cell;
+	width: 100%;
+}
+
+.graphcontent {
+	display: table;
+	height: 350px;
+	width: 100%;
+}
+
+.prfix {
+	margin-top: -7.5px;
+}
+
+.dropdown-menu::before {
+  position: absolute;
+  top: -7px;
+  right: 9px;
+  display: inline-block;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #CCC;
+  border-left: 7px solid transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+
+.dropdown-menu::after {
+  position: absolute;
+  top: -6px;
+  right: 10px;
+  display: inline-block;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid white;
+  border-left: 6px solid transparent;
+  content: '';
+}

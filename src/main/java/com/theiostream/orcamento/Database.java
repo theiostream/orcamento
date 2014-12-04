@@ -19,7 +19,7 @@ public class Database {
 
 	public Database(String year) {
 		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
-		dataset = TDBFactory.createDataset("/Users/BobNelson/test/orcamento/tdbtest/" + year);
+		dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/" + year);
 		model = dataset.getDefaultModel();
 	}
 	
@@ -30,10 +30,15 @@ public class Database {
 		return s[1];	
 	}
 
-	public Resource getResourceForCodigo(String cod) {
+	public Resource getResourceForCodigo(String cod, String type) {
 		ResIterator res = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(cod, false));
-		return res.nextResource();
-	}	
+		while (res.hasNext()) {
+			Resource r = res.nextResource();
+			if (getTypeForResource(r).equals(type)) return r;
+		}
+		
+		return null;
+	}
 
 	public String getCodigoForResource(Resource despesa) {
 		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("codigo")));
@@ -47,7 +52,14 @@ public class Database {
 		while (despesas.hasNext()) {
 			Resource despesa = despesas.nextResource();
 			
-			Resource r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
+			Resource r;
+			if (rname.equals("Orgao")) {
+				Resource u = model.getProperty(despesa, ResourceFactory.createProperty(LOA("temUnidadeOrcamentaria"))).getResource();
+				r = model.getProperty(u, ResourceFactory.createProperty(LOA("temOrgao"))).getResource();
+			}
+			else
+				r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
+			
 			if (map.containsKey(r)) {
 				OResource resource = (OResource)map.get(r);
 				resource.addDespesa(despesa);

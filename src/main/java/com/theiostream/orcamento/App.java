@@ -22,6 +22,12 @@ import java.util.Iterator;
 public class App  {
 	public static void main(String[] args) {
 		Database db = new Database("2013");
+		
+		/*get("/static/:file", (request, response) -> {
+			URL str = App.class.getResource("static/" + request.params(":file"));
+			return readFile(str);
+		});*/
+		staticFileLocation("/com/theiostream/orcamento/static");
 
 		get("/", (request, response) -> {
 			URL str = App.class.getResource("orgao-tree.html");
@@ -56,16 +62,16 @@ public class App  {
 			return null;
 		});
 
-		get("/r/:org", (request, response) -> {
-			URL str = App.class.getResource(db.getTypeForResource(db.getResourceForCodigo(request.params(":org"))) + ".html");
+		get("/r/:type/:org", (request, response) -> {
+			URL str = App.class.getResource(request.params(":type") + ".html");
 			return readFile(str);
 		});
-		get("/r/:org/i", (request, respones) -> {
-			Resource res = db.getResourceForCodigo(request.params(":org"));
+		get("/r/:type/:org/i", (request, respones) -> {
+			Resource res = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
 			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
 			return stmt.getString();
 		});
-		get("/r/:org/d", (request, response) -> {
+		/*get("/r/:org/d", (request, response) -> {
 			String ret = "{\"name\": \"flare\", \"children\": [";
 
 			Resource res = db.getResourceForCodigo(request.params(":org"));
@@ -89,11 +95,12 @@ public class App  {
 			}
 
 			return ret.concat("]}");
-		});		
-		get("/r/:org/:par", (request, response) -> {
+		});*/		
+		get("/r/:type/:org/:par", (request, response) -> {
 			String ret = "{\"name\": \"flare\", \"children\": [";
 			
-			Resource orgao = db.getResourceForCodigo(request.params(":org"));
+			String type = request.params(":type");
+			Resource orgao = db.getResourceForCodigo(request.params(":org"), type);
 			
 			Iterator<OResource> functions = db.getOResourcesForResource(request.params(":par"), orgao);
 			while (functions.hasNext()) {
@@ -101,7 +108,18 @@ public class App  {
 				Statement stmt = function.getResource().getProperty(ResourceFactory.createProperty(RDF2("label")));
 					
 				String name = stmt.getString();
-				HashMap<String, Double> value = db.valueForDespesas(function.getDespesas());
+				
+				HashMap<String, Double> value;
+				if (type.equals("Acao")) {
+					double dotInicial = db.getValorPropertyForDespesa(function.getResource(), "DotacaoInicial");
+					double pago = db.getValorPropertyForDespesa(function.getResource(), "Pago");
+
+					value = new HashMap();
+					value.put("DotacaoInicial", dotInicial);
+					value.put("Pago", pago);
+
+				}
+				else value = db.valueForDespesas(function.getDespesas());
 				
 				String codigo = db.getCodigoForResource(function.getResource());
 
