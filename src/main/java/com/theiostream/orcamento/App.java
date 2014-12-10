@@ -12,9 +12,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import static com.theiostream.orcamento.OrcamentoUtils.*;
 import com.theiostream.orcamento.OResource;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.lang.StringBuilder;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,10 +44,10 @@ public class App  {
 					
 					String codigo = db.getCodigoForResource(orgao);
 
-					ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] }");
-					if (orgaos.hasNext()) ret += ",";
+					ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
 				}
-
+				
+				ret = ret.substring(0, ret.length()-1);
 				return ret.concat("]}");
 			}
 
@@ -63,71 +60,147 @@ public class App  {
 		});
 
 		get("/r/:type/:org", (request, response) -> {
-			URL str = App.class.getResource(request.params(":type") + ".html");
-			return readFile(str);
-		});
-		get("/r/:type/:org/i", (request, respones) -> {
-			Resource res = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
-			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
-			return stmt.getString();
-		});
-		/*get("/r/:org/d", (request, response) -> {
-			String ret = "{\"name\": \"flare\", \"children\": [";
-
-			Resource res = db.getResourceForCodigo(request.params(":org"));
-			ResIterator despesas = db.getDespesasForResource(res);
+			URL str = App.class.getResource("Resource.html");
+			URL js = App.class.getResource(request.params(":type") + ".js");
 			
-			while (despesas.hasNext()) {
-				Resource despesa = despesas.nextResource();
+			if (js == null) return "Not Implemented. Check back later.";
 
-				Resource action = db.getPropertyForDespesa(despesa, "Acao");
-				Statement stmt = action.getProperty(ResourceFactory.createProperty(RDF2("label")));
-				String name = stmt.getString();
-				
-				String codigo = db.getCodigoForResource(action);
+			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
+		});
+		get("/r/:type/:org/i", (request, response) -> {
+			response.type("application/json");
 
-				double dotInicial = db.getValorPropertyForDespesa(despesa, "DotacaoInicial");
-				double pago = db.getValorPropertyForDespesa(despesa, "Pago");
+			String type = request.params(":type");
+			Resource res = db.getResourceForCodigo(request.params(":org"), type);
+			
+			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
+			String name = stmt.getString();
 
-				//ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + dotInicial + ", \"real\":" + pago + ", \"cod\": \"" + codigo + "\"" + "}] }");
-				ret = ret.concat("{ \"name\": \"" + name + "\", \"size\":" + dotInicial + ", \"real\":" + pago + ", \"cod\": \"" + codigo + "\"" + " }");
-				if (despesas.hasNext()) ret = ret.concat(",");
+			String parent = "";
+			if (type.equals("UnidadeOrcamentaria")) {
+				Resource orgao = db.getOrgaoForUnidade(res);
+				Statement s = orgao.getProperty(ResourceFactory.createProperty(RDF2("label")));
+				parent = s.getString();
 			}
 
-			return ret.concat("]}");
-		});*/		
+			HashMap<String, Double> values = db.valueForDespesas(db.getDespesasForResource(res));
+			
+			String r = "\"name\": \"" + name + "\", \"parent\": \"" + parent + "\", \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}";
+			if (type.equals("Acao")) {
+				Iterator<OResource> programas = db.getOResourcesForResource("UnidadeOrcamentaria", res);
+				
+				if (programas.hasNext()) {
+					OResource programa = programas.next();
+					if (!programas.hasNext()) {
+						String pname = programa.getResource().getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+						r = r.concat(", \"programa\": { \"name\": \"" + pname + "\", \"cod\": \"" + db.getCodigoForResource(programa.getResource()) + "\" }");
+					}
+				}
+			}
+
+			return "{" + r + "}";
+		});
 		get("/r/:type/:org/:par", (request, response) -> {
+			response.type("application/json");
+
 			String ret = "{\"name\": \"flare\", \"children\": [";
 			
 			String type = request.params(":type");
+			String rtype = request.params(":par");
 			Resource orgao = db.getResourceForCodigo(request.params(":org"), type);
+
+			boolean sub = rtype.equals("Subtitulo");
+			String p = request.queryParams("p");
 			
-			Iterator<OResource> functions = db.getOResourcesForResource(request.params(":par"), orgao);
+			Iterator<OResource> functions = db.getOResourcesForResource(rtype, orgao);
 			while (functions.hasNext()) {
 				OResource function = functions.next();
+				if (sub == true && p != null) {
+					Resource despesa = db.getDespesasForResource(function.getResource()).nextResource();
+
+					Resource programa = db.getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
+
+					String c = db.getCodigoForResource(programa);
+					if (!c.equals(p)) continue;
+				}
+
 				Statement stmt = function.getResource().getProperty(ResourceFactory.createProperty(RDF2("label")));
 					
 				String name = stmt.getString();
 				
 				HashMap<String, Double> value;
-				if (type.equals("Acao")) {
-					double dotInicial = db.getValorPropertyForDespesa(function.getResource(), "DotacaoInicial");
-					double pago = db.getValorPropertyForDespesa(function.getResource(), "Pago");
-
-					value = new HashMap();
-					value.put("DotacaoInicial", dotInicial);
-					value.put("Pago", pago);
-
-				}
-				else value = db.valueForDespesas(function.getDespesas());
+				value = db.valueForDespesas(function.getDespesas());
 				
 				String codigo = db.getCodigoForResource(function.getResource());
 
-				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] }");
-				if (functions.hasNext()) ret = ret.concat(",");
+				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
 			}
-
+			
+			ret = ret.substring(0, ret.length()-1);
 			return ret.concat("]}");			
+		});
+		
+		get("/i/:p/:a/:s", (request, response) -> {
+			URL str = App.class.getResource("Resource.html");			
+			URL js = App.class.getResource("Subtitle.js");
+
+			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
+		});
+		get("/i/:p/:a/:s/i", (request, response) -> {
+			response.type("application/json");
+			
+			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
+			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
+			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
+
+			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
+			String name = stmt.getString();
+			String parent = action.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+			String pname = programa.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+
+			HashMap<String, Double> values = db.valueForDespesas(db.getDespesasForResource(res));
+			return "{ \"name\": \"" + parent + "\", \"parent\": \"" + name + "\", \"programa\": { \"name\": \"" + pname + "\" }, \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}}";
+
+		});
+		get("/i/:p/:a/:s/d", (request, response) -> {
+			response.type("application/json");
+
+			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
+			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
+			Resource s = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
+
+			String loaArray = "";
+			String pagoArray = "";
+			
+			ResIterator despesas = db.getDespesasForResource(s);
+			while (despesas.hasNext()) {
+				Resource res = despesas.nextResource();
+
+				Resource plano = db.getPropertyForDespesa(res, "PlanoOrcamentario");
+				String pl = plano.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+
+				Resource modalidade = db.getPropertyForDespesa(res, "ModalidadeAplicacao");
+				String md = modalidade.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+
+				String common = "\"Plano Orçamentário\": \"" + pl + "\", \"Modalidade de Aplicação\": \"" + md + "\", ";
+				
+				double dot = db.getValorPropertyForDespesa(res, "DotacaoInicial");
+				double pago = db.getValorPropertyForDespesa(res, "Pago");
+
+				if (dot == 0)
+					pagoArray = pagoArray.concat("{" + common + "\"Valor\": " + pago + "},");
+				else
+					loaArray = loaArray.concat("{" + common + "\"Valor\": " + dot + "},");
+			}
+			
+			pagoArray = pagoArray.substring(0, pagoArray.length()-1);
+			loaArray = loaArray.substring(0, loaArray.length()-1);
+
+			return "{ \"Itens Previstos para Cumprimento da LOA\": [" + loaArray + "], \"Itens Pagos (Classificação da SIOP)\": [" + pagoArray + "]}";
+		});
+
+		get("/l/:s", (request, response) -> {
+			return null;
 		});
 
 		get("/c/:x/:y", (request, response) -> {

@@ -50,7 +50,8 @@ body {
 
 .maintable {
 	display: table;
-	border-spacing: 5px;
+	table-layout: fixed;
+	width: 100%;
 }
 
 .row {
@@ -69,6 +70,15 @@ body {
 
 .prfix {
 	margin-top: -7.5px;
+}
+
+.lead {
+	margin-bottom: 5px;
+}
+
+.items {
+	/*margin-left: 20px;
+	margin-right: 20px;*/
 }
 
 .dropdown-menu::before {
@@ -92,4 +102,20 @@ body {
   border-bottom: 6px solid white;
   border-left: 6px solid transparent;
   content: '';
+}
+
+ul.nav {
+    white-space: nowrap;
+    overflow-x: auto;
+    width: 100%;
+
+    /* get scrollbar down hack */
+    padding-bottom: 10px;
+    margin-bottom: -8px;
+}
+
+ul.nav li {
+    display: inline-block;
+    float: none;
+    text-align: center;
 }

@@ -4,6 +4,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.query.*;
 import com.hp.hpl.jena.sparql.syntax.*;
 
+import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.lang.StringBuilder;

@@ -1,0 +1,7 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX loa: <http://vocab.e.gov.br/2013/09/loa#>
+
+SELECT ?x WHERE {
+	?x loa:codigo "0001" .
+	?x rdf:type loa:Subtitulo
+}

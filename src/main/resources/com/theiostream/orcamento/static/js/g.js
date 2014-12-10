@@ -6,6 +6,108 @@
 // I DISLIKE JAVASCRIPT
 // NO I AM NOT PUTTING JQUERY HERE
 
+// TODO: Maybe integrate createGraph()/createItemTable() functions into their reload() counterparts with some d3.js element managing
+
+var programa;
+
+function getJSON(url, f) {
+	var xhr = new XMLHttpRequest();
+	xhr.onreadystatechange = function() {
+		if (xhr.readyState == 4 && xhr.status == 200) {
+			var info = JSON.parse(xhr.responseText);
+			f(info);
+		}
+	};
+
+	xhr.open("GET", url, true);
+	xhr.send();
+}
+
+function dots(v) {
+	return Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+function fillInfo() {
+	var header = document.getElementById("header");
+
+	getJSON(document.URL + "/i", function(info){
+		var title = document.createElement("h1");
+		title.innerHTML = info.name + " <small>" + info.parent + "</small>";
+		header.appendChild(title);
+		
+		if (info.programa) {
+			programa = info.programa.cod;
+			info.values["Programa"] = info.programa.name;
+		}
+
+		for (var key in info.values) {
+			var p = document.createElement("p");
+			p.setAttribute("class", "lead");
+			p.innerHTML = "<b>" + key + "</b>&nbsp;&nbsp;";
+			
+			if (isNaN(info.values[key])) p.innerHTML += info.values[key];
+			else p.innerHTML += "R$" + Math.round(info.values[key]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",00";
+
+			header.appendChild(p);
+		}
+
+	});
+}
+
+function makePrograma(a, cod) {
+	var siblings = a.parentNode.parentNode.children;
+	for (var i=0; i<siblings.length; i++) {
+		if (siblings[i].classList.contains("active")) {
+			siblings[i].classList.remove("active");
+			break;
+		}
+	}
+
+	a.parentNode.classList.add("active");
+	
+	programa = cod;
+	reloadData("st", "Subtitulo");
+}
+
+function addProgramaSelector() {
+	var warning = "Mais de uma unidade orçamentária realiza esta ação. Selecione uma delas para visualizar mais detalhes."
+
+	if (!programa) {
+		var row = document.createElement("div");
+		row.setAttribute("class", "row");
+
+		var pselector = document.createElement("ul");
+		pselector.setAttribute("id", "pselector");
+		pselector.setAttribute("class", "nav navbar-nav");
+		
+		getJSON(document.URL + "/UnidadeOrcamentaria", function(info){
+			var p = info.children;
+			for (var i=0; i<p.length; i++) {
+				var n = p[i].name;
+				var c = p[i].children[0].cod;
+				var v = p[i].children[0].size;
+
+				var li = document.createElement("li");
+				li.innerHTML = '<a onclick="makePrograma(this, \'' + c + '\');">' + n + '<br><small>R$' + dots(v) + '</small></a>';
+
+				pselector.appendChild(li);
+
+				row.innerHTML =
+					  '<div class="cell"><div class="panel panel-warning">'
+					+ '	<div class="panel-heading"><h3 class="panel-title">Unidade Orçamentária <small>' + warning + '</small></h3></div>'
+					+ '	<div class="panel-body"><nav class="bs-docs-sidebar">'
+					+		pselector.outerHTML
+					+ '	</ul></div>'
+					+ '</div></div>';
+
+			}
+		});
+				
+		var container = document.getElementsByClassName("maintable")[0];
+		container.appendChild(row);
+	}
+}
+
 function createGraph(id, tit) {
 	var row = document.createElement("div");
 	row.setAttribute("class", "row");
@@ -43,11 +145,69 @@ function createGraph(id, tit) {
 	container.appendChild(row);
 }
 
+// this is very very ugly help help FIXME
+function createItemTable(id) {
+	var row = document.createElement("div");
+	row.setAttribute("class", "row");
+	
+	var label = document.createElement("h3");
+	label.setAttribute("id", id + "-itemslabel");
+	row.appendChild(label);
+
+	var table = document.createElement("table");
+	table.setAttribute("id", id + "-items");
+	table.setAttribute("class", "table table-hover table-bordered items sortable");
+	row.appendChild(table);
+
+	var container = document.getElementsByClassName("maintable")[0];
+	container.appendChild(row);
+}
+
+function populateItemTables(ids) {
+	d3.json(document.URL + "/d", function(data) {
+		var columns = ["Plano Orçamentário", "Modalidade de Aplicação", "Valor"];
+		
+		for (var i = 0; i<ids.length; i++) {
+			document.getElementById(ids[i] + "-itemslabel").innerHTML = Object.keys(data)[i];
+
+			var table = d3.select("#" + ids[i] + "-items");
+			var thead = table.append("thead");
+			var tbody = table.append("tbody");
+
+			thead.append("tr")
+				.selectAll("th")
+				.data(columns)
+				.enter().append("th")
+				.text(function(d) { return d; });
+
+			var rows = tbody.selectAll("tr")
+				.data(data[Object.keys(data)[i]])
+				.enter().append('tr');
+
+			var cells = rows.selectAll('td')
+				.data(function(row) {
+					return columns.map(function(column) {
+						return { column: column, value: row[column] };
+					});
+				})
+				.enter().append('td')
+				.text(function(d) {
+					if (isNaN(d.value)) return d.value;
+					return Math.round(d.value).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+				});
+			
+			new Tablesort(document.getElementById(ids[i] + "-items"));
+		}
+	});
+}
+
 var nodes = [];
 function reloadData(id, type) {
 	var color = d3.scale.category20();
 
 	var uoDiv_ = document.getElementById(id + "-treemap");
+	while (uoDiv_.hasChildNodes()) uoDiv_.removeChild(uoDiv_.lastChild);
+
 	var uoDiv = d3.select("#" + id + "-treemap");
 
 	var uoTreemap = d3.layout.treemap()
@@ -55,11 +215,17 @@ function reloadData(id, type) {
 		.sticky(true)
 		.value(function(d) { return d.size; });
 	
+	var uoTable_ = document.getElementById(id + "-legenda");
+	while (uoTable_.hasChildNodes()) uoTable_.removeChild(uoTable_.lastChild);
+
 	var uoTable = d3.select("#" + id + "-legenda");
 	var uoThead = uoTable.append('thead');
 	var uoTbody = uoTable.append('tbody');
 	
-	d3.json(document.URL + "/" + type, function(error, root) {
+	var url = type=="Subtitulo" ? document.URL + "/" + type + "?p=" + programa : document.URL + "/" + type;
+	console.log("url = " + url);
+
+	d3.json(url, function(error, root) {
 		var nodz = {};
 		
 		var uoNodes = uoDiv.datum(root).selectAll(".node")
@@ -87,7 +253,8 @@ function reloadData(id, type) {
 				// unhighlight
 			})
 			.on('click', function(d) {
-				window.location = "/r/" + type + "/" + d.cod;
+				if (type == "Subtitulo") window.location = "/i/" + programa + "/" + document.URL.substr(document.URL.lastIndexOf('/') + 1) + "/" + d.cod;
+				else window.location = "/r/" + type + "/" + d.cod;
 			});
 		nodes.push(uoNodes);
 		

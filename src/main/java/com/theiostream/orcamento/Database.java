@@ -1,3 +1,6 @@
+// Database.java
+// Apache Jena <--> Orçamento bridge
+
 package com.theiostream.orcamento;
 
 import static com.theiostream.orcamento.OrcamentoUtils.*;
@@ -34,7 +37,14 @@ public class Database {
 		ResIterator res = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(cod, false));
 		while (res.hasNext()) {
 			Resource r = res.nextResource();
-			if (getTypeForResource(r).equals(type)) return r;
+			String t = getTypeForResource(r);
+
+			if (type.equals("Acao")) {
+				if (t.equals(type) || t.equals("OperacaoEspecial") || t.equals("Projeto") || t.equals("Atividade")) {
+					return r;
+				}
+			}
+			else if (t.equals(type)) return r;
 		}
 		
 		return null;
@@ -91,6 +101,10 @@ public class Database {
 			return new ResIteratorImpl(d.iterator());
 		}
 
+		if (typeString.equals("Atividade") || typeString.equals("Projeto") || typeString.equals("OperacaoEspecial")) {
+			typeString = "Acao";
+		}
+
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("tem" + typeString)), resource);
 	}
 
@@ -115,6 +129,28 @@ public class Database {
 	// Functions
 	public ResIterator getAllFunctions() {
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("Funcao")));
+	}
+
+	// Subtitle
+	public Resource getSubtitleWithProgramaAndAcao(Resource programa, Resource action, String codigo) {
+		Resource subtitle = null;
+		
+		ResIterator res = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(codigo, false));
+		while (res.hasNext()) {
+			Resource st = res.nextResource();
+			
+			// We can count on all ItemDespesas of one Subtitulo to have the same Programa and Acao.
+			Resource despesa = getDespesasForResource(st).nextResource();
+
+			Resource ac = getPropertyForDespesa(despesa, "Acao");
+			Resource pr = getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
+
+			if (programa.equals(pr) && action.equals(ac)) {
+				subtitle = st;
+			}
+		}
+
+		return subtitle;
 	}
 
 	// ItemDespesa
