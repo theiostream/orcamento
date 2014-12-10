@@ -108,7 +108,7 @@ function addProgramaSelector() {
 	}
 }
 
-function createGraph(id, tit) {
+function createGraph_(id, tit, sz) {
 	var row = document.createElement("div");
 	row.setAttribute("class", "row");
 	
@@ -122,7 +122,7 @@ function createGraph(id, tit) {
 	
 	row.innerHTML =
 		  '<div class="cell">'
-		+ '	<div class="graphcontent">'
+		+ '	<div class="graphcontent ' + sz + '">'
 		+ '		<div class="panel panel-default legendac">'
 		+ '			<div class="panel-heading">'
 		+ '				<div class="btn-group pull-right prfix" id="' + id + '-group">'
@@ -144,6 +144,9 @@ function createGraph(id, tit) {
 	var container = document.getElementsByClassName("maintable")[0];
 	container.appendChild(row);
 }
+
+function createGraph(id, tit) { createGraph_(id, tit, "smallgraph"); }
+function createBigGraph(id, tit) { createGraph_(id, tit, "biggraph"); }
 
 // this is very very ugly help help FIXME
 function createItemTable(id) {
@@ -222,8 +225,10 @@ function reloadData(id, type) {
 	var uoThead = uoTable.append('thead');
 	var uoTbody = uoTable.append('tbody');
 	
-	var url = type=="Subtitulo" ? document.URL + "/" + type + "?p=" + programa : document.URL + "/" + type;
-	console.log("url = " + url);
+	var url;
+	if (type.lastIndexOf("a", 0)===0) url = document.URL + "/r";
+	else url = type=="Subtitulo" ? document.URL + "/" + type + "?p=" + programa : document.URL + "/" + type;
+	console.log(url);
 
 	d3.json(url, function(error, root) {
 		var nodz = {};

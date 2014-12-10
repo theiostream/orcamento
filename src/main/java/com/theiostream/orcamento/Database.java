@@ -76,6 +76,7 @@ public class Database {
 			}
 			else {
 				OResource resource = new OResource(r);
+				resource.addDespesa(despesa);
 				map.put(r, resource);
 			}
 		}
@@ -106,6 +107,10 @@ public class Database {
 		}
 
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("tem" + typeString)), resource);
+	}
+	
+	public ResIterator getAll(String type) {
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA(type)));		
 	}
 
 	// Orgao
@@ -186,6 +191,5 @@ public class Database {
 	}
 
 	public void executeTest() {
-		System.out.println(model.getProperty(ResourceFactory.createResource("http://orcamento.dados.gov.br/id/2013/UnidadeOrcamentaria/26255"), ResourceFactory.createProperty(RDF2("label"))).getString());
 	}
 }

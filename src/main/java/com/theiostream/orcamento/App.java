@@ -18,45 +18,45 @@ import java.util.Iterator;
 
 public class App  {
 	public static void main(String[] args) {
-		Database db = new Database("2013");
-		
-		/*get("/static/:file", (request, response) -> {
-			URL str = App.class.getResource("static/" + request.params(":file"));
-			return readFile(str);
-		});*/
 		staticFileLocation("/com/theiostream/orcamento/static");
+		
+		Database db = new Database("2013");
 
 		get("/", (request, response) -> {
-			URL str = App.class.getResource("orgao-tree.html");
-			return readFile(str);
+			return "<h1>goto /all/Orgao</h1>";
 		});
-		get("/orgaos.json", (request, response) -> {
-			if(true){
-				String ret = "{\"name\": \"flare\", \"children\": [";
-				
-				ResIterator orgaos = db.getAllOrgaos();
-				while (orgaos.hasNext()) {
-					Resource orgao = orgaos.nextResource();
-					Statement stmt = orgao.getProperty(ResourceFactory.createProperty(RDF2("label")));
-					
-					String name = stmt.getString();
-					HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForResource(orgao));
-					
-					String codigo = db.getCodigoForResource(orgao);
 
-					ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
-				}
-				
-				ret = ret.substring(0, ret.length()-1);
-				return ret.concat("]}");
+		get("/all/:type", (request, response) -> {
+			URL str = App.class.getResource("Resource.html");
+			URL js = App.class.getResource("a" + request.params(":type") + ".js");
+			
+			if (js == null) return "Not Implemented. Check back later.";
+			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
+		});
+		get("/all/:type/i", (request, response) -> {
+			URL vt = App.class.getResource("vt/2013.txt");
+			String f = readFile(vt);
+			String[] v = f.split("\n");
+
+			return "{ \"name\": \"Orçamento Federal Brasileiro\", \"values\": { \"Valor LOA\": " + v[0] + ", \"Valor Pago\": " + v[1] + "} }";
+		});
+		get("/all/:type/r", (request, response) -> {
+			response.type("application/json");
+
+			String ret = "{\"name\": \"flare\", \"children\": [";
+
+			ResIterator all = db.getAll(request.params(":type"));
+			while (all.hasNext()) {
+				Resource r = all.nextResource();
+				String name = r.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+				HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForResource(r));
+				String codigo = db.getCodigoForResource(r);
+
+				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
 			}
-
-			else if(false) {
-				URL str = App.class.getResource("orgaos.json");
-				return readFile(str);
-			}
-
-			return null;
+			
+			ret = ret.substring(0, ret.length()-1);
+			return ret.concat("]}");
 		});
 
 		get("/r/:type/:org", (request, response) -> {
@@ -123,15 +123,17 @@ public class App  {
 					String c = db.getCodigoForResource(programa);
 					if (!c.equals(p)) continue;
 				}
-
+				
 				Statement stmt = function.getResource().getProperty(ResourceFactory.createProperty(RDF2("label")));
-					
 				String name = stmt.getString();
 				
 				HashMap<String, Double> value;
 				value = db.valueForDespesas(function.getDespesas());
 				
 				String codigo = db.getCodigoForResource(function.getResource());
+
+				ResIterator d1 = function.getDespesas();
+				ResIterator d2 = db.getDespesasForResource(function.getResource());
 
 				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
 			}

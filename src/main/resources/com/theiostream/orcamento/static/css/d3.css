@@ -64,8 +64,13 @@ body {
 
 .graphcontent {
 	display: table;
-	height: 350px;
 	width: 100%;
+}
+.smallgraph {
+	height: 350px;
+}
+.biggraph {
+	height: 700px;
 }
 
 .prfix {
