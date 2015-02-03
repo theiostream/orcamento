@@ -1,5 +1,6 @@
 fillInfo();
 
+addHeader("Detalhes");
 createGraph('fn', "Funções");
 createGraph('pr', "Programas");
 createGraph('ac', "Ações");

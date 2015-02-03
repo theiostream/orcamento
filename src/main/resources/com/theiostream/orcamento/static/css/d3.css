@@ -1,5 +1,11 @@
+@font-face {
+    font-family: "TitilliumWeb";
+    src: url('/font/TitilliumWeb-Regular.ttf')
+}
+
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  /*font-family: "TitilliumWeb", sans-serif;*/
   margin-bottom: 0px;
 }
 
@@ -52,6 +58,9 @@ body {
 	display: table;
 	table-layout: fixed;
 	width: 100%;
+
+	border-collapse: separate;
+	border-spacing: 5px;
 }
 
 .row {
@@ -123,4 +132,23 @@ ul.nav li {
     display: inline-block;
     float: none;
     text-align: center;
+}
+
+.bar {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
 }

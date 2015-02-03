@@ -14,6 +14,7 @@ import com.hp.hpl.jena.query.*;
 import java.util.ArrayDeque;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Iterator;
 
 public class Database {
@@ -22,7 +23,8 @@ public class Database {
 
 	public Database(String year) {
 		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
-		dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/" + year);
+		//dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/" + year);
+		dataset = TDBFactory.createDataset(year);
 		model = dataset.getDefaultModel();
 	}
 	
@@ -55,12 +57,33 @@ public class Database {
 		return stmt.getString();
 	}
 
+	public boolean performFilter(Resource despesa, HashMap<String, String> filter) {
+		if (filter == null) return true;
+
+		Iterator it = filter.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry)it.next();
+			
+			String prop = getCodigoForResource(getPropertyForDespesa(despesa, (String)pair.getKey()));
+			String res = (String)pair.getValue();
+			if (!prop.equals(res)) return false;
+		}
+
+		return true;
+	}
+
 	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao) {
+		return getOResourcesForResource(rname, orgao, null);
+	}
+	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao, HashMap<String, String> filter) {
 		HashMap map = new HashMap<Resource, OResource>();
 		
 		ResIterator despesas = getDespesasForResource(orgao);
 		while (despesas.hasNext()) {
 			Resource despesa = despesas.nextResource();
+			if (!performFilter(despesa, filter)) {
+				continue;
+			}
 			
 			Resource r;
 			if (rname.equals("Orgao")) {
@@ -73,10 +96,15 @@ public class Database {
 			if (map.containsKey(r)) {
 				OResource resource = (OResource)map.get(r);
 				resource.addDespesa(despesa);
+				resource.addValorLoa(getValorPropertyForDespesa(despesa, "DotacaoInicial"));
+				resource.addValorPago(getValorPropertyForDespesa(despesa, "Pago"));
 			}
 			else {
 				OResource resource = new OResource(r);
 				resource.addDespesa(despesa);
+				resource.addValorLoa(getValorPropertyForDespesa(despesa, "DotacaoInicial"));
+				resource.addValorPago(getValorPropertyForDespesa(despesa, "Pago"));
+				
 				map.put(r, resource);
 			}
 		}

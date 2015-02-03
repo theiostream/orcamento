@@ -1,5 +1,22 @@
+*** INTRODUCTION
+
 Welcome to Orçamento.
 
 This is a website written in Java (using Apache Jena) to browse the Brazilian Federal Government's expenses database in RDF format.
 
 I need a Java project manager to... manage this. Seriously, I'm just adding everything to one package and manually importing stuff with vim and so on. Please help.
+
+*** LICENSE
+
+This is licensed under the GNU General Public License, version 3.
+
+*** INSTRUCTIONS
+
+1. Download available RDF files from the Government and create TDBs.
+> ./gettdb.sh all
+
+2. Download inflation data from the Government and populate Inflation.json
+> ./inflacao.sh > ./r/static/Inflation.json
+
+3. Compile and start the website
+> ./run

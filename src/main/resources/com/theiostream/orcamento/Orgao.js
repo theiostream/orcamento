@@ -1,5 +1,6 @@
 fillInfo();
 
+addHeader("Detalhes");
 createGraph('uo', "Unidades Orçamentárias");
 createGraph('fn', "Funções");
 createGraph('pr', "Programas");
