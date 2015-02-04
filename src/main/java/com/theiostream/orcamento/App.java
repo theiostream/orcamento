@@ -36,7 +36,7 @@ public class App  {
 		}
 
 		get("/", (request, response) -> {
-			return "<h1>goto /a/year</h1>";
+			return readFile(App.class.getResource("index.html"));
 		});
 		
 		get("/a/:year", (request, response) -> {
@@ -54,7 +54,6 @@ public class App  {
 		get("/a/:year/:type", (request, response) -> {
 			response.type("application/json");
 
-			long s1 = System.currentTimeMillis();
 			Database db = databases.get(request.params(":year"));
 			String ret = "{\"name\": \"flare\", \"children\": [";
 
@@ -62,7 +61,14 @@ public class App  {
 			while (all.hasNext()) {
 				Resource r = all.nextResource();
 				String name = r.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
-				HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForResource(r));
+				
+				//long s1 = System.currentTimeMillis();
+				ResIterator ds = db.getDespesasForResource(r);
+				//System.out.println("[" + name + "] getDespesas(): " + (System.currentTimeMillis() - s1));
+				//long s2 = System.currentTimeMillis();
+				HashMap<String, Long> value = db.valueForDespesas(ds);
+				//System.out.println("[" + name + "] valueForDespesas(): " + (System.currentTimeMillis() - s2));
+				
 				String codigo = db.getCodigoForResource(r);
 
 				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
@@ -97,7 +103,7 @@ public class App  {
 				parent = s.getString();
 			}
 
-			HashMap<String, Double> values = db.valueForDespesas(db.getDespesasForResource(res));
+			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
 			
 			String r = "\"name\": \"" + name + "\", \"parent\": \"" + parent + "\", \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}";
 			if (type.equals("Acao")) {
@@ -187,7 +193,7 @@ public class App  {
 			String parent = action.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
 			String pname = programa.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
 
-			HashMap<String, Double> values = db.valueForDespesas(db.getDespesasForResource(res));
+			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
 			return "{ \"name\": \"" + parent + "\", \"parent\": \"" + name + "\", \"programa\": { \"name\": \"" + pname + "\" }, \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}}";
 
 		});
@@ -273,7 +279,7 @@ public class App  {
 
 				double inf = 1 + (inflation.get(entry.getKey()) / 100);
 
-				HashMap<String, Double> value = db.valueForDespesas(db.getDespesasForResource(r));
+				HashMap<String, Long> value = db.valueForDespesas(db.getDespesasForResource(r));
 				
 				switch (rinfo) {
 					case 1:

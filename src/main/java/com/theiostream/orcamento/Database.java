@@ -20,12 +20,18 @@ import java.util.Iterator;
 public class Database {
 	protected Dataset dataset;
 	protected Model model;
+	
+	protected Property propertyDotacaoInicial;
+	protected Property propertyPago;
 
 	public Database(String year) {
 		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
 		//dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/" + year);
 		dataset = TDBFactory.createDataset(year);
 		model = dataset.getDefaultModel();
+
+		propertyDotacaoInicial = ResourceFactory.createProperty(LOA("valorDotacaoInicial"));
+		propertyPago = ResourceFactory.createProperty(LOA("valorPago"));
 	}
 	
 	// General
@@ -196,16 +202,16 @@ public class Database {
 		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + property)));
 		return stmt.getResource();
 	}
-	public double getValorPropertyForDespesa(Resource despesa, String property) {
-		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("valor" + property)));
-		return stmt.getDouble();
+	public long getValorPropertyForDespesa(Resource despesa, String property) {
+		Statement stmt = model.getProperty(despesa, property.equals("DotacaoInicial") ? propertyDotacaoInicial : propertyPago);
+		return stmt.getLong();
 	}
 
-	public HashMap<String, Double> valueForDespesas(ResIterator despesas) {
-		HashMap<String, Double> hm = new HashMap<String, Double>();
+	public HashMap<String, Long> valueForDespesas(ResIterator despesas) {
+		HashMap<String, Long> hm = new HashMap<String, Long>();
 		
-		double dotInicial = 0.0;
-		double pago = 0.0;
+		long dotInicial = 0;
+		long pago = 0;
 		while (despesas.hasNext()) {
 			Resource r = despesas.nextResource();
 			dotInicial += getValorPropertyForDespesa(r, "DotacaoInicial");

@@ -9,8 +9,8 @@ public class OResource {
 	protected ArrayDeque<Resource> set;
 	protected Resource resource;
 
-	protected double valorLoa = 0;
-	protected double valorPago = 0;
+	protected long valorLoa = 0;
+	protected long valorPago = 0;
 
 	public OResource(Resource res) {
 		resource = res;
@@ -29,15 +29,15 @@ public class OResource {
 		return new ResIteratorImpl(set.iterator());
 	}
 
-	public void addValorLoa(double v) {
+	public void addValorLoa(long v) {
 		valorLoa += v;
 	}
-	public void addValorPago(double v) {
+	public void addValorPago(long v) {
 		valorPago += v;
 	}
 
-	public double getValorLoa() { return valorLoa; }
-	public double getValorPago() { return valorPago; }
+	public long getValorLoa() { return valorLoa; }
+	public long getValorPago() { return valorPago; }
 	
 	@Override
 	public boolean equals(Object cmp) {
