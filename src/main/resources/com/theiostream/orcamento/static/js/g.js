@@ -9,6 +9,14 @@
 // TODO: Maybe integrate createGraph()/createItemTable() functions into their reload() counterparts with some d3.js element managing
 
 var ipca = "dez/14"
+var translatetype = {
+	"Orgao": "Órgão",
+	"UnidadeOrcamentaria": "Unidade Orçamentária",
+	"Funcao": "Função",
+	"Subfuncao": "Subfunção",
+	"Programa": "Programa",
+	"Acao": "Ação"
+};
 
 var programa;
 
@@ -30,8 +38,14 @@ function d3_rgbString(value) {
 }
 //var ti_category = [ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67 ].map(d3_rgbString);
 //var ti_category = [ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0x00388B, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC ].map(d3_rgbString);
-var ti_category = //[ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0x00388B, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC, 0x0B660F, 0x18E522, 0x22EA2B, 0x5A665B, 0x17DC20 ].map(d3_rgbString);
-	[ 0xE1986B, 0x62422E, 0x00388B, 0x17DC20, 0x956547, 0xA64508, 0xE15700, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC, 0x0B660F, 0x18E522, 0x22EA2B, 0x5A665B ].map(d3_rgbString);
+//var ti_category = //[ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0x00388B, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC, 0x0B660F, 0x18E522, 0x22EA2B, 0x5A665B, 0x17DC20 ].map(d3_rgbString);
+//	[ 0xE1986B, 0x62422E, 0x00388B, 0x17DC20, 0x956547, 0xA64508, 0xE15700, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC, 0x0B660F, 0x18E522, 0x22EA2B, 0x5A665B ].map(d3_rgbString);
+
+var ti_category = [ 0xc05746, 0x86a076, 0xa1ce5e, 0x445235, 0x272048,
+		    0x40f99b, 0x39304a, 0x635c51, 0x7d7461, 0xb0a990,
+		    0x870058, 0xa4303f, 0xf2d0a4, 0xffeccc, 0xc86daf]
+.map(d3_rgbString);
+
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -59,19 +73,31 @@ function dots(v) {
 	return Math.round(v).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function urlinfo() {
+	var s = location.pathname.split('/');
+	return {
+		req: s[1],
+		year: s[2],
+		type: s[3],
+		cod: s[4]
+	};
+}
+
 /* }}} */
 
 function fillInfo() {
+	var i = urlinfo();
 	var header = document.getElementById("header");
 
 	getJSON(documentURL() + "/i", function(info){
-		var tp = document.createElement("h4");
-		tp.setAttribute('style', 'color: #837E7C;');
-		tp.innerHTML = documentURL().split('/').slice(-2, -1)[0];
+		var tp = document.createElement("p");
+		tp.setAttribute('style', 'color: #757575; font-size: 14pt;');
+		tp.innerHTML = translatetype[documentURL().split('/').slice(-2, -1)[0]];
 		header.appendChild(tp);
 
-		var title = document.createElement("h1");
-		title.innerHTML = info.name + " <small>" + info.parent + "</small>";
+		var title = document.createElement("p");
+		title.className = 'title';
+		title.innerHTML = info.name// + " <small>" + info.parent + "</small>";
 		header.appendChild(title);
 		
 		if (info.programa) {
@@ -82,21 +108,33 @@ function fillInfo() {
 		for (var key in info.values) {
 			var p = document.createElement("p");
 			p.setAttribute("class", "lead");
-			p.innerHTML = "<b>" + key + "</b>&nbsp;&nbsp;";
+			p.innerHTML = '<span style="color: #757575;">' + key + "</span>&nbsp;&nbsp;";
 			
 			if (isNaN(info.values[key])) p.innerHTML += info.values[key];
-			else p.innerHTML += "R$" + Math.round(info.values[key]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",00";
+			else p.innerHTML += 'R$' + Math.round(info.values[key]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",00";
 
 			header.appendChild(p);
 		}
-
 	});
+
+	console.log(i);
+	if (i.req == "r") {
+		var hurl = "/h/" + i.type + "/" + i.cod;
+		var gurl = "/g/" + i.year + "/" + i.type + "/" + i.cod;
+
+		var hb = document.getElementById("headerbtn");
+		hb.innerHTML =
+			  '<div class="btn-group-vertical">'
+			+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></button>'
+			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></button>'
+			+ '</div>';
+	}
 }
 
 function addHeader(tit) {
 	var row = document.createElement("div");
 	row.setAttribute("class", "row");
-	row.innerHTML = '<div class="cell"><h3>' + tit + '</h3></div>';
+	row.innerHTML = '<div class="cell"><span class="subtitle">' + tit + '</span></div>';
 
 	var container = document.getElementsByClassName("maintable")[0];
 	container.appendChild(row);
@@ -125,11 +163,11 @@ function createGraph_(id, tit, sz) {
 		+ '					<button type="button" class="btn btn-default btn-sm active" data-key="size">LOA</button>'
 		+ '					<button type="button" class="btn btn-default btn-sm" data-key="real">Pago</button>'
 		+ '				</div>'
-		+ '				<h3 class="panel-title">'
+		+ '				<span class="panel-title">'
 		+					tit
-		+ '				</h3>'
+		+ '				</span>'
 		+ '			</div>'
-		+ '			<div style="position: relative; height: calc(100% - 38px);"><div style="overflow-y:scroll; position:absolute; top:0;right:0;left:0;bottom:0;">'
+		+ '			<div style="position: relative; height: calc(100% - 42px);"><div style="overflow-y:scroll; position:absolute; top:0;right:0;left:0;bottom:0;">'
 		+ 				table.outerHTML
 		+ '			</div></div>'
 		+ '		</div>'
@@ -201,10 +239,8 @@ function populateItemTables(ids) {
 
 var nodes = [];
 function reloadData(id, type) {
-	//var color = d3.scale.category20();
 	var color;
-	if (type.lastIndexOf("a", 0)===0) color = d3.scale.ordinal().range(ti_category);
-	else color = d3.scale.category20();
+	color = d3.scale.ordinal().range(ti_category);
 
 	var uoDiv_ = document.getElementById(id + "-treemap");
 	while (uoDiv_.hasChildNodes()) uoDiv_.removeChild(uoDiv_.lastChild);
@@ -270,8 +306,8 @@ function reloadData(id, type) {
 					var year = documentURL().split('/')[4];
 					var wl = "/r/" + year + "/" + type + "/" + d.cod;
 
-					if (document.getElementById("hierarchy").checked) {
-						/* this is horrible i know i just want this to work this whole thing needs a cleanup in fact */
+					/*if (document.getElementById("hierarchy").checked) {
+						//this is horrible i know i just want this to work this whole thing needs a cleanup in fact
 						var obj = {};
 						obj[documentURL().split('/')[4]] = documentURL().split('/')[5];
 						if (getURLParameter("f")) {
@@ -281,7 +317,7 @@ function reloadData(id, type) {
 						console.log(obj);
 
 						wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
-					}
+					}*/
 					
 					console.log("wl = " + wl);
 					window.location = wl;

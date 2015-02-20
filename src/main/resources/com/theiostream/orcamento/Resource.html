@@ -6,6 +6,7 @@
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/d3.css">
 	<link rel="stylesheet" href="/css/sidebar.css">
+	<link rel="stylesheet" href="/css/tooltip.css">
 	
 	<script src="/js/d3.js"></script>
 	<script src="/js/g.js"></script>
@@ -22,15 +23,17 @@
 			<a class="navbar-brand" href="/">Orçamento</a>
 		</div>
 		<div class="navbar-form navbar-left">
-			<div class="form-group">
+			<!--<div class="form-group">
 				<input type="checkbox" id="hierarchy"> Seguir Hierarquia
-			</div>
+			</div>--!>
 		</div>
 	</div>
 </nav>
 
 <div class="main">
-	<div class="page-header" style="margin-left: 10%; margin-right: 10%;" id="header">
+	<div class="page-header" style="margin-left: 10%; margin-right: 10%; width: 80%; display: table;">
+		<div style="width: 90%; display: table-cell;" id="header"></div>
+		<div style="width: 10%; display: table-cell;" id="headerbtn"></div>
 	</div>
 
 	<div class="maintable">
@@ -38,7 +41,7 @@
 </div>
 
 <div class="well rect">
-	<img src="/img/brasil.svg" style="float: right; height: 75px; margin-right: 2%; margin-top: -10px;"/>
+	<img src="/img/brasil.svg" style="float: right; height: 85px; margin-right: 2%; margin-top: -10px;"/>
 	
 	Dados fornecidos pelo Governo Federal no <a href="http://vocab.e.gov.br/2013/09/loa">Repositório de Vocabulários e Ontologias do Governo Eletrônico</a>.<br>
 	Este site é software livre! (GPL3). <a href="http://github.com/theiostream/orcamento">Source no GitHub</a>.<br><br>
