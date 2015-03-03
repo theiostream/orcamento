@@ -46,10 +46,14 @@ a {
   position: absolute;
   text-indent: 2px;
 }
+.nd {
+	font: 10px sans-serif;
+}
 
 .legendac {
 	display: table-cell;
 	width: 35%;
+	vertical-align: top;
 }
 .legenda {
 	/*display: table;
@@ -63,9 +67,16 @@ a {
 .treemap {
 	position: relative;
 	display: table-cell;
-	width: 65%;
-
+	width: 63%;
+	height: 100%;
+	
 	overflow: hidden;
+}
+.tmselection {
+	vertical-align: top;
+
+	display: table-cell;
+	width: 2%;
 }
 
 .main {
@@ -86,8 +97,11 @@ a {
 	display: table-row;
 }
 .cell {
+	vertical-align: top;
+
 	display: table-cell;
 	width: 100%;
+	clear: both;
 }
 
 .graphcontent {

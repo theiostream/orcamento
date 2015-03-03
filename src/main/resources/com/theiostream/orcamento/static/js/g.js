@@ -36,15 +36,13 @@ function d3_rgbNumber(value) {
 function d3_rgbString(value) {
   return d3_rgbNumber(value) + "";
 }
-//var ti_category = [ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67 ].map(d3_rgbString);
-//var ti_category = [ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0x00388B, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC ].map(d3_rgbString);
-//var ti_category = //[ 0xE1986B, 0x956547, 0xA64508, 0xE15700, 0x62422E, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0x00388B, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC, 0x0B660F, 0x18E522, 0x22EA2B, 0x5A665B, 0x17DC20 ].map(d3_rgbString);
-//	[ 0xE1986B, 0x62422E, 0x00388B, 0x17DC20, 0x956547, 0xA64508, 0xE15700, 0xE1E000, 0x959400, 0xA6A647, 0xE1E1A0, 0x626100, 0x1DE109, 0x139506, 0x50A647, 0xAFE1AA, 0x0D6204, 0x09B4E1, 0x067795, 0x4191A6, 0xAAD6E1, 0x044E62, 0xE1414E, 0x952B33, 0xA65158, 0xE19A9F, 0x8B2830, 0x0AE1A8, 0x07956F, 0x37A689, 0xB3E1D5, 0x068B67, 0x005BE1, 0x003C95, 0x4F72A6, 0x7DA5E1, 0xE18600, 0x955900, 0xA68F6B, 0xE1992F, 0x8B5300, 0x5F0066, 0xD600E5, 0xE060EA, 0x633D66, 0xCD00DC, 0x0B660F, 0x18E522, 0x22EA2B, 0x5A665B ].map(d3_rgbString);
 
 var ti_category = [ 0xc05746, 0x86a076, 0xa1ce5e, 0x445235, 0x272048,
 		    0x40f99b, 0x39304a, 0x635c51, 0x7d7461, 0xb0a990,
 		    0x870058, 0xa4303f, 0xf2d0a4, 0xffeccc, 0xc86daf]
 .map(d3_rgbString);
+
+var color = d3.scale.ordinal().range(ti_category);
 
 function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -84,6 +82,8 @@ function urlinfo() {
 }
 
 /* }}} */
+
+/* Info / Header {{{ */
 
 function fillInfo() {
 	var i = urlinfo();
@@ -140,7 +140,110 @@ function addHeader(tit) {
 	container.appendChild(row);
 }
 
+/* }}} */
+
 /* Table & Treemap (Resource) {{{ */
+
+/* Treemap {{{ */
+function preloadTreemap(uoDiv_) {
+	return uoTreemap = d3.layout.treemap()
+		.size([uoDiv_.offsetWidth, uoDiv_.offsetHeight])
+		.sticky(true)
+		.value(function(d) { return d.size; });
+}
+function reloadTreemap(id, color, uoDiv_, uoDiv, data, uoTreemap) {
+	if (data == null) data = datacache[id];
+	else datacache[id] = data;
+
+	uoDiv_.innerHTML = "";
+
+	var key;
+	var s = document.getElementById(id + "-group").children;
+	for (var i=0; i<s.length; i++) {
+		if (s[i].classList.contains("active")) {
+			key = s[i].getAttribute("data-key");
+			break;
+		}
+	}
+
+	return uoDiv.datum(data).selectAll(".node")
+		.data(uoTreemap.value(function(d) { return d[key]; }).nodes)
+		.enter().append("div")
+		.attr("class", "node")
+		.call(position)
+		.style("background", function(d) {
+			if(d.name=="flare") return "#ffffff";
+			var c = hexToRgb(color(d.name));
+			return d.children ? "rgba(" + [c.r, c.g, c.b, 1.0].join() + ")" : null; 
+		})
+		.text(function(d) {
+			if (d.name == "flare") return "";
+			if (!d.children) return null;
+			
+			if (this.offsetWidth*this.offsetHeight < getTextWidth(d.name)*10) return "";
+			return d.name;
+		})
+		.on('mouseover', function(d) {
+		})
+		.on('mouseout', function(d) {
+		});
+}
+/* }}} */
+
+/* Bubbles {{{ */
+
+function preloadBubbles(div) {
+	console.log("[pld] wid " + div.offsetWidth + " height is " + div.offsetHeight);
+
+	return d3.layout.pack()
+		.sort(null)
+		.size([div.offsetWidth, div.offsetHeight])
+		.padding(1.5);
+}
+
+function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
+	if (data == null) data = datacache[id];
+	else datacache[id] = data;
+
+	uoDiv_.innerHTML = "";
+	console.log("[ld] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
+
+	var w = uoDiv_.offsetWidth;
+	var h = uoDiv_.offsetHeight;
+	console.log("Variables w="+w+"; h="+h);
+
+	var x = uoDiv.append("svg")
+		.attr("width", /*uoDiv_.offsetWidth*//*570*/w)
+		.attr("height", /*uoDiv_.offsetHeight*//*330*/h)
+		.style("height", /*330*/h)
+		.attr("class", "bubble")
+		.selectAll(".nd")
+		.data(bubble.nodes(classes(data)).filter(function(d) { return !d.children; }))
+		.enter().append("g")
+		.attr("class", "nd")
+		.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+	
+	x.append("title").text(function(d) { return d.className; })
+	x.append("circle").attr("r", function(d){return d.r;}).style("fill", function(d){return color(d.packageName);})
+	//x.append("text").attr("dy", ".3em").style("text-anchor", "middle").text(function(d){return d.className.substring(0, d.r/3);});
+
+	return x;
+	/*return uoDiv.append("svg")
+		.attr("width", 500)
+		.attr("height", 300)
+		.style("height", 300)
+		.append("rect")
+		.attr("fill", "purple")
+		.attr("width", 500)
+		.attr("height", 300);*/
+}
+
+/* }}} */
+
+var graphs = { "sq": [preloadTreemap, reloadTreemap], "bu": [preloadBubbles, reloadBubbles] };
+var datacache = {};
+
+/* Create Graph {{{ */
 
 function createGraph_(id, tit, sz) {
 	var row = document.createElement("div");
@@ -172,16 +275,45 @@ function createGraph_(id, tit, sz) {
 		+ '			</div></div>'
 		+ '		</div>'
 		+ 		treemap.outerHTML
+		+ '		<div class="tmselection">'
+		+ '			<div class="btn-group btn-group-xs btn-group-vertical" id="' + id + '-sel">'
+		+ '				<button type="button" class="btn btn-default active" data-key="sq">&#9634;</button>'
+		+ '				<button type="button" class="btn btn-default" data-key="bu">&#9711;</button>'
+		+ '			</div>'
+		+ '		</div>'
 		+ '	</div>'
 		+ '</div>';
 	
 	var container = document.getElementsByClassName("maintable")[0];
 	container.appendChild(row);
+
+	d3.selectAll(document.getElementById(id + "-sel").children).on('click', function(d) {
+		if (!this.classList.contains("active")) {
+			var siblings = this.parentNode.children;
+			for (var i=0; i<siblings.length; i++) {
+				if (siblings[i].classList.contains("active")) {
+					siblings[i].classList.remove("active");
+					break;
+				}
+			}
+			this.classList.add("active");
+			
+			// TODO find a way to avoid getElementById()-ing every time
+			var g = this.getAttribute("data-key");
+			var uoDiv_ = document.getElementById(id + "-treemap");
+			var uoDiv = d3.select(uoDiv_);
+
+			var preloadGraph = graphs[g][0];
+			var reloadGraph = graphs[g][1];
+			reloadGraph(id, color, uoDiv_, uoDiv, null, preloadGraph(uoDiv_));
+		}
+
+	});
 }
 function createGraph(id, tit) { createGraph_(id, tit, "smallgraph"); }
 function createBigGraph(id, tit) { createGraph_(id, tit, "biggraph"); }
 
-// this is very very ugly help help FIXME
+// TODO make this prettier (?)
 function createItemTable(id) {
 	var row = document.createElement("div");
 	row.setAttribute("class", "row");
@@ -237,20 +369,21 @@ function populateItemTables(ids) {
 	});
 }
 
+/* }}} */
+
+/* Reload Data {{{ */
+
+function reloadData(id, type) { reloadDataG(id, type, "sq"); }
+
 var nodes = [];
-function reloadData(id, type) {
-	var color;
-	color = d3.scale.ordinal().range(ti_category);
-
+function reloadDataG(id, type, g) {
 	var uoDiv_ = document.getElementById(id + "-treemap");
-	while (uoDiv_.hasChildNodes()) uoDiv_.removeChild(uoDiv_.lastChild);
-
 	var uoDiv = d3.select("#" + id + "-treemap");
+	
+	var preloadGraph = graphs[g][0];
+	var reloadGraph = graphs[g][1];
 
-	var uoTreemap = d3.layout.treemap()
-		.size([uoDiv_.offsetWidth, uoDiv_.offsetHeight])
-		.sticky(true)
-		.value(function(d) { return d.size; });
+	var uoTreemap = preloadGraph(uoDiv_);
 	
 	var uoTable_ = document.getElementById(id + "-legenda");
 	while (uoTable_.hasChildNodes()) uoTable_.removeChild(uoTable_.lastChild);
@@ -271,58 +404,33 @@ function reloadData(id, type) {
 		if (getURLParameter("f")) url += (url.indexOf("?")>-1 ? "&" : "?") + "f=" + getURLParameter("f");
 	}
 	console.log(url);
+	
+	var click = function(d) {
+		var i = urlinfo();
+		if (type == "Subtitulo") window.location = "/i/" + i.year + "/" + programa + "/" + i.cod + "/" + d.cod;
+		else {
+			var wl = "/r/" + i.year + "/" + type + "/" + d.cod;
+
+			/*if (document.getElementById("hierarchy").checked) {
+				//this is horrible i know i just want this to work this whole thing needs a cleanup in fact
+				var obj = {};
+				obj[documentURL().split('/')[4]] = documentURL().split('/')[5];
+				if (getURLParameter("f")) {
+					var j = JSON.parse(decodeURIComponent(getURLParameter("f")));
+					for (var a in j) { obj[a] = j[a]; }
+				}
+				console.log(obj);
+
+				wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
+			}*/
+			
+			window.location = wl;
+		}
+	}
 
 	d3.json(url, function(error, root) {
-		var nodz = {};
-		
-		var uoNodes = uoDiv.datum(root).selectAll(".node")
-			.data(uoTreemap.nodes)
-			.enter().append("div")
-			.attr("class", "node")
-			.call(position)
-			.style("background", function(d) {
-				if(d.name=="flare") return "#ffffff";
-				var c = hexToRgb(color(d.name));
-				return d.children ? "rgba(" + [c.r, c.g, c.b, 1.0].join() + ")" : null; 
-			})
-			.text(function(d) {
-				if (d.name == "flare") return "";
-				if (!d.children) return null;
-				
-				nodz[d.name] = this;
-				if (this.offsetWidth*this.offsetHeight < getTextWidth(d.name)*10) return "";
-				return d.name;
-			})
-			.on('mouseover', function(d) {
-				//this.parentNode.appendChild(this);
-				this.parentNode.style.background = "rgba(0, 0, 0, 0.8)";
-			})
-			.on('mouseout', function(d) {
-				this.parentNode.style.background = "rgba(0, 0, 0, 1)";
-			})
-			.on('click', function(d) {
-				if (type == "Subtitulo") window.location = "/i/" + programa + "/" + documentURL().substr(documentURL().lastIndexOf('/') + 1) + "/" + d.cod;
-				else {
-					var year = documentURL().split('/')[4];
-					var wl = "/r/" + year + "/" + type + "/" + d.cod;
-
-					/*if (document.getElementById("hierarchy").checked) {
-						//this is horrible i know i just want this to work this whole thing needs a cleanup in fact
-						var obj = {};
-						obj[documentURL().split('/')[4]] = documentURL().split('/')[5];
-						if (getURLParameter("f")) {
-							var j = JSON.parse(decodeURIComponent(getURLParameter("f")));
-							for (var a in j) { obj[a] = j[a]; }
-						}
-						console.log(obj);
-
-						wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
-					}*/
-					
-					console.log("wl = " + wl);
-					window.location = wl;
-				}
-			});
+		var uoNodes = reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
+		console.log("[2] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
 		nodes.push(uoNodes);
 		
 		var columns = ["name", "value"];
@@ -346,10 +454,9 @@ function reloadData(id, type) {
 				if (isNaN(d.value)) return d.value;
 				return d.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 			})
-			/*.on('mouseover', function(d) {
-				uoNodes.style('opacity', .1);
-				d3.select(nodz[d.value]).style('opacity', 1);
-			})*/;
+			.on('mouseover', function(d) {
+				// implement
+			});
 
 		d3.selectAll(document.getElementById(id + "-group").children).on('click', function() {
 			if (!this.classList.contains("active")) {
@@ -362,14 +469,7 @@ function reloadData(id, type) {
 				}
 				
 				this.classList.add("active");
-				
-				var key = this.getAttribute("data-key");
-				var f = function(d) { return d[key]; };
-				uoNodes
-					.data(uoTreemap.value(f).nodes)
-					.transition()
-					.duration(1000)
-					.call(position);
+				reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
 				
 				cells
 					.data(function(row) {
@@ -383,6 +483,7 @@ function reloadData(id, type) {
 					});
 			}
 		});
+		console.log("[3] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
 	});
 }
 
@@ -398,6 +499,20 @@ function getTextWidth(text) {
 	ctx.font = "10px sans-serif";
 	return ctx.measureText(text).width;
 }
+
+function classes(root) {
+  var classes = [];
+
+  function recurse(name, node) {
+    if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
+    else classes.push({packageName: name, className: node.name, value: node.size});
+  }
+
+  recurse(null, root);
+  return {children: classes};
+}
+
+/* }}} */
 
 /* }}} */
 
