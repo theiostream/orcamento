@@ -202,40 +202,75 @@ function preloadBubbles(div) {
 }
 
 function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
+	function redraw() {
+		vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+	}
+
 	if (data == null) data = datacache[id];
 	else datacache[id] = data;
 
 	uoDiv_.innerHTML = "";
 	console.log("[ld] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
 
+	var key;
+	var s = document.getElementById(id + "-group").children;
+	for (var i=0; i<s.length; i++) {
+		if (s[i].classList.contains("active")) {
+			key = s[i].getAttribute("data-key");
+			break;
+		}
+	}
+	console.log("key is " + key);
+	
 	var w = uoDiv_.offsetWidth;
 	var h = uoDiv_.offsetHeight;
 	console.log("Variables w="+w+"; h="+h);
 
-	var x = uoDiv.append("svg")
-		.attr("width", /*uoDiv_.offsetWidth*//*570*/w)
-		.attr("height", /*uoDiv_.offsetHeight*//*330*/h)
-		.style("height", /*330*/h)
+	var vis = uoDiv.append("svg")
+		.attr("width", w)
+		.attr("height", h)
+		.attr("pointer-events", "all")
+		.style("height", h)
 		.attr("class", "bubble")
+		.call(d3.behavior.zoom()
+			.xExtent([0, 1])
+			.yExtent([0, 1])
+			.scaleExtent([1, 10])
+			.on("zoom", redraw))
+		.append('g').attr('class', 'group2');
+	
+	var x = vis
 		.selectAll(".nd")
-		.data(bubble.nodes(classes(data)).filter(function(d) { return !d.children; }))
+		.data(bubble.value(function(d) { console.log(d); return d[key]; }).nodes(classes(data)).filter(function(d) { return !d.children; }))
 		.enter().append("g")
 		.attr("class", "nd")
 		.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 	
-	x.append("title").text(function(d) { return d.className; })
+	x.append("title").text(function(d) { return d.name; })
 	x.append("circle").attr("r", function(d){return d.r;}).style("fill", function(d){return color(d.packageName);})
-	//x.append("text").attr("dy", ".3em").style("text-anchor", "middle").text(function(d){return d.className.substring(0, d.r/3);});
+	x.append("text")
+		.attr("text-anchor", "middle")
+		.attr("style", function(d) {var szd = d.r/5;return "font-size:" + szd+"px";})
+		.each(function(d, i) {
+			var nm = d.name;
+			var arr = nm.replace(/[\(\)\\/,-]/g, " ").replace(/\s+/g, " ").split(" "),arrlength = (arr.length > 7) ? 8 : arr.length;
+			d3.select(this).attr('y',"-" + (arrlength/2) + "em");
+			
+			//if text is over 7 words then ellipse the 8th
+			for(var n = 0; n < arrlength; n++) {
+				var tsp = d3.select(this).append('tspan').attr("x", "0").attr("dy", "1em");
+				if(n === 7) {
+					tsp.text("...");
+				}
+				else {
+					tsp.text(arr[n]);
+				}
+			}
+		});
+		
+		//.text(function(d){return d.className.substring(0, d.r/3);});
 
 	return x;
-	/*return uoDiv.append("svg")
-		.attr("width", 500)
-		.attr("height", 300)
-		.style("height", 300)
-		.append("rect")
-		.attr("fill", "purple")
-		.attr("width", 500)
-		.attr("height", 300);*/
 }
 
 /* }}} */
@@ -430,10 +465,9 @@ function reloadDataG(id, type, g) {
 
 	d3.json(url, function(error, root) {
 		var uoNodes = reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
-		console.log("[2] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
 		nodes.push(uoNodes);
 		
-		var columns = ["name", "value"];
+		var columns = ["name", "size"];
 		uoThead.append('tr')
 			.selectAll('th')
 			.data(columns)
@@ -441,7 +475,7 @@ function reloadDataG(id, type, g) {
 			.text(function(column) { return column.localeCompare("name")==0 ? "Nome" : "Valor (R$)"; });
 
 		var rows = uoTbody.selectAll('tr')
-			.data(root.children)
+			.data(classes(root).children)
 			.enter().append('tr');
 		var cells = rows.selectAll('td')
 			.data(function(row) {
@@ -467,13 +501,26 @@ function reloadDataG(id, type, g) {
 						break;
 					}
 				}
-				
 				this.classList.add("active");
-				reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
 				
+				var g;
+				var sel = document.getElementById(id + "-sel").children;
+				for (var i=0; i<sel.length; i++) {
+					if (sel[i].classList.contains("active")) {
+						g = sel[i].getAttribute("data-key");
+						break;
+					}
+				}
+				
+				var p = graphs[g][0];
+				var r = graphs[g][1];
+				r(id, color, uoDiv_, uoDiv, root, p(uoDiv_)).on('click', click);
+				
+				columns = ["name", this.getAttribute("data-key")];
 				cells
 					.data(function(row) {
 						return columns.map(function(column) {
+							console.log(row);
 							return {column: column, value: row[column]};
 						});
 					})
@@ -505,7 +552,7 @@ function classes(root) {
 
   function recurse(name, node) {
     if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
-    else classes.push({packageName: name, className: node.name, value: node.size});
+    else classes.push({packageName: name, name: node.name, size: node.size, real: node.real});
   }
 
   recurse(null, root);
