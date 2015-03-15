@@ -128,6 +128,22 @@ a {
 	margin-right: 20px;*/
 }
 
+ul.nav {
+    white-space: nowrap;
+    overflow-x: auto;
+    width: 100%;
+
+    /* get scrollbar down hack */
+    padding-bottom: 10px;
+    margin-bottom: -8px;
+}
+
+ul.nav li {
+    display: inline-block;
+    float: none;
+    text-align: center;
+}
+
 .bar {
   fill: brown;
 }

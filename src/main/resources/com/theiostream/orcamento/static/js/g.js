@@ -171,7 +171,7 @@ function fillInfo() {
 		dd.append('<li><a href="#">' + i + '</li>');
 	}
 
-	$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>);
+	$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');
 	$("#ddyear").attr("value", searchyear);
 
 	$('#ddmenu li a').on('click', function(){

@@ -98,7 +98,7 @@ public class App {
 			ResIterator all = db.getAll(request.params(":type"));
 			while (all.hasNext()) {
 				Resource r = all.nextResource();
-				String name = r.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+				String name = db.getLabelForResource(r);
 				
 				//long s1 = System.currentTimeMillis();
 				ResIterator ds = db.getDespesasForResource(r);
@@ -131,14 +131,12 @@ public class App {
 			String type = request.params(":type");
 			Resource res = db.getResourceForCodigo(request.params(":org"), type);
 			
-			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
-			String name = stmt.getString();
+			String name = db.getLabelForResource(res);
 
 			String parent = "";
 			if (type.equals("UnidadeOrcamentaria")) {
 				Resource orgao = db.getOrgaoForUnidade(res);
-				Statement s = orgao.getProperty(ResourceFactory.createProperty(RDF2("label")));
-				parent = s.getString();
+				parent = db.getLabelForResource(orgao);
 			}
 
 			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
@@ -150,7 +148,7 @@ public class App {
 				if (programas.hasNext()) {
 					OResource programa = programas.next();
 					if (!programas.hasNext()) {
-						String pname = programa.getResource().getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+						String pname = db.getLabelForResource(programa.getResource());
 						r = r.concat(", \"programa\": { \"name\": \"" + pname + "\", \"cod\": \"" + db.getCodigoForResource(programa.getResource()) + "\" }");
 					}
 				}
@@ -196,8 +194,7 @@ public class App {
 					if (!c.equals(p)) continue;
 				}
 				
-				Statement stmt = function.getResource().getProperty(ResourceFactory.createProperty(RDF2("label")));
-				String name = stmt.getString();
+				String name = db.getLabelForResource(function.getResource());
 				
 				/*HashMap<String, Double> value;
 				value = db.valueForDespesas(function.getDespesas());*/
@@ -226,10 +223,9 @@ public class App {
 			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
 			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
 
-			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
-			String name = stmt.getString();
-			String parent = action.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
-			String pname = programa.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+			String name = db.getLabelForResource(res);
+			String parent = db.getLabelForResource(action);
+			String pname = db.getLabelForResource(programa);
 
 			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
 			return "{ \"name\": \"" + parent + "\", \"parent\": \"" + name + "\", \"programa\": { \"name\": \"" + pname + "\" }, \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}}";
@@ -251,10 +247,10 @@ public class App {
 				Resource res = despesas.nextResource();
 
 				Resource plano = db.getPropertyForDespesa(res, "PlanoOrcamentario");
-				String pl = plano.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+				String pl = db.getLabelForResource(plano);
 
 				Resource modalidade = db.getPropertyForDespesa(res, "ModalidadeAplicacao");
-				String md = modalidade.getProperty(ResourceFactory.createProperty(RDF2("label"))).getString();
+				String md = db.getLabelForResource(modalidade);
 
 				String common = "\"Plano Orçamentário\": \"" + pl + "\", \"Modalidade de Aplicação\": \"" + md + "\", ";
 				
@@ -290,7 +286,7 @@ public class App {
 			if (res == null) return "ERROR ERROR BAD";
 			
 			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
-			String name = stmt.getString();		
+			String name = stmt.getString();
 
 			return "{ \"name\": \"" + name + "\", \"parent\": \"Despesas Históricas\" }";
 		});
