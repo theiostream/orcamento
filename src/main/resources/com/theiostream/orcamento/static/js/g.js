@@ -19,6 +19,7 @@ var translatetype = {
 };
 
 var programa;
+var searchyear;
 
 /* Utilities {{{ */
 
@@ -117,7 +118,7 @@ function fillInfo() {
 		}
 	});
 
-	console.log(i);
+	searchyear = i.year;
 	if (i.req == "r") {
 		var hurl = "/h/" + i.type + "/" + i.cod;
 		var gurl = "/g/" + i.year + "/" + i.type + "/" + i.cod;
@@ -129,6 +130,60 @@ function fillInfo() {
 			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></button>'
 			+ '</div>';
 	}
+	
+	var timeout;
+	var f = function(q, cb) {
+		if (timeout) clearTimeout(timeout);
+		timeout = setTimeout(function() {
+			$.post("/s", {year: searchyear, query: q}, function(data){
+				cb(JSON.parse(data));
+			});
+		}, 500);
+	};
+	$("#search").typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 3
+	}, {
+		name: 'resources',
+		displayKey: 'value',
+		source: f,
+		templates: {
+			suggestion: function(data) {
+				return '<div style="padding: 10px;">'
+				+ '	<p style="font-size: 16pt; display: table-row;">' + data.value + '</p>'
+				+ '	<p style="font-size: 14pt; display: table-row; color: #757575;">' + translatetype[data.type] + ' – ' + data.codigo + '</p>'
+				+ '</div>';
+			}
+		}
+	}).on("typeahead:selected", function(obj, data, name) {
+		console.log("SELECT");
+		window.location = "/r/" + searchyear + "/" + data.type + "/" + data.codigo;
+	});
+	
+	// FIXME hax
+	$(".tt-hint").each(function() { $(this).css("width", "100%"); });
+	$(".tt-input").each(function() { $(this).css("width", "100%"); });
+	
+	var dd = $("#ddmenu");
+	// FIXME how to not have to change this every year
+	for (var i=2000; i<2015; i++) {
+		dd.append('<li><a href="#">' + i + '</li>');
+	}
+
+	$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>);
+	$("#ddyear").attr("value", searchyear);
+
+	$('#ddmenu li a').on('click', function(){
+		searchyear = $(this).text();
+		$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');
+		$("#ddyear").attr("value", searchyear);
+	});
+
+	// FIXME why is bootstrap forcing me to do so much hax
+	$("#search").keypress(function(e) {
+		if (e.which == 10 || e.which == 13) this.form.submit();
+	});
 }
 
 function addHeader(tit) {
@@ -280,7 +335,7 @@ var datacache = {};
 
 /* Create Graph {{{ */
 
-function createGraph_(id, tit, sz) {
+function createGraph_(id, tit, type, sz) {
 	var row = document.createElement("div");
 	row.setAttribute("class", "row");
 	
@@ -337,16 +392,40 @@ function createGraph_(id, tit, sz) {
 			var g = this.getAttribute("data-key");
 			var uoDiv_ = document.getElementById(id + "-treemap");
 			var uoDiv = d3.select(uoDiv_);
+			
+			// FIXME dont make copy
+			var click = function(d) {
+				var i = urlinfo();
+				if (type == "Subtitulo") window.location = "/i/" + i.year + "/" + programa + "/" + i.cod + "/" + d.cod;
+				else {
+					var wl = "/r/" + i.year + "/" + type + "/" + d.cod;
+
+					/*if (document.getElementById("hierarchy").checked) {
+						//this is horrible i know i just want this to work this whole thing needs a cleanup in fact
+						var obj = {};
+						obj[documentURL().split('/')[4]] = documentURL().split('/')[5];
+						if (getURLParameter("f")) {
+							var j = JSON.parse(decodeURIComponent(getURLParameter("f")));
+							for (var a in j) { obj[a] = j[a]; }
+						}
+						console.log(obj);
+
+						wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
+					}*/
+					
+					window.location = wl;
+				}
+			}
 
 			var preloadGraph = graphs[g][0];
 			var reloadGraph = graphs[g][1];
-			reloadGraph(id, color, uoDiv_, uoDiv, null, preloadGraph(uoDiv_));
+			reloadGraph(id, color, uoDiv_, uoDiv, null, preloadGraph(uoDiv_)).on('click', click);
 		}
 
 	});
 }
-function createGraph(id, tit) { createGraph_(id, tit, "smallgraph"); }
-function createBigGraph(id, tit) { createGraph_(id, tit, "biggraph"); }
+function createGraph(id, tit, type) { createGraph_(id, tit, type, "smallgraph"); }
+function createBigGraph(id, tit, type) { createGraph_(id, tit, type, "biggraph"); }
 
 // TODO make this prettier (?)
 function createItemTable(id) {
@@ -552,7 +631,7 @@ function classes(root) {
 
   function recurse(name, node) {
     if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
-    else classes.push({packageName: name, name: node.name, size: node.size, real: node.real});
+    else classes.push({packageName: name, name: node.name, size: node.size, real: node.real, cod: node.cod});
   }
 
   recurse(null, root);

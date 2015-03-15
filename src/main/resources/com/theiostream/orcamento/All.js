@@ -1,7 +1,7 @@
 fillInfo();
 
-createBigGraph('or', 'Órgãos');
+createBigGraph('or', 'Órgãos', 'Orgao');
 reloadData('or', 'Orgao');
 
-createBigGraph('fn', 'Funções');
+createBigGraph('fn', 'Funções', 'Funcao');
 reloadData('fn', 'Funcao');

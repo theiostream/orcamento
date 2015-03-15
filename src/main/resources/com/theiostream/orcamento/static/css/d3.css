@@ -128,45 +128,6 @@ a {
 	margin-right: 20px;*/
 }
 
-.dropdown-menu::before {
-  position: absolute;
-  top: -7px;
-  right: 9px;
-  display: inline-block;
-  border-right: 7px solid transparent;
-  border-bottom: 7px solid #CCC;
-  border-left: 7px solid transparent;
-  border-bottom-color: rgba(0, 0, 0, 0.2);
-  content: '';
-}
-
-.dropdown-menu::after {
-  position: absolute;
-  top: -6px;
-  right: 10px;
-  display: inline-block;
-  border-right: 6px solid transparent;
-  border-bottom: 6px solid white;
-  border-left: 6px solid transparent;
-  content: '';
-}
-
-ul.nav {
-    white-space: nowrap;
-    overflow-x: auto;
-    width: 100%;
-
-    /* get scrollbar down hack */
-    padding-bottom: 10px;
-    margin-bottom: -8px;
-}
-
-ul.nav li {
-    display: inline-block;
-    float: none;
-    text-align: center;
-}
-
 .bar {
   fill: brown;
 }
@@ -184,6 +145,12 @@ ul.nav li {
 
 .x.axis path {
   display: none;
+}
+
+.dropdown-menu::before, 
+.dropdown-menu::after {
+    border: none;
+    content: none;
 }
 
 /* Color {{{ */

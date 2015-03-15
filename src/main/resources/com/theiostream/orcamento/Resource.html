@@ -7,10 +7,16 @@
 	<link rel="stylesheet" href="/css/d3.css">
 	<link rel="stylesheet" href="/css/sidebar.css">
 	<link rel="stylesheet" href="/css/tooltip.css">
+	<link rel="stylesheet" href="/css/typeahead.css">
 	
 	<script src="/js/d3.js"></script>
-	<script src="/js/g.js"></script>
 	<script src="/js/tablesort.js"></script>
+	
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/typeahead.js"></script>
+	<script src="/js/bs-dropdown.js"></script>
+	
+	<script src="/js/g.js"></script>
 
 	<title>Orçamento</title>
 </head>
@@ -22,11 +28,27 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="/">Orçamento</a>
 		</div>
-		<div class="navbar-form navbar-left">
+		<div class="col-md-8"><div class="navbar-form navbar-left">
+			<form action="/cs" method="GET" class="form-inline">
+				<div class="form-group" style="display: inline;">
+					<input type="hidden" name="y" id="ddyear">
+					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
+					<div class="input-group" style="display: table;">
+						<div class="input-group-btn" style="width: 1%;">
+							<button type="" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="ddbtn">Ano <span class="caret"></span></button>
+							<ul class="dropdown-menu" id="ddmenu">
+							</ul>
+						</div>
+						<input id="search" class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
+						<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
+					</div>
+				</div>
+			</form>
+
 			<!--<div class="form-group">
 				<input type="checkbox" id="hierarchy"> Seguir Hierarquia
 			</div>--!>
-		</div>
+		</div></div>
 	</div>
 </nav>
 
@@ -43,7 +65,7 @@
 <div class="well rect">
 	<img src="/img/brasil.svg" style="float: right; height: 85px; margin-right: 2%; margin-top: -10px;"/>
 	
-	Dados fornecidos pelo Governo Federal no <a href="http://vocab.e.gov.br/2013/09/loa">Repositório de Vocabulários e Ontologias do Governo Eletrônico</a>.<br>
+	Dados fornecidos pelo Governo Federal no <a href="http://vocab.e.gov.br/2013/09/loa">Repositório de Vocabulários e Ontologias do Governo Eletrônico</a> (CC BY 3.0).<br>
 	Este site é software livre! (GPL3). <a href="http://github.com/theiostream/orcamento">Source no GitHub</a>.<br><br>
 	
 	&copy; 2014 Daniel Ferreira. <a href="/agradecimentos.html">Agradecimentos</a>

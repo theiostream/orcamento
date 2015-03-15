@@ -5,36 +5,74 @@
 package com.theiostream.orcamento;
 
 import static spark.Spark.*;
-import com.theiostream.orcamento.Database;
-
-import java.util.ArrayList;
 import com.hp.hpl.jena.rdf.model.*;
-import static com.theiostream.orcamento.OrcamentoUtils.*;
+
+import com.theiostream.orcamento.Database;
+import com.theiostream.orcamento.TextIndex;
 import com.theiostream.orcamento.OResource;
+import static com.theiostream.orcamento.OrcamentoUtils.*;
+
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.index.DirectoryReader;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.analysis.br.BrazilianAnalyzer;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import java.util.ArrayList;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class App  {
+public class App {
 	public static void main(String[] args) {
 		staticFileLocation("/com/theiostream/orcamento/static");
 		
+		/* Initialization {{{ */
+
+		System.out.println("[Orçamento] Initializing Databases...");
 		HashMap<String, Database> databases = new HashMap<String, Database>(16);
 		
 		File folder = new File("/Users/Daniel/test/orcamento/tdbtest");
 		File[] list = folder.listFiles();
 		for (int i=0; i < list.length; i++) {
-			System.out.println("File is " + list[i].getPath() + " n " + list[i].getName());
 			if (!list[i].isDirectory()) continue;
 			
 			databases.put(list[i].getName(), new Database(list[i].getPath()));
-			System.out.println("Finished " + list[i].getName());
+		}
+		System.out.println("[Orçamento] Initialized Databases.");
+
+		System.out.println("[Orçamento] Initializing Lucene Stores...");
+		HashMap<String, Directory> directories = new HashMap<String, Directory>(16);
+
+		for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
+			try {
+				Path p = Paths.get("/Users/Daniel/test/orcamento/lucenetest/" + entry.getKey());
+				
+				BrazilianAnalyzer analyzer = new BrazilianAnalyzer();
+				Directory dir = FSDirectory.open(p);
+				if (!DirectoryReader.indexExists(dir)) {
+					TextIndex.build(dir, entry.getValue(), analyzer);
+				}
+			}
+			catch (Exception e) {
+				System.out.println("[Orçamento] Lucene Store initialization threw exception " + e);
+			}
 		}
 
+		System.out.println("[Orçamento] Initialized Lucene Stores.");
+
+		/* }}} */
+
+		/* Website {{{ */
 		get("/", (request, response) -> {
 			return readFile(App.class.getResource("index.html"));
 		});
@@ -262,13 +300,11 @@ public class App  {
 			HashMap<String, Double> inflation;
 			try {
 				String ifile = readFile(App.class.getResource("Inflation.json"));
-				System.out.println(ifile);
 				inflation = new ObjectMapper().readValue(ifile, HashMap.class);
 			}
 			catch (Exception e) {
 				return "ERROR ERROR BAD";
 			}
-			System.out.println("what " + inflation.get("2000"));
 			
 			String ret = "[";
 
@@ -301,5 +337,36 @@ public class App  {
 		get("/c/:x/:y", (request, response) -> {
 			return null;
 		});
+
+		post("/s", (request, response) -> {
+			try {
+				String ret = "[";
+
+				BrazilianAnalyzer analyzer = new BrazilianAnalyzer();
+				Path p = Paths.get("/Users/Daniel/test/orcamento/lucenetest/" + request.queryParams("year"));
+				Directory dir = FSDirectory.open(p);
+
+				DirectoryReader reader = DirectoryReader.open(dir);
+				IndexSearcher searcher = new IndexSearcher(reader);
+
+				QueryParser parser = new QueryParser("label", analyzer);
+				Query query = parser.parse(request.queryParams("query"));
+
+				ScoreDoc[] hits = searcher.search(query, null, 6).scoreDocs;
+				for (int i=0; i<hits.length; i++) {
+					Document hitDoc = searcher.doc(hits[i].doc);
+					ret = ret.concat("{ \"value\": \"" + hitDoc.get("label") + "\", \"type\": \"" + hitDoc.get("type") + "\", \"codigo\": \"" + hitDoc.get("codigo") + "\" },");
+				}
+
+				if (ret.length() > 1) ret = ret.substring(0, ret.length()-1);
+				return ret.concat("]");
+			}
+			catch (Exception e) {
+				System.out.println("EXCEPTION with query " + request.queryParams("query"));
+				return "ERROR ERROR ERROR BAD";
+			}
+		});
+		
+		/* }}} */
 	}
 }

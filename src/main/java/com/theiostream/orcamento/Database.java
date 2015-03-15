@@ -23,6 +23,7 @@ public class Database {
 	
 	protected Property propertyDotacaoInicial;
 	protected Property propertyPago;
+	protected Property label;
 
 	public Database(String year) {
 		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
@@ -32,6 +33,7 @@ public class Database {
 
 		propertyDotacaoInicial = ResourceFactory.createProperty(LOA("valorDotacaoInicial"));
 		propertyPago = ResourceFactory.createProperty(LOA("valorPago"));
+		label = ResourceFactory.createProperty(RDF2("label"));
 	}
 	
 	// General
@@ -56,6 +58,11 @@ public class Database {
 		}
 		
 		return null;
+	}
+
+	public String getLabelForResource(Resource r) {
+		Statement stmt = r.getProperty(label);
+		return stmt.getString();
 	}
 
 	public String getCodigoForResource(Resource despesa) {

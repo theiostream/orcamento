@@ -1,13 +1,13 @@
 fillInfo();
 
 addHeader("Detalhes");
-createGraph("pr", "Programas");
-createGraph("ac", "Ações");
+createGraph("pr", "Programas", 'Programa');
+createGraph("ac", "Ações", 'Acao');
 
 addHeader("Participação no Orçamento");
-createGraph("or", "Órgãos");
-createGraph("uo", "Unidades Orçamentárias");
-createGraph("fn", "Funções");
+createGraph("or", "Órgãos", 'Orgao');
+createGraph("uo", "Unidades Orçamentárias", 'UnidadeOrcamentaria');
+createGraph("fn", "Funções", 'Funcao');
 
 reloadData("pr", "Programa");
 reloadData("ac", "Acao");

@@ -1,11 +1,11 @@
 fillInfo();
 
 addHeader("Detalhes");
-createGraph('sfn', "Subfunções");
-createGraph('pr', "Programas");
+createGraph('sfn', "Subfunções", 'Subfuncao');
+createGraph('pr', "Programas", 'Programa');
 
 addHeader("Participação no Orçamento");
-createGraph('or', "Órgãos");
+createGraph('or', "Órgãos", 'Orgao');
 
 reloadData('or', "Orgao");
 reloadData('sfn', "Subfuncao");
