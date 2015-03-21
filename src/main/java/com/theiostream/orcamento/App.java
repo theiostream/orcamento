@@ -95,10 +95,12 @@ public class App {
 			Database db = databases.get(request.params(":year"));
 			String ret = "{\"name\": \"flare\", \"children\": [";
 
+			long s1 = System.currentTimeMillis();
 			ResIterator all = db.getAll(request.params(":type"));
 			while (all.hasNext()) {
 				Resource r = all.nextResource();
 				String name = db.getLabelForResource(r);
+				System.out.println("Got name.");
 				
 				//long s1 = System.currentTimeMillis();
 				ResIterator ds = db.getDespesasForResource(r);
@@ -111,6 +113,7 @@ public class App {
 
 				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
 			}
+			System.out.println("all() took " + (System.currentTimeMillis() - s1));
 			
 			ret = ret.substring(0, ret.length()-1);
 			return ret.concat("]}");
@@ -130,8 +133,10 @@ public class App {
 
 			String type = request.params(":type");
 			Resource res = db.getResourceForCodigo(request.params(":org"), type);
+			System.out.println("RES: " + res);
 			
 			String name = db.getLabelForResource(res);
+			System.out.println("LABEL: " + name);
 
 			String parent = "";
 			if (type.equals("UnidadeOrcamentaria")) {
@@ -246,6 +251,9 @@ public class App {
 			while (despesas.hasNext()) {
 				Resource res = despesas.nextResource();
 
+				System.out.println(res);
+				System.out.println(db.getPropertyForDespesa(res, "ElementoDespesa"));
+
 				Resource plano = db.getPropertyForDespesa(res, "PlanoOrcamentario");
 				String pl = db.getLabelForResource(plano);
 
@@ -256,7 +264,7 @@ public class App {
 				
 				double dot = db.getValorPropertyForDespesa(res, "DotacaoInicial");
 				double pago = db.getValorPropertyForDespesa(res, "Pago");
-
+				
 				if (dot == 0)
 					pagoArray = pagoArray.concat("{" + common + "\"Valor\": " + pago + "},");
 				else
@@ -346,9 +354,9 @@ public class App {
 				IndexSearcher searcher = new IndexSearcher(reader);
 
 				QueryParser parser = new QueryParser("label", analyzer);
-				Query query = parser.parse(request.queryParams("query"));
+				Query query = parser.parse(java.net.URLDecoder.decode(request.queryParams("query"), "UTF-8"));
 
-				ScoreDoc[] hits = searcher.search(query, null, 6).scoreDocs;
+				ScoreDoc[] hits = searcher.search(query, null, Integer.parseInt(request.queryParams("count"))).scoreDocs;
 				for (int i=0; i<hits.length; i++) {
 					Document hitDoc = searcher.doc(hits[i].doc);
 					ret = ret.concat("{ \"value\": \"" + hitDoc.get("label") + "\", \"type\": \"" + hitDoc.get("type") + "\", \"codigo\": \"" + hitDoc.get("codigo") + "\" },");
@@ -361,6 +369,11 @@ public class App {
 				System.out.println("EXCEPTION with query " + request.queryParams("query"));
 				return "ERROR ERROR ERROR BAD";
 			}
+		});
+
+		get("/cs", (request, response) -> {
+			URL str = App.class.getResource("Search.html");
+			return readFile(str) + "<script>init(); reload();</script>";
 		});
 		
 		/* }}} */

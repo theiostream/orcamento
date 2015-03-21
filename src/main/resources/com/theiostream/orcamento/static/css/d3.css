@@ -10,6 +10,13 @@ body {
   margin-bottom: 0px;
 }
 
+#datatable td:hover {
+	background-color: #f0f0f0;
+}
+.pfix {
+	padding: -5px;
+}
+
 .rect {
 	-webkit-border-radius: 0 !important;
 	-moz-border-radius: 0 !important;

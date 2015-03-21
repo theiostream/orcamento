@@ -103,7 +103,7 @@ function fillInfo() {
 		
 		if (info.programa) {
 			programa = info.programa.cod;
-			info.values["Programa"] = info.programa.name;
+			info.values["Unidade Orçamentária"] = info.programa.name;
 		}
 
 		for (var key in info.values) {
@@ -135,7 +135,7 @@ function fillInfo() {
 	var f = function(q, cb) {
 		if (timeout) clearTimeout(timeout);
 		timeout = setTimeout(function() {
-			$.post("/s", {year: searchyear, query: q}, function(data){
+			$.post("/s", {year: searchyear, query: q, count: 6}, function(data){
 				cb(JSON.parse(data));
 			});
 		}, 500);
@@ -168,7 +168,7 @@ function fillInfo() {
 	var dd = $("#ddmenu");
 	// FIXME how to not have to change this every year
 	for (var i=2000; i<2015; i++) {
-		dd.append('<li><a href="#">' + i + '</li>');
+		dd.append('<li><a href="#">' + i + '</a></li>');
 	}
 
 	$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');

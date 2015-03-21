@@ -179,24 +179,30 @@ public class Database {
 
 	// Subtitle
 	public Resource getSubtitleWithProgramaAndAcao(Resource programa, Resource action, String codigo) {
-		Resource subtitle = null;
+		//Resource subtitle = null;
 		
 		ResIterator res = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("codigo")), model.createLiteral(codigo, false));
 		while (res.hasNext()) {
 			Resource st = res.nextResource();
-			
+
 			// We can count on all ItemDespesas of one Subtitulo to have the same Programa and Acao.
-			Resource despesa = getDespesasForResource(st).nextResource();
+			ResIterator d = getDespesasForResource(st);
+			if (!d.hasNext()) { continue; }
+
+			Resource despesa = d.nextResource();
 
 			Resource ac = getPropertyForDespesa(despesa, "Acao");
 			Resource pr = getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
 
 			if (programa.equals(pr) && action.equals(ac)) {
-				subtitle = st;
+				/*System.out.println("$$ EQ!!!!!");
+				subtitle = st;*/
+				return st;
 			}
 		}
-
-		return subtitle;
+		
+		//return subtitle;
+		return null;
 	}
 
 	// ItemDespesa
