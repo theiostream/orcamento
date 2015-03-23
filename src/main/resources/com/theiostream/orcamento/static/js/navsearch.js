@@ -1,20 +1,21 @@
 var searchyear;
 function setSearchyear(s) {
 	searchyear = s;
+	$("#ddyear").attr("value", searchyear);
 }
 
-function addTypeahead(el) {
+function addTypeahead(el, isSearch, pfn) {
 	var timeout;
 	var f = function(q, cb) {
 		if (timeout) clearTimeout(timeout);
 		timeout = setTimeout(function() {
-			$.post("/s", {year: searchyear, query: q, count: 6}, function(data){
+			$.post("/s", {year: el.find('.yearmenu').attr('data-sel'), query: q, count: 6}, function(data){
 				cb(JSON.parse(data));
 			});
 		}, 500);
 	};	
 	
-	el.typeahead({
+	el.find("input[type='text']").typeahead({
 		hint: true,
 		highlight: true,
 		minLength: 3
@@ -31,31 +32,31 @@ function addTypeahead(el) {
 			}
 		}
 	}).on("typeahead:selected", function(obj, data, name) {
-		console.log("SELECT");
-		window.location = "/r/" + searchyear + "/" + data.type + "/" + data.codigo;
+		if (isSearch) window.location = "/r/" + searchyear + "/" + data.type + "/" + data.codigo;
+		else pfn(this, data);
 	});
 
 	// Hack: Get correct size for text bar.
-	$(".tt-hint").each(function() { $(this).css("width", "100%"); });
-	$(".tt-input").each(function() { $(this).css("width", "100%"); });
+	el.find(".tt-hint").each(function() { $(this).css("width", "100%"); });
+	el.find(".tt-input").each(function() { $(this).css("width", "100%"); });
 	
 	// FIXME
-	var dd = $("#ddmenu");
+	var dd = el.find(".yearmenu");
 	for (var i=2000; i<2015; i++) {
 		dd.append('<li><a href="#">' + i + '</a></li>');
 	}
 
-	$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');
-	$("#ddyear").attr("value", searchyear);
-
-	$('#ddmenu li a').on('click', function(){
-		searchyear = $(this).text();
-		$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');
-		$("#ddyear").attr("value", searchyear);
+	if (isSearch) el.find(".yearbtn").html(searchyear + ' <span class="caret"></span>');
+	el.find('.dropdown-menu li a').on('click', function(){
+		if (isSearch) setSearchyear($(this).text()); /* danger: this assumes the only dropdown in isSearch cases is the year one */
+		
+		var dropdown = $(this).parent().parent();
+		dropdown.siblings('button').html($(this).text() + ' <span class="caret"></span>');
+		dropdown.attr("data-sel", $(this).text());
 	});
 
 	// Hack: Get <Enter> to go submit form instead of going back to the year selector.
-	$("#search").keypress(function(e) {
-		if (e.which == 10 || e.which == 13) this.form.submit();
+	el.find("input[type='text']").keypress(function(e) {
+		if (isSearch && (e.which == 10 || e.which == 13)) this.form.submit();
 	});	
 }

@@ -334,12 +334,23 @@ public class App {
 			return ret.concat("]");
 		});
 
-		get("/l/:s", (request, response) -> {
-			return null;
-		});
-
 		get("/c/:x/:y", (request, response) -> {
-			return null;
+			URL str = App.class.getResource("Compare.html");
+			return readFile(str) + "<script>init();</script>";
+		});
+		post("/cp", (request, response) -> {
+			Database db1 = databases.get(request.queryParams("y1"));
+			Database db2 = databases.get(request.queryParams("y2"));
+
+			Resource r1 = db1.getResourceForCodigo(request.queryParams("c1"), request.queryParams("t1"));
+			String l1 = db1.getLabelForResource(r1);
+			Resource r2 = db2.getResourceForCodigo(request.queryParams("c2"), request.queryParams("t2"));
+			String l2 = db2.getLabelForResource(r2);
+
+			HashMap<String, Long> v1 = db1.valueForDespesas(db1.getDespesasForResource(r1));
+			HashMap<String, Long> v2 = db2.valueForDespesas(db2.getDespesasForResource(r2));
+
+			return "[{\"c\":0,\"res\":\""+l1+"\", \"value\":"+v1.get("DotacaoInicial")+"}, {\"c\":1,\"res\":\"" + l2 + "\", \"value\":"+v2.get("DotacaoInicial")+"}]";
 		});
 
 		post("/s", (request, response) -> {

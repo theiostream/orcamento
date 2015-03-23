@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/d3.css">
+	<link rel="stylesheet" href="/css/typeahead.css">
+	
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/typeahead.js"></script>
+	<script src="/js/bs-dropdown.js"></script>
+	<script src="/js/d3.js"></script>
+	
+	<script src="/js/navsearch.js"></script>
+	<script src="/js/c.js"></script>
+
+	<title>Comparação – Orçamento</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-default rect" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">Orçamento</a>
+		</div>
+		<div class="col-md-8"><div class="navbar-form navbar-left">
+			<form action="/cs" method="GET" class="form-inline">
+				<div class="form-group" style="display: inline;">
+					<input type="hidden" name="y" id="ddyear">
+					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
+					<div class="input-group" style="display: table;" id="search">
+						<div class="input-group-btn" style="width: 1%;">
+							<button type="" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
+							<ul class="dropdown-menu yearmenu">
+							</ul>
+						</div>
+						<input class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
+						<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
+					</div>
+				</div>
+			</form>
+		</div></div>
+	</div>
+</nav>
+
+<div class="main">
+	<div class="page-header" style="margin-left: 5%; margin-right: 5%; width: 90%;">
+		<p class="lead" style="color: #757575; font-size: 22pt;" id="tit">Selecione dois itens para comparar...</p>		
+
+		<div class="input-group" style="display: table;" id="item1">
+			<div class="input-group-btn" style="width: 1%;">
+				<button type="" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
+				<ul class="dropdown-menu yearmenu">
+				</ul>
+			</div>
+			<input class="form-control" type="text" name="s" placeholder="Insira um item..." id="ip1">
+			<div class="input-group-btn" style="width: 1%;">
+				<button type="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Valor <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a>LOA</a></li>
+					<li><a>Pago</a></li>
+				</ul>
+			</div>
+		</div>
+		
+		<div class="input-group" style="display: table;" id="item2">
+			<div class="input-group-btn" style="width: 1%;">
+				<button type="" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
+				<ul class="dropdown-menu yearmenu">
+				</ul>
+			</div>
+			<input class="form-control" type="text" name="s" placeholder="Insira outro item..." id="ip2">
+			<div class="input-group-btn" style="width: 1%;">
+				<button type="" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Valor <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a>LOA</a></li>
+					<li><a>Pago</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="maintable" style="border-spacing: 20px; height: 540px;">
+		<div style="display: table-cell;" id="graph">
+		</div>
+
+		<div style="display: table-cell; text-align: center; font-size: 18pt; vertical-align: middle;" id="text">
+		</div>
+	</div>
+</div>
+
+<div class="well rect">
+	<img src="/img/brasil.svg" style="float: right; height: 85px; margin-right: 2%; margin-top: -10px;"/>
+	
+	Dados fornecidos pelo Governo Federal no <a href="http://vocab.e.gov.br/2013/09/loa">Repositório de Vocabulários e Ontologias do Governo Eletrônico</a> (CC BY 3.0).<br>
+	Este site é software livre! (GPL3). <a href="http://github.com/theiostream/orcamento">Source no GitHub</a>.<br><br>
+	
+	&copy; 2014-15 Daniel Ferreira. <a href="/agradecimentos.html">Agradecimentos</a>
+
+</div>
+</body>
