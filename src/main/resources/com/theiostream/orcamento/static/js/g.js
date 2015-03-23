@@ -93,12 +93,12 @@ function fillInfo() {
 	getJSON(documentURL() + "/i", function(info){
 		var tp = document.createElement("p");
 		tp.setAttribute('style', 'color: #757575; font-size: 14pt;');
-		tp.innerHTML = translatetype[documentURL().split('/').slice(-2, -1)[0]];
+		tp.innerHTML = translatetype[i.type];
 		header.appendChild(tp);
 
 		var title = document.createElement("p");
 		title.className = 'title';
-		title.innerHTML = info.name// + " <small>" + info.parent + "</small>";
+		title.innerHTML = info.name + (info.parent ? (" <small>" + info.parent + "</small>") : "");
 		header.appendChild(title);
 		
 		if (info.programa) {
@@ -118,7 +118,8 @@ function fillInfo() {
 		}
 	});
 
-	setSearchyear(i.year);
+	if (i.req == "r") setSearchyear(i.year);
+	else setSearchyear("2000");
 	
 	if (i.req == "r") {
 		var hurl = "/h/" + i.type + "/" + i.cod;

@@ -138,15 +138,15 @@ public class App {
 			String name = db.getLabelForResource(res);
 			System.out.println("LABEL: " + name);
 
-			String parent = "";
+			String parent = null, org = null;
 			if (type.equals("UnidadeOrcamentaria")) {
 				Resource orgao = db.getOrgaoForUnidade(res);
 				parent = db.getLabelForResource(orgao);
+				org = "\"Órgão\":\""+parent+"\",";
 			}
 
 			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
-			
-			String r = "\"name\": \"" + name + "\", \"parent\": \"" + parent + "\", \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}";
+			String r = "\"name\": \"" + name + "\", \"values\": { " + (parent!=null?org:"") + "\"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}";
 			if (type.equals("Acao")) {
 				Iterator<OResource> programas = db.getOResourcesForResource("UnidadeOrcamentaria", res);
 				
@@ -159,6 +159,7 @@ public class App {
 				}
 			}
 
+			System.out.println("{" + r + "}");
 			return "{" + r + "}";
 		});
 		get("/r/:year/:type/:org/:par", (request, response) -> {
