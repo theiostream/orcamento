@@ -43,10 +43,13 @@ function addTypeahead(el, isSearch, pfn) {
 	// FIXME
 	var dd = el.find(".yearmenu");
 	for (var i=2000; i<2015; i++) {
-		dd.append('<li><a href="#">' + i + '</a></li>');
+		dd.append('<li><a>' + i + '</a></li>');
 	}
 
-	if (isSearch) el.find(".yearbtn").html(searchyear + ' <span class="caret"></span>');
+	if (isSearch) {
+		el.find(".yearbtn").html(searchyear + ' <span class="caret"></span>');
+		dd.attr('data-sel', searchyear);
+	}
 	el.find('.dropdown-menu li a').on('click', function(){
 		if (isSearch) setSearchyear($(this).text()); /* danger: this assumes the only dropdown in isSearch cases is the year one */
 		

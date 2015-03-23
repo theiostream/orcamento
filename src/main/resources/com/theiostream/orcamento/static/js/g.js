@@ -5,6 +5,7 @@
 // MUST IMPORT D3.JS BEFORE IMPORTING THIS
 // I DISLIKE JAVASCRIPT
 // NO I AM NOT PUTTING JQUERY HERE
+// NEVERMIND FUCK YOU TWITTER TYPEAHEAD
 
 // TODO: Maybe integrate createGraph()/createItemTable() functions into their reload() counterparts with some d3.js element managing
 
@@ -19,7 +20,6 @@ var translatetype = {
 };
 
 var programa;
-var searchyear;
 
 /* Utilities {{{ */
 
@@ -118,7 +118,8 @@ function fillInfo() {
 		}
 	});
 
-	searchyear = i.year;
+	setSearchyear(i.year);
+	
 	if (i.req == "r") {
 		var hurl = "/h/" + i.type + "/" + i.cod;
 		var gurl = "/g/" + i.year + "/" + i.type + "/" + i.cod;
@@ -131,59 +132,7 @@ function fillInfo() {
 			+ '</div>';
 	}
 	
-	var timeout;
-	var f = function(q, cb) {
-		if (timeout) clearTimeout(timeout);
-		timeout = setTimeout(function() {
-			$.post("/s", {year: searchyear, query: q, count: 6}, function(data){
-				cb(JSON.parse(data));
-			});
-		}, 500);
-	};
-	$("#search").typeahead({
-		hint: true,
-		highlight: true,
-		minLength: 3
-	}, {
-		name: 'resources',
-		displayKey: 'value',
-		source: f,
-		templates: {
-			suggestion: function(data) {
-				return '<div style="padding: 10px;">'
-				+ '	<p style="font-size: 16pt; display: table-row;">' + data.value + '</p>'
-				+ '	<p style="font-size: 14pt; display: table-row; color: #757575;">' + translatetype[data.type] + ' – ' + data.codigo + '</p>'
-				+ '</div>';
-			}
-		}
-	}).on("typeahead:selected", function(obj, data, name) {
-		console.log("SELECT");
-		window.location = "/r/" + searchyear + "/" + data.type + "/" + data.codigo;
-	});
-	
-	// FIXME hax
-	$(".tt-hint").each(function() { $(this).css("width", "100%"); });
-	$(".tt-input").each(function() { $(this).css("width", "100%"); });
-	
-	var dd = $("#ddmenu");
-	// FIXME how to not have to change this every year
-	for (var i=2000; i<2015; i++) {
-		dd.append('<li><a href="#">' + i + '</a></li>');
-	}
-
-	$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');
-	$("#ddyear").attr("value", searchyear);
-
-	$('#ddmenu li a').on('click', function(){
-		searchyear = $(this).text();
-		$("#ddbtn:first-child").html(searchyear + ' <span class="caret"></span>');
-		$("#ddyear").attr("value", searchyear);
-	});
-
-	// FIXME why is bootstrap forcing me to do so much hax
-	$("#search").keypress(function(e) {
-		if (e.which == 10 || e.which == 13) this.form.submit();
-	});
+	addTypeahead($("#search"), true);
 }
 
 function addHeader(tit) {

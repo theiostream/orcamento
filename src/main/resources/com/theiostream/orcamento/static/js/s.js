@@ -15,7 +15,7 @@ function init() {
 	$("#tit").text('Resultados para "' + decodeURIComponent(getURLParameter("s")) + '"');
 
 	setSearchyear(getURLParameter("y"));
-	addTypeahead($("#search"));
+	addTypeahead($("#search"), true);
 
 	var f = $("#filter");
 	var keys = Object.keys(translatetype);

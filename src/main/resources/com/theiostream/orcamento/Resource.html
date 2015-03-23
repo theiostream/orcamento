@@ -16,6 +16,7 @@
 	<script src="/js/typeahead.js"></script>
 	<script src="/js/bs-dropdown.js"></script>
 	
+	<script src="/js/navsearch.js"></script>
 	<script src="/js/g.js"></script>
 
 	<title>Orçamento</title>
@@ -33,21 +34,17 @@
 				<div class="form-group" style="display: inline;">
 					<input type="hidden" name="y" id="ddyear">
 					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
-					<div class="input-group" style="display: table;">
+					<div class="input-group" style="display: table;" id="search">
 						<div class="input-group-btn" style="width: 1%;">
-							<button type="" class="btn btn-default dropdown-toggle" data-toggle="dropdown" id="ddbtn">Ano <span class="caret"></span></button>
-							<ul class="dropdown-menu" id="ddmenu">
+							<button type="" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
+							<ul class="dropdown-menu yearmenu">
 							</ul>
 						</div>
-						<input id="search" class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
+						<input class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
 						<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
 					</div>
 				</div>
 			</form>
-
-			<!--<div class="form-group">
-				<input type="checkbox" id="hierarchy"> Seguir Hierarquia
-			</div>--!>
 		</div></div>
 	</div>
 </nav>
