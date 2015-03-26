@@ -213,19 +213,18 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 	var h = uoDiv_.offsetHeight;
 	
 	var zoom = d3.behavior.zoom()
-		.xExtent([0, 1])
-		.yExtent([0, 1])
 		.scaleExtent([1, 10])
-		.on("zoom", redraw)
+		.on("zoom", redraw);
 
 	function redraw() {
 		var t = d3.event.translate,
 		      s = d3.event.scale;
-		  t[0] = Math.min(w / 2 * (s - 1), Math.max(w / 2 * (1 - s), t[0]));
+		  //t[0] = Math.min(w / 2 * (s - 1), Math.max(w / 2 * (1 - s), t[0]));
+		  t[0] = Math.min(0, Math.max(2*(-(w/2*(s-1))), t[0]));
 		  t[1] = Math.min(h / 2 * (s - 1) * s, Math.max(h / 2 * (1 - s) * s, t[1]));
 		  zoom.translate(t);
 
-		vis.attr("transform", "translate(" + t + ")" + " scale(" + s + ")");
+		vis.attr('transform', "translate(" + t + ")" + " scale(" + s + ")");
 	}
 
 	if (data == null) data = datacache[id];
@@ -242,6 +241,9 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 			break;
 		}
 	}
+	console.log("key is " + key);
+	
+	console.log("Variables w="+w+"; h="+h);
 
 	var vis = uoDiv.append("svg")
 		.attr("width", w)
@@ -265,8 +267,8 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 		.style("fill", function(d){return color(d.packageName);})
 		.attr("cursor", "pointer");
 	x.append("text")
-		.attr("text-anchor", "middle")
 		.attr("cursor", "pointer")
+		.attr("text-anchor", "middle")
 		.attr("style", function(d) {var szd = d.r/5;return "font-size:" + szd+"px";})
 		.each(function(d, i) {
 			var nm = d.name;
