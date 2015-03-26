@@ -123,12 +123,14 @@ function fillInfo() {
 	
 	if (i.req == "r") {
 		var hurl = "/h/" + i.type + "/" + i.cod;
+		var curl = "/c?y=" + i.year + "&c=" + i.cod + "&t=" + i.type;
 		var gurl = "/g/" + i.year + "/" + i.type + "/" + i.cod;
 
 		var hb = document.getElementById("headerbtn");
 		hb.innerHTML =
 			  '<div class="btn-group-vertical">'
 			+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></button>'
+			+ '	<a class="btn btn-default" href="' + curl + '" data-title="Comparar"><span class="glyphicon glyphicon-sort"></span></button>'
 			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></button>'
 			+ '</div>';
 	}
@@ -493,6 +495,7 @@ function reloadDataG(id, type, g) {
 	}
 
 	d3.json(url, function(error, root) {
+		var i = urlinfo();
 		var uoNodes = reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
 		nodes.push(uoNodes);
 		
@@ -505,11 +508,15 @@ function reloadDataG(id, type, g) {
 
 		var rows = uoTbody.selectAll('tr')
 			.data(classes(root).children)
-			.enter().append('tr');
+			.enter().append('tr')
+			.style('cursor', 'pointer')
+			.on('click', function(d) {
+				window.location = "/r/" + i.year + "/" + type + "/" + d.cod;
+			});
 		var cells = rows.selectAll('td')
 			.data(function(row) {
 				return columns.map(function(column) {
-					return {column: column, value: row[column]};
+					return {column: column, value: row[column], cod: row.cod};
 				});
 			})
 			.enter().append('td')
@@ -550,7 +557,7 @@ function reloadDataG(id, type, g) {
 					.data(function(row) {
 						return columns.map(function(column) {
 							console.log(row);
-							return {column: column, value: row[column]};
+							return {column: column, value: row[column], cod: row.cod};
 						});
 					})
 					.text(function(d) {
