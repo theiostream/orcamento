@@ -118,7 +118,7 @@ function fillInfo() {
 		}
 	});
 
-	if (i.req == "r" || i.req == "i") setSearchyear(i.year);
+	if (i.req == "r" || i.req == "i" || i.req == "a") setSearchyear(i.year);
 	else setSearchyear("2000");
 	
 	if (i.req == "r") {
@@ -209,8 +209,23 @@ function preloadBubbles(div) {
 }
 
 function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
+	var w = uoDiv_.offsetWidth;
+	var h = uoDiv_.offsetHeight;
+	
+	var zoom = d3.behavior.zoom()
+		.xExtent([0, 1])
+		.yExtent([0, 1])
+		.scaleExtent([1, 10])
+		.on("zoom", redraw)
+
 	function redraw() {
-		vis.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")");
+		var t = d3.event.translate,
+		      s = d3.event.scale;
+		  t[0] = Math.min(w / 2 * (s - 1), Math.max(w / 2 * (1 - s), t[0]));
+		  t[1] = Math.min(h / 2 * (s - 1) * s, Math.max(h / 2 * (1 - s) * s, t[1]));
+		  zoom.translate(t);
+
+		vis.attr("transform", "translate(" + t + ")" + " scale(" + s + ")");
 	}
 
 	if (data == null) data = datacache[id];
@@ -227,11 +242,6 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 			break;
 		}
 	}
-	console.log("key is " + key);
-	
-	var w = uoDiv_.offsetWidth;
-	var h = uoDiv_.offsetHeight;
-	console.log("Variables w="+w+"; h="+h);
 
 	var vis = uoDiv.append("svg")
 		.attr("width", w)
@@ -239,11 +249,7 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 		.attr("pointer-events", "all")
 		.style("height", h)
 		.attr("class", "bubble")
-		.call(d3.behavior.zoom()
-			.xExtent([0, 1])
-			.yExtent([0, 1])
-			.scaleExtent([1, 10])
-			.on("zoom", redraw))
+		.call(zoom)
 		.append('g').attr('class', 'group2');
 	
 	var x = vis
@@ -254,9 +260,13 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 		.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 	
 	x.append("title").text(function(d) { return d.name; })
-	x.append("circle").attr("r", function(d){return d.r;}).style("fill", function(d){return color(d.packageName);})
+	x.append("circle")
+		.attr("r", function(d){return d.r;})
+		.style("fill", function(d){return color(d.packageName);})
+		.attr("cursor", "pointer");
 	x.append("text")
 		.attr("text-anchor", "middle")
+		.attr("cursor", "pointer")
 		.attr("style", function(d) {var szd = d.r/5;return "font-size:" + szd+"px";})
 		.each(function(d, i) {
 			var nm = d.name;

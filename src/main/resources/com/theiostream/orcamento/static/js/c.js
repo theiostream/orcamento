@@ -43,11 +43,11 @@ function init() {
 		};
 
 		$.get("/r/" + i1.year + "/" + i1.type + "/" + i1.codigo + "/i", function(data) {
-			console.log(data);
 			$('#item1').find('.yearbtn').html(i1.year + ' <span class="caret"></span>');
 			$("#item1").find('.yearmenu').attr('data-sel', i1.year);
 			$('#ip1').val(data.name);
 			document.getElementById('item1').classList.add('has-success');
+			i1.value = data.name;
 		});
 	}
 
