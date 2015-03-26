@@ -9,12 +9,12 @@ import com.hp.hpl.jena.tdb.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.update.*;
 import com.hp.hpl.jena.query.*;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import static com.theiostream.orcamento.OrcamentoUtils.*;
 
 public class wr {
 	public static void main (String[] args) {
-		Dataset dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/2013");
+		Dataset dataset = TDBFactory.createDataset(args[0]);
 		dataset.begin(ReadWrite.WRITE) ;
 		
 		long s0 = System.currentTimeMillis();
@@ -102,7 +102,7 @@ public class wr {
 			System.out.println("[wr] Temporarily deleting all ItemDespesas...");
 			
 			StmtIterator it = m.listStatements(null, ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("ItemDespesa")));
-			ArrayList l = new ArrayList<Statement>();
+			LinkedList l = new LinkedList<Statement>();
 			while (it.hasNext()) {
 				Statement n = it.nextStatement();
 				StmtIterator it2 = m.listStatements(n.getSubject(), null, (RDFNode)null);

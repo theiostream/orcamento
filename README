@@ -12,17 +12,17 @@ This is licensed under the GNU General Public License, version 3.
 
 *** INSTRUCTIONS
 
-1. Download available RDF files from the Government and create TDBs.
-> ./gettdb.sh all
+1. Build the website
+$ mvn package
 
-2. Download inflation data from the Government and populate Inflation.json
-> ./inflacao.sh > ./r/static/Inflation.json
+2. Download available RDF files from the Government and create/patch TDBs.
+$ ./gettdb.sh all
 
-3. Execute wr.java to optimize databases (takes a while)
-> mvn package && mvn exec:java -Dexec.mainClass="com.theiostream.orcamento.wr" <TODO INSERT ARGS>
+3. Download inflation data from the Government and populate Inflation.json
+$ ./inflacao.sh > ./r/static/Inflation.json
 
 4. Start the website
-> ./run
+$ ./run
 
 *** CAVEATS
 
