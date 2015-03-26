@@ -4,7 +4,7 @@ function setSearchyear(s) {
 	$("#ddyear").attr("value", searchyear);
 }
 
-function addTypeahead(el, isSearch, pfn) {
+function addTypeahead(el, isSearch, pfn, tfn) {
 	var timeout;
 	var f = function(q, cb) {
 		if (timeout) clearTimeout(timeout);
@@ -56,6 +56,8 @@ function addTypeahead(el, isSearch, pfn) {
 		var dropdown = $(this).parent().parent();
 		dropdown.siblings('button').html($(this).text() + ' <span class="caret"></span>');
 		dropdown.attr("data-sel", $(this).text());
+
+		if (tfn != null) tfn(dropdown, $(this).text());
 	});
 
 	// Hack: Get <Enter> to go submit form instead of going back to the year selector.

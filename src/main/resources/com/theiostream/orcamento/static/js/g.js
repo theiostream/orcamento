@@ -93,7 +93,7 @@ function fillInfo() {
 	getJSON(documentURL() + "/i", function(info){
 		var tp = document.createElement("p");
 		tp.setAttribute('style', 'color: #757575; font-size: 14pt;');
-		tp.innerHTML = translatetype[i.type];
+		tp.innerHTML = translatetype[i.req=="i" ? "Acao" : (i.req=="r" ? i.type : i.year)];
 		header.appendChild(tp);
 
 		var title = document.createElement("p");
@@ -111,14 +111,14 @@ function fillInfo() {
 			p.setAttribute("class", "lead");
 			p.innerHTML = '<span style="color: #757575;">' + key + "</span>&nbsp;&nbsp;";
 			
-			if (isNaN(info.values[key])) p.innerHTML += info.values[key];
+			if ((i.req != "r" && i.req != "a") || isNaN(info.values[key])) p.innerHTML += info.values[key];
 			else p.innerHTML += 'R$' + Math.round(info.values[key]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",00";
 
 			header.appendChild(p);
 		}
 	});
 
-	if (i.req == "r") setSearchyear(i.year);
+	if (i.req == "r" || i.req == "i") setSearchyear(i.year);
 	else setSearchyear("2000");
 	
 	if (i.req == "r") {
@@ -397,7 +397,7 @@ function createItemTable(id) {
 
 function populateItemTables(ids) {
 	d3.json(documentURL() + "/d", function(data) {
-		var columns = ["Plano Orçamentário", "Modalidade de Aplicação", "Valor"];
+		var columns = ["Plano Orçamentário", "Modalidade de Aplicação", "Elemento de Despesa", "Fonte de Recursos", "Valor"];
 		
 		for (var i = 0; i<ids.length; i++) {
 			document.getElementById(ids[i] + "-itemslabel").innerHTML = Object.keys(data)[i];

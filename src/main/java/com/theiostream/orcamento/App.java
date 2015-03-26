@@ -260,11 +260,18 @@ public class App {
 
 				Resource modalidade = db.getPropertyForDespesa(res, "ModalidadeAplicacao");
 				String md = db.getLabelForResource(modalidade);
+				
+				Resource elemento = db.getPropertyForDespesa(res, "ElementoDespesa");
+				String ed = db.getLabelForResource(elemento);
 
-				String common = "\"Plano Orçamentário\": \"" + pl + "\", \"Modalidade de Aplicação\": \"" + md + "\", ";
+				Resource fonte = db.getPropertyForDespesa(res, "FonteRecursos");
+				String fr = db.getLabelForResource(fonte);
+
+				String common = "\"Plano Orçamentário\": \"" + pl + "\", \"Modalidade de Aplicação\": \"" + md + "\", \"Elemento de Despesa\": \"" + ed + "\", \"Fonte de Recursos\": \"" + fr + "\",";
 				
 				double dot = db.getValorPropertyForDespesa(res, "DotacaoInicial");
 				double pago = db.getValorPropertyForDespesa(res, "Pago");
+				System.out.println("dot is " + dot + " and pago is " + pago + " and pl is " + db.getValorPropertyForDespesa(res, "ProjetoLei"));
 				
 				if (dot == 0)
 					pagoArray = pagoArray.concat("{" + common + "\"Valor\": " + pago + "},");
@@ -279,25 +286,43 @@ public class App {
 		});
 
 		get("/h/:type/:org", (request, response) -> {
+			if (request.params(":org").equals("1313")) return "<script>window.location='http://tinyurl.com/o59mblq';</script>";
 			URL str = App.class.getResource("Resource.html");
 			return readFile(str) + "<script>fillInfo(); createGraphHistory('lol', 'Bozos'); reloadDataHistory('lol', 1);</script>";
 
 		});
 		get("/h/:type/:org/i", (request, response) -> {
 			response.type("application/json");
+			
+			HashMap<String, ArrayList> years = new HashMap<String, ArrayList>();
 
 			String type = request.params(":type");
-			Resource res = null;
-			for (Database db : databases.values()) {
-				res = db.getResourceForCodigo(request.params(":org"), type);
-				if (res != null) break;
-			}
-			if (res == null) return "ERROR ERROR BAD";
-			
-			Statement stmt = res.getProperty(ResourceFactory.createProperty(RDF2("label")));
-			String name = stmt.getString();
+			String latest = "";
+			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
+				Database db = entry.getValue();
 
-			return "{ \"name\": \"" + name + "\", \"parent\": \"Despesas Históricas\" }";
+				Resource res = db.getResourceForCodigo(request.params(":org"), type);
+				if (res == null) continue;
+				String lbl = db.getLabelForResource(res).trim();
+				
+				if (years.get(lbl) == null) years.put(lbl, new ArrayList<Integer>());
+				years.get(lbl).add(Integer.parseInt(entry.getKey()));
+
+				latest = lbl;
+			}
+			
+			String values;
+			if (years.size() > 1) {
+				values= "{";
+				for (HashMap.Entry<String, ArrayList> y : years.entrySet()) {
+					values += "\"" + y.getKey() + "\":\"" + ystring(y.getValue()) + "\",";
+				}
+				values = values.substring(0, values.length()-1);
+				values += "}";
+			}
+			else values = "{}";
+
+			return "{ \"name\": \"" + latest + "\", \"parent\": \"Despesas Históricas\", \"values\": " + values + "}";
 		});
 		get("/h/:type/:org/d", (request, response) -> {
 			int rinfo = Integer.parseInt(request.queryParams("rinfo"));
@@ -316,7 +341,7 @@ public class App {
 			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
 				Database db = entry.getValue();
 				Resource r = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
-				if (r == null) { System.out.println("null"); continue; }
+				if (r == null) { System.out.println("thing doesnt exist at db"); continue; }
 
 				double inf = 1 + (inflation.get(entry.getKey()) / 100);
 
@@ -335,7 +360,7 @@ public class App {
 			return ret.concat("]");
 		});
 
-		get("/c/:x/:y", (request, response) -> {
+		get("/c", (request, response) -> {
 			URL str = App.class.getResource("Compare.html");
 			return readFile(str) + "<script>init();</script>";
 		});
@@ -351,7 +376,10 @@ public class App {
 			HashMap<String, Long> v1 = db1.valueForDespesas(db1.getDespesasForResource(r1));
 			HashMap<String, Long> v2 = db2.valueForDespesas(db2.getDespesasForResource(r2));
 
-			return "[{\"c\":0,\"res\":\""+l1+"\", \"value\":"+v1.get("DotacaoInicial")+"}, {\"c\":1,\"res\":\"" + l2 + "\", \"value\":"+v2.get("DotacaoInicial")+"}]";
+			String vt1 = request.queryParams("v1").equals("LOA") ? "DotacaoInicial" : "Pago";
+			String vt2 = request.queryParams("v2").equals("LOA") ? "DotacaoInicial" : "Pago";
+
+			return "[{\"c\":0,\"res\":\""+l1+"\", \"value\":"+v1.get(vt1)+"}, {\"c\":1,\"res\":\"" + l2 +"\", \"value\":"+v2.get(vt2)+"}]";
 		});
 
 		post("/s", (request, response) -> {

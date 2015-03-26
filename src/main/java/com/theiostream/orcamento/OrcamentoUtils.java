@@ -11,6 +11,7 @@ import java.lang.StringBuilder;
 import java.net.URL;
 
 import java.lang.Thread;
+import java.util.ArrayList;
 
 public class OrcamentoUtils {
 	public static String RDF(String s) { return "http://www.w3.org/1999/02/22-rdf-syntax-ns#" + s; }
@@ -49,5 +50,16 @@ public class OrcamentoUtils {
 		}
 
 		return ret;
+	}
+	
+	public static String ystring(ArrayList<Integer> list) {
+		if (list.size() == 1) return list.get(0).toString();
+		
+		int max=0, min=3000;
+		for (int i=0; i<list.size(); i++) {
+			max = Math.max(max, list.get(i).intValue());
+			min = Math.min(min, list.get(i).intValue());
+		}
+		return min + "-" + max;
 	}
 }
