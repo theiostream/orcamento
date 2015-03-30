@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 public class Database {
 	protected Dataset dataset;
@@ -70,9 +71,8 @@ public class Database {
 		return stmt.getString();
 	}
 
+	// true if filter success
 	public boolean performFilter(Resource despesa, HashMap<String, String> filter) {
-		if (filter == null) return true;
-
 		Iterator it = filter.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry pair = (Map.Entry)it.next();
@@ -84,18 +84,40 @@ public class Database {
 
 		return true;
 	}
+	
+	// true is exclusion success
+	public boolean performExclusionFilter(Resource despesa, HashMap<String, ArrayList<String> > xfilter) {
+		Iterator it = xfilter.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry pair = (Map.Entry)it.next();
+
+			String resource = getCodigoForResource(getPropertyForDespesa(despesa, (String)pair.getKey()));
+			for (String s : ((ArrayList<String>)pair.getValue())) {
+				if (resource.equals(s)) return false;
+			}
+		}
+
+		return true;
+	}
 
 	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao) {
-		return getOResourcesForResource(rname, orgao, null);
+		return getOResourcesForResource(rname, orgao, null, null);
 	}
-	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao, HashMap<String, String> filter) {
+	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao, HashMap<String, String> filter, HashMap<String, ArrayList<String> > xfilter) {
 		HashMap map = new HashMap<Resource, OResource>();
 		
 		ResIterator despesas = getDespesasForResource(orgao);
 		while (despesas.hasNext()) {
 			Resource despesa = despesas.nextResource();
-			if (!performFilter(despesa, filter)) {
-				continue;
+			if (filter != null) {
+				if (!performFilter(despesa, filter)) {
+					continue;
+				}
+			}
+			else if (xfilter != null) {
+				if (!performExclusionFilter(despesa, xfilter)) {
+					continue;
+				}
 			}
 			
 			Resource r;

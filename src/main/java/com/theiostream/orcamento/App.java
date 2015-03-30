@@ -176,16 +176,20 @@ public class App {
 			String p = request.queryParams("p");
 			
 			HashMap<String, String> filter;
+			HashMap<String, ArrayList<String> > xfilter;
 			try {
 				String json = request.queryParams("f");
 				filter = json == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(json, "UTF-8"), HashMap.class);
+
+				String xjson = request.queryParams("xf");
+				xfilter = xjson == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(xjson, "UTF-8"), HashMap.class);
 			}
 			catch (Exception e) {
-				return "ERROR BAD BAD";
+				return "[Error] Filter JSON parsing.";
 			}
 
 			long s1 = System.currentTimeMillis();
-			Iterator<OResource> functions = db.getOResourcesForResource(rtype, orgao, filter);
+			Iterator<OResource> functions = db.getOResourcesForResource(rtype, orgao, filter, xfilter);
 			System.out.println("getORes took " + (System.currentTimeMillis() - s1));
 			
 			long s2 = System.currentTimeMillis();

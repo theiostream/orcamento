@@ -86,6 +86,7 @@ function urlinfo() {
 
 /* Info / Header {{{ */
 
+var slideout;
 function fillInfo() {
 	var i = urlinfo();
 	var header = document.getElementById("header");
@@ -129,13 +130,21 @@ function fillInfo() {
 		var hb = document.getElementById("headerbtn");
 		hb.innerHTML =
 			  '<div class="btn-group-vertical">'
-			+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></button>'
-			+ '	<a class="btn btn-default" href="' + curl + '" data-title="Comparar"><span class="glyphicon glyphicon-sort"></span></button>'
-			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></button>'
+			+ '	<a class="btn btn-default" onclick="if(slideout.isOpen()) { slideout.close(); } else { slideout.o=true; slideout.open(); }" data-title="Filtros"><b>F</b></a>'
+			+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></a>'
+			+ '	<a class="btn btn-default" href="' + curl + '" data-title="Comparar"><span class="glyphicon glyphicon-sort"></span></a>'
+			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></a>'
 			+ '</div>';
 	}
 	
 	addTypeahead($("#search"), true);
+
+	slideout = new Slideout({
+		panel: document.getElementById("main"),
+		menu: document.getElementById('slide'),
+		padding: 256,
+		tolerance: 70
+	});
 }
 
 function addHeader(tit) {
@@ -159,8 +168,8 @@ function preloadTreemap(uoDiv_) {
 		.value(function(d) { return d.size; });
 }
 function reloadTreemap(id, color, uoDiv_, uoDiv, data, uoTreemap) {
-	if (data == null) data = datacache[id];
-	else datacache[id] = data;
+	if (data == null) data = /*$.extend(true, {}, */datacache[id]/*)*/;
+	else datacache[id] = /*$.extend(true, {}, */data/*)*/;
 
 	uoDiv_.innerHTML = "";
 
@@ -200,8 +209,6 @@ function reloadTreemap(id, color, uoDiv_, uoDiv, data, uoTreemap) {
 /* Bubbles {{{ */
 
 function preloadBubbles(div) {
-	console.log("[pld] wid " + div.offsetWidth + " height is " + div.offsetHeight);
-
 	return d3.layout.pack()
 		.sort(null)
 		.size([div.offsetWidth, div.offsetHeight])
@@ -227,11 +234,10 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 		vis.attr('transform', "translate(" + t + ")" + " scale(" + s + ")");
 	}
 
-	if (data == null) data = datacache[id];
-	else datacache[id] = data;
+	if (data == null) data = /*$.extend(true, {}, */datacache[id]/*)*/;
+	else datacache[id] = /*$.extend(true, {}, */data/*)*/;
 
 	uoDiv_.innerHTML = "";
-	console.log("[ld] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
 
 	var key;
 	var s = document.getElementById(id + "-group").children;
@@ -241,10 +247,7 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 			break;
 		}
 	}
-	console.log("key is " + key);
 	
-	console.log("Variables w="+w+"; h="+h);
-
 	var vis = uoDiv.append("svg")
 		.attr("width", w)
 		.attr("height", h)
@@ -256,7 +259,7 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 	
 	var x = vis
 		.selectAll(".nd")
-		.data(bubble.value(function(d) { console.log(d); return d[key]; }).nodes(classes(data)).filter(function(d) { return !d.children; }))
+		.data(bubble.value(function(d) { return d[key]; }).nodes(classes(data)).filter(function(d) { return !d.children; }))
 		.enter().append("g")
 		.attr("class", "nd")
 		.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -296,6 +299,7 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 
 var graphs = { "sq": [preloadTreemap, reloadTreemap], "bu": [preloadBubbles, reloadBubbles] };
 var datacache = {};
+var filter = {};
 
 /* Create Graph {{{ */
 
@@ -387,6 +391,8 @@ function createGraph_(id, tit, type, sz) {
 		}
 
 	});
+	
+	createFilter(id, tit);
 }
 function createGraph(id, tit, type) { createGraph_(id, tit, type, "smallgraph"); }
 function createBigGraph(id, tit, type) { createGraph_(id, tit, type, "biggraph"); }
@@ -453,8 +459,10 @@ function populateItemTables(ids) {
 
 function reloadData(id, type) { reloadDataG(id, type, "sq"); }
 
-var nodes = [];
-function reloadDataG(id, type, g) {
+var reloaded = [];
+function reloadDataG(id, type, g, fi) {
+	if (!fi) reloaded.push({'id': id, 'type': type});
+
 	var uoDiv_ = document.getElementById(id + "-treemap");
 	var uoDiv = d3.select("#" + id + "-treemap");
 	
@@ -477,9 +485,12 @@ function reloadDataG(id, type, g) {
 	}
 	else {
 		url = documentURL() + "/" + type;
-		console.log("pre url is " + url);
 		if (type == "Subtitulo") url += "?p=" + programa;
 		if (getURLParameter("f")) url += (url.indexOf("?")>-1 ? "&" : "?") + "f=" + getURLParameter("f");
+		
+		if (!$.isEmptyObject(filter)) {
+			url += (url.indexOf("?")>-1 ? "&" : "?") + "xf=" + encodeURIComponent(JSON.stringify(filter));
+		}
 	}
 	console.log(url);
 	
@@ -501,6 +512,7 @@ function reloadDataG(id, type, g) {
 
 				wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
 			}*/
+
 			
 			window.location = wl;
 		}
@@ -509,7 +521,8 @@ function reloadDataG(id, type, g) {
 	d3.json(url, function(error, root) {
 		var i = urlinfo();
 		var uoNodes = reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
-		nodes.push(uoNodes);
+
+		if (!fi) reloadFilter(id, type, root);
 		
 		var columns = ["name", "size"];
 		uoThead.append('tr')
@@ -568,7 +581,6 @@ function reloadDataG(id, type, g) {
 				cells
 					.data(function(row) {
 						return columns.map(function(column) {
-							console.log(row);
 							return {column: column, value: row[column], cod: row.cod};
 						});
 					})
@@ -578,7 +590,6 @@ function reloadDataG(id, type, g) {
 					});
 			}
 		});
-		console.log("[3] wid " + uoDiv_.offsetWidth + " height is " + uoDiv_.offsetHeight);
 	});
 }
 
@@ -726,10 +737,9 @@ function reloadDataHistory(id, rinfo) {
 				
 				var btnkey = this.getAttribute("data-key");
 				var ageNames = d3.keys(data[0]).filter(function(key) {
-					if (btnkey == "noinf"){console.log("WOOT"); return key=="loa" || key=="pago";}
+					if (btnkey == "noinf"){ return key=="loa" || key=="pago"; }
 					return key=="infloa" || key=="infpago";
 				});
-				console.log(ageNames);
 				data.forEach(function(d) {
 					d.ages = ageNames.map(function(name) { return {name: name, value: +d[name]}; });
 				});
@@ -827,6 +837,53 @@ function reloadHistory_(id, el, data, ageNames) {
 		.attr("width", width)
 		.attr("y", height + 30)
 		.text("Nota: Correções inflacionárias (IPCA-E) de valores da são realizadas entre janeiro do ano referido e " + ipca + " (mais recente divulgação do índice).");
+}
+
+/* }}} */
+
+/* Filters {{{ */
+
+function createFilter(id, tit) {
+	var slide = $("#slidecontent");
+	slide.append('<h5 style="font-variant: small-caps; color: #757575; margin-left: 10px;">' + tit + '</p>');
+	slide.append('<ul class="list-group" id="' + id + '-filter"></ul>');
+	
+}
+
+function reloadFilter(id, type, data_) {
+	var data = classes(data_).children;
+	
+	var filter = $("#slide").find("#" + id + "-filter");
+	for (var i=0; i<data.length; i++) {
+		var item = data[i];
+		filter.append('<a class="list-group-item list-group-item-info rect" onclick="updateFilter(this, \'' + type + '\', \'' + item.cod + '\')">' + item.name + '</a>');
+	}
+}
+
+function updateFilter(a, type, cod) {
+	console.log("updateFilter() with " + a + " " + type + " and " + cod);
+	if (a.classList.contains("list-group-item-info")) {
+		a.classList.remove("list-group-item-info");
+		
+		if (filter[type] == null) filter[type] = [];
+		filter[type].push(cod);
+	}
+	else {
+		a.classList.add("list-group-item-info");
+		
+		var arr = filter[type];
+		arr.splice(arr.indexOf(cod), 1);
+		if (arr.length < 1) delete filter[type];
+	}
+}
+
+function applyFilter() {
+	console.log("APPLYING FILTER");
+	console.log(filter);
+	
+	for (var i=0; i<reloaded.length; i++) {
+		reloadDataG(reloaded[i].id, reloaded[i].type, 'sq', true);
+	}
 }
 
 /* }}} */

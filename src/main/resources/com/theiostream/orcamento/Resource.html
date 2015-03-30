@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="/css/sidebar.css">
 	<link rel="stylesheet" href="/css/tooltip.css">
 	<link rel="stylesheet" href="/css/typeahead.css">
+	<link rel="stylesheet" href="/css/slideout.css">
 	
 	<script src="/js/d3.js"></script>
 	<script src="/js/tablesort.js"></script>
@@ -15,6 +16,7 @@
 	<script src="/js/jquery.min.js"></script>
 	<script src="/js/typeahead.js"></script>
 	<script src="/js/bs-dropdown.js"></script>
+	<script src="/js/slideout.js"></script>
 	
 	<script src="/js/navsearch.js"></script>
 	<script src="/js/g.js"></script>
@@ -24,6 +26,19 @@
 
 <body>
 
+<nav id="slide" style="background-color: #f7f7f7;">
+	<div id="slidecontent">
+		<p class="lead" style="margin-left: 10px;">Filtros</p>
+	</div>
+
+	<button type="button" class="btn btn-primary" style="margin-left: 5%; margin-right: 5%; width: 90%;" onclick="applyFilter();">
+		Aplicar
+	</button>
+
+	<p style="font-size: 8pt; text-align: center; color: #757575;">Clique em "Aplicar" para recarregar os dados com os filtros selecionados. Estes filtros se aplicam somente a esta página.</p>
+</nav>
+
+<main id="main" onclick="console.log(slideout.o); if(slideout.isOpen()&&!slideout.o)slideout.close(); slideout.o=false;">
 <nav class="navbar navbar-default rect" role="navigation">
 	<div class="container-fluid">
 		<div class="navbar-header">
@@ -58,6 +73,7 @@
 	<div class="maintable">
 	</div>
 </div>
+</main>
 
 <div class="well rect">
 	<img src="/img/brasil.svg" style="float: right; height: 85px; margin-right: 2%; margin-top: -10px;"/>
