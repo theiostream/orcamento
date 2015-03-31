@@ -27,6 +27,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import java.util.ArrayList;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Iterator;
 import java.io.File;
 import java.nio.file.Path;
@@ -298,10 +299,9 @@ public class App {
 		get("/h/:type/:org/i", (request, response) -> {
 			response.type("application/json");
 			
-			HashMap<String, ArrayList> years = new HashMap<String, ArrayList>();
+			TreeMap<String, ArrayList> years = new TreeMap<String, ArrayList>();
 
 			String type = request.params(":type");
-			String latest = "";
 			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
 				Database db = entry.getValue();
 
@@ -311,8 +311,6 @@ public class App {
 				
 				if (years.get(lbl) == null) years.put(lbl, new ArrayList<Integer>());
 				years.get(lbl).add(Integer.parseInt(entry.getKey()));
-
-				latest = lbl;
 			}
 			
 			String values;
@@ -326,7 +324,7 @@ public class App {
 			}
 			else values = "{}";
 
-			return "{ \"name\": \"" + latest + "\", \"parent\": \"Despesas Históricas\", \"values\": " + values + "}";
+			return "{ \"name\": \"" + years.lastEntry().getKey() + "\", \"parent\": \"Despesas Históricas\", \"values\": " + values + "}";
 		});
 		get("/h/:type/:org/d", (request, response) -> {
 			int rinfo = Integer.parseInt(request.queryParams("rinfo"));

@@ -112,7 +112,7 @@ function fillInfo() {
 			p.setAttribute("class", "lead");
 			p.innerHTML = '<span style="color: #757575;">' + key + "</span>&nbsp;&nbsp;";
 			
-			if ((i.req != "r" && i.req != "a") || isNaN(info.values[key])) p.innerHTML += info.values[key];
+			if ((i.req != "r" && i.req != "a" && i.req != "i") || isNaN(info.values[key])) p.innerHTML += info.values[key];
 			else p.innerHTML += 'R$' + Math.round(info.values[key]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ",00";
 
 			header.appendChild(p);
@@ -130,7 +130,7 @@ function fillInfo() {
 		var hb = document.getElementById("headerbtn");
 		hb.innerHTML =
 			  '<div class="btn-group-vertical">'
-			+ '	<a class="btn btn-default" onclick="if(slideout.isOpen()) { slideout.close(); } else { slideout.o=true; slideout.open(); }" data-title="Filtros"><b>F</b></a>'
+			+ '	<a class="btn btn-default" onclick="if(slideout.isOpen()) { slideout.close(); } else { slideout.o=true; slideout.open(); }" data-title="Filtros"><span class="glyphicon glyphicon-filter"></span></a>'
 			+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></a>'
 			+ '	<a class="btn btn-default" href="' + curl + '" data-title="Comparar"><span class="glyphicon glyphicon-sort"></span></a>'
 			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></a>'
