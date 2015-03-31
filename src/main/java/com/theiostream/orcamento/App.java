@@ -32,6 +32,14 @@ import java.util.Iterator;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Comparator;
+
+class IntegerComparator implements Comparator<Integer>{
+	public int compare(Integer o1, Integer o2) {
+		return (o1<o2 ? -1 : (o1==o2 ? 0 : 1));
+	}
+}
 
 public class App {
 	public static void main(String[] args) {
@@ -312,6 +320,12 @@ public class App {
 				if (years.get(lbl) == null) years.put(lbl, new ArrayList<Integer>());
 				years.get(lbl).add(Integer.parseInt(entry.getKey()));
 			}
+			for (ArrayList v : years.values()) {
+				Collections.sort(v, new IntegerComparator());
+				System.out.println("Sorted " + v);
+			}
+
+			years = sortMap(years);
 			
 			String values;
 			if (years.size() > 1) {

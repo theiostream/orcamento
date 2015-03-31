@@ -10,6 +10,11 @@ import java.io.FileReader;
 import java.lang.StringBuilder;
 import java.net.URL;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 import java.lang.Thread;
 import java.util.ArrayList;
 
@@ -62,4 +67,25 @@ public class OrcamentoUtils {
 		}
 		return min + "-" + max;
 	}
+
+	public static TreeMap<String, ArrayList> sortMap(Map map) {
+		TreeMap sortedMap = new TreeMap<String, ArrayList<Integer> >(new ValueComparator(map));
+		sortedMap.putAll(map);
+		return sortedMap;
+	}
 }
+
+class ValueComparator implements Comparator<String> {
+	Map<String, ArrayList<Integer> > base;
+	public ValueComparator(Map<String, ArrayList<Integer> > base) {
+		this.base = base;
+	}
+
+	public int compare(String a, String b) {
+		System.out.println(base.get(a).get(0) + " x " + base.get(b).get(0));
+		if (base.get(a).get(0) >= base.get(b).get(0))
+			return 1;
+		return -1;
+	}
+}
+
