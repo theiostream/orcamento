@@ -114,7 +114,7 @@ public class Database {
 					continue;
 				}
 			}
-			else if (xfilter != null) {
+			if (xfilter != null) {
 				if (!performExclusionFilter(despesa, xfilter)) {
 					continue;
 				}

@@ -1,30 +1,67 @@
-<html>
+<!DOCTYPE html>
+
 <meta charset="utf-8">
 
-<head><title>Sobre</title></head>
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/d3.css">
+	<title>Orçamento</title>
+</head>
 
 <body>
-<h2>Sobre</h2>
 
-<p>Este site foi criado entre 2014 e 2015. Em temporada eleitoral, era comum ouvir dados sobre investimentos que deixaram de ser feitos tanto em debates quanto na mídia, sendo difícil confirmar a veracidade deles dados os meios existentes. Com o intuito de universalizar acesso e entendimento das contas públicas em nível do Orçamento Federal, foi indexada graficamente neste site a base de dados existente desde 2013 do Orçamento Federal em formato RDF.</p>
+<nav class="navbar navbar-default rect" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">Orçamento</a>
+		</div>
+		<div class="col-md-8"><div class="navbar-form navbar-left">
+			<form action="/cs" method="GET" class="form-inline">
+				<div class="form-group" style="display: inline;">
+					<input type="hidden" name="y" id="ddyear">
+					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
+					<div class="input-group" style="display: table;" id="search">
+						<div class="input-group-btn" style="width: 1%;">
+							<button type="" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
+							<ul class="dropdown-menu yearmenu">
+							</ul>
+						</div>
+						<input class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
+						<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
+					</div>
+				</div>
+			</form>
+		</div></div>
+	</div>
+</nav>
 
-<h2>Agradecimentos</h2>
+<div class="main" style="margin-left: 10%; margin-right: 10%; width: 80%;">
+	<div class="page-header">
+		<h2>Agradecimentos</h2>
+	</div>
+	
+	<h4>Sobre</h4>
+	<p>Este site foi criado entre 2014 e 2015. Em temporada eleitoral, era comum ouvir dados sobre investimentos que deixaram de ser feitos tanto em debates quanto na mídia (seja jornais ou ONGs dedicadas à análise de gastos públicos), sendo difícil confirmar a veracidade deles dados os meios existentes.</p>
+	<p>Até então, o meio estabelecido para a navegação pelo Orçamento constantemente citado como fonte era o <a href="http://www12.senado.gov.br/orcamento/loa">Siga Brasil</a>, mantido pelo Senado Federal. A navegação pelos dados, contudo, é difícil, lenta, e não mostra qualquer visualização gráfica. Houve uma tentativa por parte da organização não-governamental INESC para melhorar a visualização destes dados, denominada <a href="http://orcamento.inesc.org.br">Orçamento ao Seu Alcance</a> (que só descobri quanto já tinha feito bastante progresso neste site). Contudo, o nível de navegação proporcionado era muito superficial e não mostrava todos os dados a fundo.</p>
+	<p>Em 2013, inspirado na Lei de Acesso à Informação, a Secretaria do Orçamento Federal, do Ministério do Planejamento, criou um índice em formato RDF (excelente para processamento deste tipo de dados relacionais) das despesas de acordo com a base de dados SIOP, que possui um índice das despesas orçamentárias, cuja especificação encontra-se bem <a href="http://vocab.e.gov.br/2013/09/loa">documentada</a>. Entretanto, não havia até então qualquer interface que fizesse uso desses dados para mostrá-los.</p>
+	<p>Assim, foi desenvolvido este website para tentar democratizar o acesso aos dados de despesas públicas, mostrando-os de maneira acessível e fácil de navegar, preservando contudo a profundidade dos dados. Fiel a este espírito, todo o conteúdo é colocado sob domínio público e o código é <a href="http://github.com/theiostream/orcamento">software livre</a>.</p>
 
-<p>Agradecimentos à <b>Secretaria do Orçamento Federal</b> por organizar o <a href="http://vocab.e.gov.br/2013/09/loa">Modelo Ontológico da Classificação de Despesas</a>, a base de dados digital de despesas que permite a existência desse site, e pelo completo <a href="http://www.orcamentofederal.gov.br/informacoes-orcamentarias/manual-tecnico/MTO_2014.pdf">Manual Técnico do Orçamento</a>, referência para a organização do site.</p> 
+	<h4>Verificação de Valores</h4>
+	<p>Este site está em estágio <b>beta</b>. Por favor confira dados da <a href="http://www12.senado.gov.br/orcamento/documentos/loa">Lei Orçamentária Anual</a> para verificar sua validade.</p>
+	<p>Este website é construído sobre a base de dados SIOP do Ministério do Planejamento, que é <b>bem diferente</b> da base de dados SIAFI do Tesouro Nacional, utilizada pelo Portal da Transparência. Deve ser esperado que valores para o mesmo recurso mostrado neste site seja diverso dos valores do Portal. A SIOP, por sua vez, é uma das fontes que alimentam o Siga Brasil, portanto, em boa parte dos casos, os valores devem ser os mesmos.</p>
 
-<p>Agradecimentos à <b>Presidenta Dilma Rousseff</b> por sancionar a <i>Lei de Acesso à Informação</i> (do deputado Reginaldo Lopes) e por baixar o <i>Decreto s/n 15/9/2011</i>, que levaram à tendência do poder público de abrir seus dados orçamentários.</p>
+	<h4>Agradecimentos</h4>
+	<p>Agradecimentos à <b>Secretaria do Orçamento Federal</b>, do Ministério do Planejamento, por organizar o <a href="http://vocab.e.gov.br/2013/09/loa">Modelo Ontológico da Classificação de Despesas</a>, a base de dados digital de despesas que permite a existência desse site, e pelo completo <a href="http://www.orcamentofederal.gov.br/informacoes-orcamentarias/manual-tecnico/MTO_2014.pdf">Manual Técnico do Orçamento</a>, referência para a organização do site.</p> 
+	<p>Agradecimentos à <b>Presidenta Dilma Rousseff</b> por sancionar a <i>Lei de Acesso à Informação</i> e por baixar o <i>Decreto s/n 15/9/2011</i>, que levaram à tendência do poder público de abrir seus dados orçamentários.</p>
+	<p>Agradecimentos à <b>Apache Foundation</b> pelas bibliotecas <i>Apache Jena</i>, a única biblioteca decente para arquivos RDF, e <i>Apache Lucene</i>, capaz de buscas de texto bem rápidas.</p>
+	<p>Agradecimentos a <b>Cassiano Ferreira</b>, <b>Nikolas Wagner Bozzolo</b>, <b>Guilherme Stark</b> e <b>Marcio Ferreira Rocha</b> por sugestões e comentarios.</p>
+	<p>Agradecimentos a <b>Quem for o Host desse Website no Futuro</b> por impedir que eu tenha que gastar uma boa quantia mensal mantendo esse site.</p>
 
-<p>Agradecimentos à <b>Apache Foundation</b> pela biblioteca <i>Apache Jena</i>, a única biblioteca decente para arquivos RDF.</p>
+	<h4>Desenvolvedor</h4>
+	<p>Sou <b>Daniel Ferreira</b>, aluno do 2º Ano do Ensino Médio no Colégio Visconde de Porto Seguro de Valinhos. Programo desde 2011 principalmente para iOS, e este é meu primeiro site, realizado sem experiência alguma em Java, Web Development ou bases de dados grandes. Dito isso, por favor contribua ao site deixando seu código menos horroroso.</p>
 
-<p>Agradecimentos a <b>Cassiano Ferreira</b>, <b>Nikolas Wagner Bozzolo</b> e <b>Guilherme Stark</b> por sugestões e comentarios.</p>
+	<h4>Fale Conosco</h4>
+	<p>Alguma sugestão para dados que devem ser mostrados? Alguma outra maneira de mostrá-los? Alguma pergunta quanto à interpretação dos dados? Por favor mande um e-mail para bnmvco@gmail.com.</p>
+</div>
 
-<p>Agradecimentos a <b>Quem for o Host desse Website no Futuro</b> por impedir que eu tenha que gastar uma boa quantia mensal mantendo esse site.</p>
-
-<h2>Desenvolvedor</h2>
-
-<p>Sou <b>Daniel Ferreira</b>, aluno do 2º Ano do Ensino Médio no Colégio Visconde de Porto Seguro de Valinhos. Programo desde 2011 principalmente para iOS, e este é meu primeiro site, realizado sem experiência alguma em Java, Web Development ou bases de dados grandes.</p>
-
-<p></p>
 </body>
-
-</html>
