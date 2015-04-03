@@ -253,7 +253,8 @@ public class App {
 			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
 			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
 			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
-
+			System.out.println("res: " + res);
+			
 			String name = db.getLabelForResource(res);
 			String parent = db.getLabelForResource(action);
 			String pname = db.getLabelForResource(programa);
