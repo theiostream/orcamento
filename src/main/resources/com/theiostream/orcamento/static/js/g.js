@@ -18,8 +18,18 @@ var translatetype = {
 	"Programa": "Programa",
 	"Acao": "Ação"
 };
+var translation = {
+	"loa": "LOA",
+	"pago": "Pago",
+	"infloa": "LOA",
+	"infpago": "PagAumento (Pago)"
+};
 
 var programa;
+var slideout;
+var filter = {};
+var hierarchy = false;
+var info;
 
 /* Utilities {{{ */
 
@@ -87,12 +97,17 @@ function urlinfo() {
 
 /* Info / Header {{{ */
 
-var slideout;
 function fillInfo() {
 	var i = urlinfo();
 	var header = document.getElementById("header");
+	
+	if (getURLParameter("h") == "1") {
+		hierarchy = true;
+	}
 
-	getJSON(documentURL() + "/i", function(info){
+	getJSON(documentURL() + "/i" + (hierarchy ? "?f="+getURLParameter("f") : ""), function(info_){
+		info = info_;
+
 		var tp = document.createElement("p");
 		tp.setAttribute('style', 'color: #757575; font-size: 14pt;');
 		tp.innerHTML = translatetype[i.req=="i" ? "Acao" : (i.req=="r" ? i.type : i.year)];
@@ -118,25 +133,38 @@ function fillInfo() {
 
 			header.appendChild(p);
 		}
+		
+		if (i.req == "r") {
+			if (hierarchy && getURLParameter("f")) {
+				var bc = $("#bc");
+				bc.css('display', 'table');
+				bc.css('width', '100%');
+
+				var h = JSON.parse(decodeURIComponent(getURLParameter("f")));
+
+				for (var x=0; x<h.length; x++) {
+					bc.append('<li><a href="/r/' + i.year + '/' + h[x].type + '/' + h[x].cod + '">' + h[x].name + '</a></li>');
+				}
+				bc.append('<li class="active">' + info.name + '</li>');
+			}
+
+			var hurl = "/h/" + i.type + "/" + i.cod;
+			var curl = "/c?y=" + i.year + "&c=" + i.cod + "&t=" + i.type + "&n=" + encodeURIComponent(info.name ? info.name : "?");
+			var gurl = "/g/" + i.year + "/" + i.type + "/" + i.cod;
+
+			var hb = document.getElementById("headerbtn");
+			hb.innerHTML =
+				  '<div class="btn-group-vertical">'
+				+ '	<a class="btn btn-default" onclick="if(slideout.isOpen()) { slideout.close(); } else { slideout.o=true; slideout.open(); }" data-title="Filtros"><span class="glyphicon glyphicon-filter"></span></a>'
+				+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></a>'
+				+ '	<a class="btn btn-default" href="' + curl + '" data-title="Comparar"><span class="glyphicon glyphicon-sort"></span></a>'
+				+ '	<a class="btn ' + (hierarchy ? 'btn-success' : 'btn-danger') + '" onclick="toggleHierarchy(this);" data-title="Seguir Hierarquia ' + (hierarchy ? '✓' : '✖') + '"><span class="glyphicon glyphicon-sort-by-attributes"></span></a>'
+				+ '</div>';
+		}
 	});
 
 	if (i.req == "r" || i.req == "i" || i.req == "a") setSearchyear(i.year);
 	else setSearchyear("2000");
-	
-	if (i.req == "r") {
-		var hurl = "/h/" + i.type + "/" + i.cod;
-		var curl = "/c?y=" + i.year + "&c=" + i.cod + "&t=" + i.type;
-		var gurl = "/g/" + i.year + "/" + i.type + "/" + i.cod;
-
-		var hb = document.getElementById("headerbtn");
-		hb.innerHTML =
-			  '<div class="btn-group-vertical">'
-			+ '	<a class="btn btn-default" onclick="if(slideout.isOpen()) { slideout.close(); } else { slideout.o=true; slideout.open(); }" data-title="Filtros"><span class="glyphicon glyphicon-filter"></span></a>'
-			+ '	<a class="btn btn-default" href="' + hurl + '" data-title="Despesas Históricas"><span class="glyphicon glyphicon-stats"></span></a>'
-			+ '	<a class="btn btn-default" href="' + curl + '" data-title="Comparar"><span class="glyphicon glyphicon-sort"></span></a>'
-			+ '	<a class="btn btn-default" href="#" data-title="Portal da Transparência"><span class="glyphicon glyphicon-link"></span></a>'
-			+ '</div>';
-	}
 	
 	addTypeahead($("#search"), true);
 
@@ -300,11 +328,17 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 
 var graphs = { "sq": [preloadTreemap, reloadTreemap], "bu": [preloadBubbles, reloadBubbles] };
 var datacache = {};
-var filter = {};
 
 /* Create Graph {{{ */
 
 function createGraph_(id, tit, type, sz) {
+	var h = JSON.parse(decodeURIComponent(getURLParameter("f")));
+	if (h != null) {
+		for (var i=0; i<h.length; i++) {
+			if (h[i].type == type) return;
+		}
+	}
+
 	var row = document.createElement("div");
 	row.setAttribute("class", "row");
 	
@@ -369,19 +403,13 @@ function createGraph_(id, tit, type, sz) {
 				else {
 					var wl = "/r/" + i.year + "/" + type + "/" + d.cod;
 
-					/*if (document.getElementById("hierarchy").checked) {
-						//this is horrible i know i just want this to work this whole thing needs a cleanup in fact
-						var obj = {};
-						obj[documentURL().split('/')[4]] = documentURL().split('/')[5];
-						if (getURLParameter("f")) {
-							var j = JSON.parse(decodeURIComponent(getURLParameter("f")));
-							for (var a in j) { obj[a] = j[a]; }
-						}
-						console.log(obj);
+					if (hierarchy) {
+						var obj = [];
+						if (getURLParameter("f")) obj = JSON.parse(decodeURIComponent(getURLParameter("f")));
+						obj.push({name: 'x', type: i.type, cod: i.cod});
 
-						wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
-					}*/
-					
+						wl += "?f=" + encodeURIComponent(JSON.stringify(obj)) + "&h=1";
+					}
 					window.location = wl;
 				}
 			}
@@ -462,6 +490,13 @@ function reloadData(id, type) { reloadDataG(id, type, "sq"); }
 
 var reloaded = [];
 function reloadDataG(id, type, g, fi) {
+	var h = JSON.parse(decodeURIComponent(getURLParameter("f")));
+	if (h != null) {
+		for (var i=0; i<h.length; i++) {
+			if (h[i].type == type) return;
+		}
+	}
+
 	if (!fi) reloaded.push({'id': id, 'type': type});
 
 	var uoDiv_ = document.getElementById(id + "-treemap");
@@ -493,34 +528,26 @@ function reloadDataG(id, type, g, fi) {
 			url += (url.indexOf("?")>-1 ? "&" : "?") + "xf=" + encodeURIComponent(JSON.stringify(filter));
 		}
 	}
-	console.log(url);
 	
+	var i = urlinfo();
 	var click = function(d) {
 		var i = urlinfo();
 		if (type == "Subtitulo") window.location = "/i/" + i.year + "/" + programa + "/" + i.cod + "/" + d.cod;
 		else {
 			var wl = "/r/" + i.year + "/" + type + "/" + d.cod;
 
-			/*if (document.getElementById("hierarchy").checked) {
-				//this is horrible i know i just want this to work this whole thing needs a cleanup in fact
-				var obj = {};
-				obj[documentURL().split('/')[4]] = documentURL().split('/')[5];
-				if (getURLParameter("f")) {
-					var j = JSON.parse(decodeURIComponent(getURLParameter("f")));
-					for (var a in j) { obj[a] = j[a]; }
-				}
-				console.log(obj);
+			if (hierarchy) {
+				var obj = [];
+				if (getURLParameter("f")) obj = JSON.parse(decodeURIComponent(getURLParameter("f")));
+				obj.push({name: info.name, type: i.type, cod: i.cod});
 
-				wl += "?f=" + encodeURIComponent(JSON.stringify(obj));
-			}*/
-
-			
+				wl += "?f=" + encodeURIComponent(JSON.stringify(obj)) + "&h=1";
+			}
 			window.location = wl;
 		}
 	}
 
 	d3.json(url, function(error, root) {
-		var i = urlinfo();
 		var uoNodes = reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
 
 		if (!fi) reloadFilter(id, type, root);
@@ -651,7 +678,7 @@ function addProgramaSelector() {
 		pselector.setAttribute("id", "pselector");
 		pselector.setAttribute("class", "nav navbar-nav");
 		
-		getJSON(documentURL() + "/UnidadeOrcamentaria", function(info){
+		getJSON(documentURL() + "/UnidadeOrcamentaria" + (hierarchy ? "?f="+getURLParameter("f") : ""), function(info){
 			var p = info.children;
 			for (var i=0; i<p.length; i++) {
 				var n = p[i].name;
@@ -682,14 +709,6 @@ function addProgramaSelector() {
 /* }}} */
 
 /* History {{{ */
-
-var translation = {
-	"loa": "LOA",
-	"pago": "Pago",
-	"aumloa": "Aumento (LOA)",
-	"aumpago": "Aumento (Pago)",
-	"inf": "Inflação (IPCA)"
-};
 
 function createGraphHistory(id, tit) {
 	var row = document.createElement("div");
@@ -862,7 +881,6 @@ function reloadFilter(id, type, data_) {
 }
 
 function updateFilter(a, type, cod) {
-	console.log("updateFilter() with " + a + " " + type + " and " + cod);
 	if (a.classList.contains("list-group-item-info")) {
 		a.classList.remove("list-group-item-info");
 		
@@ -879,11 +897,27 @@ function updateFilter(a, type, cod) {
 }
 
 function applyFilter() {
-	console.log("APPLYING FILTER");
-	console.log(filter);
-	
 	for (var i=0; i<reloaded.length; i++) {
 		reloadDataG(reloaded[i].id, reloaded[i].type, 'sq', true);
+	}
+}
+
+/* }}} */
+
+/* Hierarchy {{{ */
+
+function toggleHierarchy(a) {
+	if (a.classList.contains("btn-danger")) {
+		a.classList.remove("btn-danger");
+		a.classList.add("btn-success");
+		a.setAttribute("data-title", "Seguir Hierarquia ✓");
+		hierarchy = true;
+	}
+	else {
+		a.classList.remove("btn-success");
+		a.classList.add("btn-danger");
+		a.setAttribute("data-title", "Seguir Hierarquia ✖");
+		hierarchy = false;
 	}
 }
 

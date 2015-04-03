@@ -35,20 +35,18 @@ function init() {
 	setSearchyear("2000");
 	addTypeahead($("#search"), true);
 	
-	if (getURLParameter("y") && getURLParameter("c") && getURLParameter("t")) {
+	if (getURLParameter("y") && getURLParameter("c") && getURLParameter("t") && getURLParameter("n")) {
 		i1 = {
 			year: getURLParameter("y"),
 			type: getURLParameter("t"),
-			codigo: getURLParameter("c")
+			codigo: getURLParameter("c"),
+			value: decodeURIParameter(getURLParameter("n"))
 		};
-
-		$.get("/r/" + i1.year + "/" + i1.type + "/" + i1.codigo + "/i", function(data) {
-			$('#item1').find('.yearbtn').html(i1.year + ' <span class="caret"></span>');
-			$("#item1").find('.yearmenu').attr('data-sel', i1.year);
-			$('#ip1').val(data.name);
-			document.getElementById('item1').classList.add('has-success');
-			i1.value = data.name;
-		});
+		
+		$('#item1').find('.yearbtn').html(i1.year + ' <span class="caret"></span>');
+		$("#item1").find('.yearmenu').attr('data-sel', i1.year);
+		$('#ip1').val(i1.value);
+		document.getElementById('item1').classList.add('has-success');
 	}
 
 	var pfn = function(e, data) {

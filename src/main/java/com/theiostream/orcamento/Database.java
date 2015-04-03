@@ -72,13 +72,13 @@ public class Database {
 	}
 
 	// true if filter success
-	public boolean performFilter(Resource despesa, HashMap<String, String> filter) {
-		Iterator it = filter.entrySet().iterator();
+	public boolean performFilter(Resource despesa, ArrayList<HashMap<String, String> > filter) {
+		Iterator it = filter.iterator();
 		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry)it.next();
+			HashMap<String, String> map = (HashMap<String, String>)it.next();
 			
-			String prop = getCodigoForResource(getPropertyForDespesa(despesa, (String)pair.getKey()));
-			String res = (String)pair.getValue();
+			String prop = getCodigoForResource(getPropertyForDespesa(despesa, map.get("type")));
+			String res = (String)map.get("cod");
 			if (!prop.equals(res)) return false;
 		}
 
@@ -103,7 +103,7 @@ public class Database {
 	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao) {
 		return getOResourcesForResource(rname, orgao, null, null);
 	}
-	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao, HashMap<String, String> filter, HashMap<String, ArrayList<String> > xfilter) {
+	public Iterator<OResource> getOResourcesForResource(String rname, Resource orgao, ArrayList<HashMap<String, String> > filter, HashMap<String, ArrayList<String> > xfilter) {
 		HashMap map = new HashMap<Resource, OResource>();
 		
 		ResIterator despesas = getDespesasForResource(orgao);
@@ -241,14 +241,20 @@ public class Database {
 		Statement stmt = model.getProperty(despesa, property.equals("DotacaoInicial") ? propertyDotacaoInicial : propertyPago);
 		return stmt.getLong();
 	}
-
+	
 	public HashMap<String, Long> valueForDespesas(ResIterator despesas) {
+		return valueForDespesas(despesas, null);
+	}
+
+	public HashMap<String, Long> valueForDespesas(ResIterator despesas, ArrayList<HashMap<String, String> > filter) {
 		HashMap<String, Long> hm = new HashMap<String, Long>();
 		
 		long dotInicial = 0;
 		long pago = 0;
 		while (despesas.hasNext()) {
 			Resource r = despesas.nextResource();
+			if (filter != null && !performFilter(r, filter)) continue;
+
 			dotInicial += getValorPropertyForDespesa(r, "DotacaoInicial");
 			pago += getValorPropertyForDespesa(r, "Pago");
 		}
@@ -257,8 +263,5 @@ public class Database {
 		hm.put("Pago", pago);
 
 		return hm;
-	}
-
-	public void executeTest() {
 	}
 }

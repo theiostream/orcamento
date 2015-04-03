@@ -154,7 +154,18 @@ public class App {
 				org = "\"Órgão\":\""+parent+"\",";
 			}
 
-			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
+			ResIterator despesas = db.getDespesasForResource(res);
+			
+			ArrayList<HashMap<String, String> > filter;
+			try {
+				String json = request.queryParams("f");
+				filter = json == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(json, "UTF-8"), ArrayList.class);
+			}
+			catch (Exception e) {
+				filter = null;
+			}
+
+			HashMap<String, Long> values = db.valueForDespesas(despesas, filter);
 			String r = "\"name\": \"" + name + "\", \"values\": { " + (parent!=null?org:"") + "\"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}";
 			if (type.equals("Acao")) {
 				Iterator<OResource> programas = db.getOResourcesForResource("UnidadeOrcamentaria", res);
@@ -184,11 +195,12 @@ public class App {
 			boolean sub = rtype.equals("Subtitulo");
 			String p = request.queryParams("p");
 			
-			HashMap<String, String> filter;
+			ArrayList<HashMap<String, String> > filter;
 			HashMap<String, ArrayList<String> > xfilter;
 			try {
 				String json = request.queryParams("f");
-				filter = json == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(json, "UTF-8"), HashMap.class);
+				filter = json == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(json, "UTF-8"), ArrayList.class);
+				System.out.println("FILTER: " + filter);
 
 				String xjson = request.queryParams("xf");
 				xfilter = xjson == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(xjson, "UTF-8"), HashMap.class);
