@@ -59,9 +59,4 @@ function addTypeahead(el, isSearch, pfn, tfn) {
 
 		if (tfn != null) tfn(dropdown, $(this).text());
 	});
-
-	// Hack: Get <Enter> to go submit form instead of going back to the year selector.
-	el.find("input[type='text']").keypress(function(e) {
-		if (isSearch && (e.which == 10 || e.which == 13)) this.form.submit();
-	});	
 }

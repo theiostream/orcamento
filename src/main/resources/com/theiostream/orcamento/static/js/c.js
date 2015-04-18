@@ -40,7 +40,7 @@ function init() {
 			year: getURLParameter("y"),
 			type: getURLParameter("t"),
 			codigo: getURLParameter("c"),
-			value: decodeURIParameter(getURLParameter("n"))
+			value: decodeURIComponent(getURLParameter("n"))
 		};
 		
 		$('#item1').find('.yearbtn').html(i1.year + ' <span class="caret"></span>');

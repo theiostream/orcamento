@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/d3.css">
+	
+	<script src="/js/jquery.min.js"></script>	
+	<script src="/js/bs-dropdown.js"></script>	
+	
+	<title>Orçamento</title>
+
+	<style>
+		.sct {
+			margin: 10px;
+		}
+		.pn {
+			padding: 5px;
+		}
+	</style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-default rect" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">Orçamento</a>
+		</div>
+	</div>
+</nav>
+
+<div class="main" style="text-align: center;">
+	<div class="page-header" style="margin-left: 10%; margin-right: 10%; width: 80%; display: table;">
+		<h2>Orçamento Federal</h2>
+	</div>
+
+	<p class="lead">Bem-vindo! Para começar a navegar pelas despesas do Governo, selecione uma das opções abaixo.</p>
+	
+	<div style="display: table; width: 100%; border-spacing: 10px;">
+		<div style="display: table-cell; width: 33%;" class="panel panel-default pn">
+			<h4>Ano</h4>
+			<p>Navega por dados orçamentários de um ano.</p>
+
+			<ul class="list-group">
+				<li class="list-group-item"><a href="/a/2000">2000</a></li>
+				<li class="list-group-item"><a href="/a/2001">2001</a></li>
+				<li class="list-group-item"><a href="/a/2002">2002</a></li>
+				<li class="list-group-item"><a href="/a/2003">2003</a></li>
+				<li class="list-group-item"><a href="/a/2004">2004</a></li>
+				<li class="list-group-item"><a href="/a/2005">2005</a></li>
+				<li class="list-group-item"><a href="/a/2010">2010</a></li>
+				<li class="list-group-item"><a href="/a/2013">2013</a></li>
+				<li class="list-group-item"><a href="/a/2014">2014</a></li>
+			</ul>
+		</div>
+		
+		<div style="display: table-cell; width: 33%;" class="panel panel-default pn">
+			<h4>Pesquisa</h4>
+			<p>Pesquisa algo no Orçamento Federal.</p>
+			
+			<form action="/cs" method="GET">
+				<input type="hidden" name="y" id="ddyear" value="2014">
+				<label class="sr-only" for="search">Pesquisa no Orçamento</label>
+				<div class="input-group">
+					<div class="input-group-btn" style="width: 1%;">
+						<button type="button" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">2014 <span class="caret"></span></button>
+						<ul class="dropdown-menu yearmenu">
+						</ul>
+					</div>
+					<input class="form-control" type="text" name="s" placeholder="Pesquisa...">
+					<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
+				</div>
+			</form>
+		</div>
+		
+		<div style="display: table-cell; width: 33%;" class="panel panel-default pn">
+			<h4>Comparação</h4>
+			<p>Compara elementos orçamentários.</p>
+
+			<a class="btn btn-primary" href="/c">Ir</a>
+		</div>
+	</div>
+
+	<p>&copy; 2014-15 Daniel Ferreira. <a href="/agradecimentos.html">Sobre</a></p>
+</div>
+
+<script>
+	for (var i=2000; i<2015; i++) {
+		$('.yearmenu').append('<li><a>' + i + '</a></li>');
+		$('.dropdown-menu li a').on('click', function(){
+			var dropdown = $(this).parent().parent();
+			dropdown.siblings('button').html($(this).text() + ' <span class="caret"></span>');
+			dropdown.attr("data-sel", $(this).text());
+			$('#ddyear').attr('value', $(this).text());
+		});
+	}
+</script>
+
+</body>

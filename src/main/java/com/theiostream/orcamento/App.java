@@ -109,7 +109,6 @@ public class App {
 			while (all.hasNext()) {
 				Resource r = all.nextResource();
 				String name = db.getLabelForResource(r);
-				System.out.println("Got name.");
 				
 				//long s1 = System.currentTimeMillis();
 				ResIterator ds = db.getDespesasForResource(r);
@@ -142,10 +141,8 @@ public class App {
 
 			String type = request.params(":type");
 			Resource res = db.getResourceForCodigo(request.params(":org"), type);
-			System.out.println("RES: " + res);
 			
 			String name = db.getLabelForResource(res);
-			System.out.println("LABEL: " + name);
 
 			String parent = null, org = null;
 			if (type.equals("UnidadeOrcamentaria")) {
@@ -179,10 +176,11 @@ public class App {
 				}
 			}
 
-			System.out.println("{" + r + "}");
 			return "{" + r + "}";
 		});
 		get("/r/:year/:type/:org/:par", (request, response) -> {
+			System.out.println("[Orçamento] Performing /r: " + request.params(":type") + ":" + request.params(":par"));
+
 			response.type("application/json");
 			Database db = databases.get(request.params(":year"));
 
@@ -200,7 +198,6 @@ public class App {
 			try {
 				String json = request.queryParams("f");
 				filter = json == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(json, "UTF-8"), ArrayList.class);
-				System.out.println("FILTER: " + filter);
 
 				String xjson = request.queryParams("xf");
 				xfilter = xjson == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(xjson, "UTF-8"), HashMap.class);
@@ -253,7 +250,6 @@ public class App {
 			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
 			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
 			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
-			System.out.println("res: " + res);
 			
 			String name = db.getLabelForResource(res);
 			String parent = db.getLabelForResource(action);
@@ -278,9 +274,6 @@ public class App {
 			while (despesas.hasNext()) {
 				Resource res = despesas.nextResource();
 
-				System.out.println(res);
-				System.out.println(db.getPropertyForDespesa(res, "ElementoDespesa"));
-
 				Resource plano = db.getPropertyForDespesa(res, "PlanoOrcamentario");
 				String pl = db.getLabelForResource(plano);
 
@@ -297,7 +290,6 @@ public class App {
 				
 				double dot = db.getValorPropertyForDespesa(res, "DotacaoInicial");
 				double pago = db.getValorPropertyForDespesa(res, "Pago");
-				System.out.println("dot is " + dot + " and pago is " + pago + " and pl is " + db.getValorPropertyForDespesa(res, "ProjetoLei"));
 				
 				if (dot == 0)
 					pagoArray = pagoArray.concat("{" + common + "\"Valor\": " + pago + "},");
@@ -335,7 +327,6 @@ public class App {
 			}
 			for (ArrayList v : years.values()) {
 				Collections.sort(v, new IntegerComparator());
-				System.out.println("Sorted " + v);
 			}
 
 			years = sortMap(years);
@@ -370,7 +361,7 @@ public class App {
 			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
 				Database db = entry.getValue();
 				Resource r = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
-				if (r == null) { System.out.println("thing doesnt exist at db"); continue; }
+				if (r == null) { continue; }
 
 				double inf = 1 + (inflation.get(entry.getKey()) / 100);
 

@@ -1,4 +1,3 @@
-// Database.java
 // Apache Jena <--> Orçamento bridge
 
 package com.theiostream.orcamento;
@@ -27,6 +26,8 @@ public class Database {
 	protected Property label;
 
 	public Database(String year) {
+		//TDBFactory.performTest();
+
 		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
 		//dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/" + year);
 		dataset = TDBFactory.createDataset(year);

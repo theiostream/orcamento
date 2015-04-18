@@ -1,1 +1,1 @@
-mvn package && mvn exec:java -Dexec.mainClass="com.theiostream.orcamento.App"
+mvn package && mvn exec:java -Dexec.mainClass="com.theiostream.orcamento.App" -Dexec.classpathScope=compile
