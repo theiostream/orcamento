@@ -364,7 +364,6 @@ public class App {
 				if (r == null) { continue; }
 
 				double inf = 1 + (inflation.get(entry.getKey()) / 100);
-
 				HashMap<String, Long> value = db.valueForDespesas(db.getDespesasForResource(r));
 				
 				switch (rinfo) {

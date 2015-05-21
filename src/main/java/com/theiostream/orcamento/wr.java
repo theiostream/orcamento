@@ -1,5 +1,8 @@
 /* wr.java
-   Remove stupid ItemDespesas from Orçamento TDB shortening exec time by ~25% */
+   Remove stupid ItemDespesas from Orçamento TDB shortening exec time by ~80%
+   
+   Some bug causes this ~R$600 difference between the start and the result.
+   */
 
 package com.theiostream.orcamento;
 

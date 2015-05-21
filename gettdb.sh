@@ -35,7 +35,7 @@ function getrdf() {
 	mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.vt" -Dexec.arguments="${DLPATH}/${1}" > ${VTPATH}/${1}_.txt
 	
 	echo "******* Patching TDB..."
-	MAVEN_OPTS="-Xms1024m -Xmx2048m" mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.wr" -Dexec.arguments="${DLPATH}/${1}"
+	MAVEN_OPTS="-Xms1024m -Xmx3072m" mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.wr" -Dexec.arguments="${DLPATH}/${1}"
 	
 	echo "******* Recording total expenses in TDB..."
 	mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.vt" -Dexec.arguments="${DLPATH}/${1}" > ${VTPATH}/${1}.txt
