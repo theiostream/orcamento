@@ -13,8 +13,9 @@ YEAR=2014
 # loaderpath: path to tdbloader2
 LOADERPATH=~/Downloads/apache-jena-2.12.1/bin/tdbloader2
 
-# dlpath: Download path for rdf
+# Download paths for TDB and VT.txt
 DLPATH="./tdbtest/"
+VTPATH="./r/vt/"
 
 function getrdf() {
 	echo "******* Generating database for $1"
@@ -30,8 +31,14 @@ function getrdf() {
 	~/Downloads/apache-jena-2.12.1/bin/tdbloader2 --loc ${DLPATH}/${1} ${DLPATH}/loa${1}.nt
 	rm ${DLPATH}/loa${1}.nt
 
-	echo "******* Patching TDB (will take a nice while)..."
-	mvn exec:java -Dexec.mainClass="com.theiostream.orcamento.wr" -Dexec.arguments="${DLPATH}/${1}"
+	echo "******* [Debug] Recording TDB total value..."
+	mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.vt" -Dexec.arguments="${DLPATH}/${1}" > ${VTPATH}/${1}_.txt
+	
+	echo "******* Patching TDB..."
+	MAVEN_OPTS="-Xms1024m -Xmx2048m" mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.wr" -Dexec.arguments="${DLPATH}/${1}"
+	
+	echo "******* Recording total expenses in TDB..."
+	mvn exec:java -q -Dexec.mainClass="com.theiostream.orcamento.vt" -Dexec.arguments="${DLPATH}/${1}" > ${VTPATH}/${1}.txt
 }
 
 getall() {

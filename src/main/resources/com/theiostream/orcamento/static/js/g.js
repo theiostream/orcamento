@@ -108,10 +108,12 @@ function fillInfo() {
 	getJSON(documentURL() + "/i" + (hierarchy ? "?f="+getURLParameter("f") : ""), function(info_){
 		info = info_;
 
-		var tp = document.createElement("p");
-		tp.setAttribute('style', 'color: #757575; font-size: 14pt;');
-		tp.innerHTML = translatetype[i.req=="i" ? "Acao" : (i.req=="r" ? i.type : i.year)];
-		header.appendChild(tp);
+		if (i.req != 'a') {
+			var tp = document.createElement("p");
+			tp.setAttribute('style', 'color: #757575; font-size: 14pt;');
+			tp.innerHTML = translatetype[i.req=="i" ? "Acao" : (i.req=="r" ? i.type : i.year)];
+			header.appendChild(tp);
+		}
 
 		var title = document.createElement("p");
 		title.className = 'title';

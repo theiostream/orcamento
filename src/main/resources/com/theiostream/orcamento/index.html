@@ -1,13 +1,16 @@
 <!DOCTYPE html>
+<html lang="pt">
 
 <meta charset="utf-8">
 
 <head>
 	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/bootstrap-accessibility.css">
 	<link rel="stylesheet" href="/css/d3.css">
 	
-	<script src="/js/jquery.min.js"></script>	
-	<script src="/js/bs-dropdown.js"></script>	
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/bs-dropdown.js"></script>
+	<script src="/js/bs-accessibility.js"></script>
 	
 	<title>Orçamento</title>
 
@@ -33,7 +36,7 @@
 
 <div class="main" style="text-align: center;">
 	<div class="page-header" style="margin-left: 10%; margin-right: 10%; width: 80%; display: table;">
-		<h2>Orçamento Federal</h2>
+		<h2 role="presentation">Orçamento Federal</h2>
 	</div>
 
 	<p class="lead">Bem-vindo! Para começar a navegar pelas despesas do Governo, selecione uma das opções abaixo.</p>
@@ -60,17 +63,22 @@
 			<h4>Pesquisa</h4>
 			<p>Pesquisa algo no Orçamento Federal.</p>
 			
-			<form action="/cs" method="GET">
+			<form action="/cs" method="GET" role="search">
 				<input type="hidden" name="y" id="ddyear" value="2014">
-				<label class="sr-only" for="search">Pesquisa no Orçamento</label>
 				<div class="input-group">
 					<div class="input-group-btn" style="width: 1%;">
-						<button type="button" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">2014 <span class="caret"></span></button>
-						<ul class="dropdown-menu yearmenu">
+						<button type="button" id="dd1" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown" aria-expanded="false" aria-label="Ano">2014 <span class="caret"></span></button>
+						<ul class="dropdown-menu yearmenu" role="menu" aria-labelledby="dd1">
+							<li><a>Bozo</a></li>
+							<li><a>Bozo</a></li>
+							<li><a>Bozo</a></li>
 						</ul>
 					</div>
-					<input class="form-control" type="text" name="s" placeholder="Pesquisa...">
-					<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
+					
+					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
+					<input class="form-control" type="text" name="s" placeholder="Pesquisa..." id="search">
+					
+					<div class="input-group-btn"><button type="submit" class="btn btn-primary" aria-label="Pesquisar"><span class="glyphicon glyphicon-search"></span></button></div>
 				</div>
 			</form>
 		</div>
@@ -79,15 +87,15 @@
 			<h4>Comparação</h4>
 			<p>Compara elementos orçamentários.</p>
 
-			<a class="btn btn-primary" href="/c">Ir</a>
+			<a aria-label="Comparar elementos orçamentários." class="btn btn-primary" href="/c">Ir</a>
 		</div>
 	</div>
 
-	<p>&copy; 2014-15 Daniel Ferreira. <a href="/agradecimentos.html">Sobre</a></p>
+	<p role="contentinfo">&copy; 2014-15 Daniel Ferreira. <a href="/agradecimentos.html">Sobre</a></p>
 </div>
 
 <script>
-	for (var i=2000; i<2015; i++) {
+	/*for (var i=2000; i<2015; i++) {
 		$('.yearmenu').append('<li><a>' + i + '</a></li>');
 		$('.dropdown-menu li a').on('click', function(){
 			var dropdown = $(this).parent().parent();
@@ -95,7 +103,8 @@
 			dropdown.attr("data-sel", $(this).text());
 			$('#ddyear').attr('value', $(this).text());
 		});
-	}
+	}*/
 </script>
 
 </body>
+</html>

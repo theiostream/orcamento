@@ -10,6 +10,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.update.*;
 import com.hp.hpl.jena.query.*;
 import java.util.LinkedList;
+import java.util.ArrayList;
 import static com.theiostream.orcamento.OrcamentoUtils.*;
 
 public class wr {

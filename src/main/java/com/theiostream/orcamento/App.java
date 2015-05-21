@@ -96,7 +96,7 @@ public class App {
 			String f = readFile(vt);
 			String[] v = f.split("\n");
 
-			return "{ \"name\": \"Orçamento Federal Brasileiro (" + request.params(":year") + ")\", \"values\": { \"Valor LOA\": " + v[0] + ", \"Valor Pago\": " + v[1] + "} }";
+			return "{ \"name\": \"Orçamento Federal (" + request.params(":year") + ")\", \"values\": { \"Valor LOA\": " + v[0] + ", \"Valor Pago\": " + v[1] + "} }";
 		});
 		get("/a/:year/:type", (request, response) -> {
 			response.type("application/json");
