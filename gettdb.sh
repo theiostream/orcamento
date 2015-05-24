@@ -28,7 +28,7 @@ function getrdf() {
 	rm ${DLPATH}/${1}.zip
 	
 	echo "******* Generating TDB..."
-	~/Downloads/apache-jena-2.12.1/bin/tdbloader2 --loc ${DLPATH}/${1} ${DLPATH}/loa${1}.nt
+	$LOADERPATH --loc ${DLPATH}/${1} ${DLPATH}/loa${1}.nt
 	rm ${DLPATH}/loa${1}.nt
 
 	echo "******* [Debug] Recording TDB total value..."
