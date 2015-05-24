@@ -3,7 +3,7 @@
 # inflacao.sh
 # Get inflation data from Brazilian Central Bank and print to stdout 
 
-CURRENT_DATE="12%2F2014"
+CURRENT_DATE="03%2F2015"
 YEAR="2015"
 
 function inflation_year() {

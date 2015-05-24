@@ -9,7 +9,7 @@
 
 // TODO: Maybe integrate createGraph()/createItemTable() functions into their reload() counterparts with some d3.js element managing
 
-var ipca = "dez/14"
+var ipca = "mar/15"
 var translatetype = {
 	"Orgao": "Órgão",
 	"UnidadeOrcamentaria": "Unidade Orçamentária",
@@ -22,7 +22,7 @@ var translation = {
 	"loa": "LOA",
 	"pago": "Pago",
 	"infloa": "LOA",
-	"infpago": "PagAumento (Pago)"
+	"infpago": "Pago"
 };
 
 var programa;

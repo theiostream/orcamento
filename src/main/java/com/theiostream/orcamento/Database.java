@@ -218,8 +218,6 @@ public class Database {
 			Resource pr = getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
 
 			if (programa.equals(pr) && action.equals(ac) && getTypeForResource(st).equals("Subtitulo")) {
-				/*System.out.println("$$ EQ!!!!!");
-				subtitle = st;*/
 				return st;
 			}
 		}

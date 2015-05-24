@@ -87,6 +87,9 @@ public class App {
 		});
 		
 		get("/a/:year", (request, response) -> {
+			Database db = databases.get(request.params(":year"));
+			if (db == null) return ErrorPage();
+			
 			URL str = App.class.getResource("Resource.html");
 			URL js = App.class.getResource("All.js");
 			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
@@ -110,12 +113,8 @@ public class App {
 				Resource r = all.nextResource();
 				String name = db.getLabelForResource(r);
 				
-				//long s1 = System.currentTimeMillis();
 				ResIterator ds = db.getDespesasForResource(r);
-				//System.out.println("[" + name + "] getDespesas(): " + (System.currentTimeMillis() - s1));
-				//long s2 = System.currentTimeMillis();
 				HashMap<String, Long> value = db.valueForDespesas(ds);
-				//System.out.println("[" + name + "] valueForDespesas(): " + (System.currentTimeMillis() - s2));
 				
 				String codigo = db.getCodigoForResource(r);
 
@@ -128,10 +127,14 @@ public class App {
 		});
 
 		get("/r/:year/:type/:org", (request, response) -> {
+			Database db = databases.get(request.params(":year"));
+			if (db == null) return ErrorPage();
+			String type = request.params(":type");
+			Resource res = db.getResourceForCodigo(request.params(":org"), type);
+			if (res == null) return ErrorPage();
+			
 			URL str = App.class.getResource("Resource.html");
 			URL js = App.class.getResource(request.params(":type") + ".js");
-			
-			if (js == null) return "Not Implemented. Check back later.";
 
 			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
 		});
@@ -179,8 +182,6 @@ public class App {
 			return "{" + r + "}";
 		});
 		get("/r/:year/:type/:org/:par", (request, response) -> {
-			System.out.println("[Orçamento] Performing /r: " + request.params(":type") + ":" + request.params(":par"));
-
 			response.type("application/json");
 			Database db = databases.get(request.params(":year"));
 
@@ -203,7 +204,8 @@ public class App {
 				xfilter = xjson == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(xjson, "UTF-8"), HashMap.class);
 			}
 			catch (Exception e) {
-				return "[Error] Filter JSON parsing.";
+				filter = null;
+				xfilter = null;
 			}
 
 			long s1 = System.currentTimeMillis();
@@ -238,6 +240,16 @@ public class App {
 		});
 		
 		get("/i/:year/:p/:a/:s", (request, response) -> {
+			Database db = databases.get(request.params(":year"));
+			if (db == null) return ErrorPage();
+			
+			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
+			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
+			if (programa == null || action == null) return ErrorPage();
+
+			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
+			if (res == null) return ErrorPage();
+
 			URL str = App.class.getResource("Resource.html");			
 			URL js = App.class.getResource("Subtitle.js");
 
@@ -304,7 +316,15 @@ public class App {
 		});
 
 		get("/h/:type/:org", (request, response) -> {
-			if (request.params(":org").equals("1313")) return "<script>window.location='http://tinyurl.com/o59mblq';</script>";
+			int c = 0;
+			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
+				Database db = entry.getValue();
+				Resource r = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
+				if (r == null) { continue; }
+				c++;
+			}
+			if (c == 0) return ErrorPage();
+
 			URL str = App.class.getResource("Resource.html");
 			return readFile(str) + "<script>fillInfo(); createGraphHistory('lol', 'Bozos'); reloadDataHistory('lol', 1);</script>";
 
@@ -353,7 +373,7 @@ public class App {
 				inflation = new ObjectMapper().readValue(ifile, HashMap.class);
 			}
 			catch (Exception e) {
-				return "ERROR ERROR BAD";
+				inflation = null;
 			}
 			
 			String ret = "[";
@@ -363,7 +383,10 @@ public class App {
 				Resource r = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
 				if (r == null) { continue; }
 
-				double inf = 1 + (inflation.get(entry.getKey()) / 100);
+				double inf;
+				if (inflation != null) inf = 1 + (inflation.get(entry.getKey()) / 100);
+				else inf = 0;
+
 				HashMap<String, Long> value = db.valueForDespesas(db.getDespesasForResource(r));
 				
 				switch (rinfo) {
@@ -425,8 +448,7 @@ public class App {
 				return ret.concat("]");
 			}
 			catch (Exception e) {
-				System.out.println("EXCEPTION with query " + request.queryParams("query"));
-				return "ERROR ERROR ERROR BAD";
+				return "[]";
 			}
 		});
 

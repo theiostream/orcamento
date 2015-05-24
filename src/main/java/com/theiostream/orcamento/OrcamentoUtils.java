@@ -50,8 +50,7 @@ public class OrcamentoUtils {
 			ret = sb.toString();
 		}
 		catch (Exception exception) {
-			System.out.println(exception);
-			ret = "Fuck you why are you looking for something unimplemented? " + str;
+			ret = null;
 		}
 
 		return ret;
@@ -72,6 +71,10 @@ public class OrcamentoUtils {
 		TreeMap sortedMap = new TreeMap<String, ArrayList<Integer> >(new ValueComparator(map));
 		sortedMap.putAll(map);
 		return sortedMap;
+	}
+
+	public static String ErrorPage() {
+		return readFile(OrcamentoUtils.class.getResource("Error.html"));
 	}
 }
 

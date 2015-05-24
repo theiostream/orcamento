@@ -57,8 +57,12 @@ function reload_(filter) {
 			+ '	<p style="margin-top: -7px; font-size: 13pt; color: #757575;">' + translatetype[d.type] + ' – ' + d.codigo + '</p>'
 			+ '</a>';
 
-		table.append("<tr><td>" + style + "</td></tr>");
+		table.append('<tr><td class="searchitem">' + style + "</td></tr>");
 	});
+
+	if (table.is(':empty')) {
+		table.append('<tr><td><p class="lead">Não foram encontrados resultados.</p></td></tr>');
+	}
 
 	//$("tr:even").css("background-color", "#eeeeee");
 }

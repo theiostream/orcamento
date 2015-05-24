@@ -29,9 +29,12 @@ function addTypeahead(el, isSearch, pfn, tfn) {
 				+ '	<p style="font-size: 16pt; display: table-row;">' + data.value + '</p>'
 				+ '	<p style="font-size: 14pt; display: table-row; color: #757575;">' + translatetype[data.type] + ' – ' + data.codigo + '</p>'
 				+ '</div>';
-			}
+			},
+			empty: '<div style="padding: 10px;"><p style="font-size: 16pt; display: table-row;">Não há resultados disponíveis para esta pesquisa.</p></div>'
 		}
 	}).on("typeahead:selected", function(obj, data, name) {
+		if (data.type == 'placeholder') return;
+
 		if (isSearch) window.location = "/r/" + searchyear + "/" + data.type + "/" + data.codigo;
 		else pfn(this, data);
 	});
@@ -42,7 +45,7 @@ function addTypeahead(el, isSearch, pfn, tfn) {
 	
 	// FIXME
 	var dd = el.find(".yearmenu");
-	for (var i=2000; i<2015; i++) {
+	for (var i=2000; i<2016; i++) {
 		dd.append('<li><a>' + i + '</a></li>');
 	}
 
