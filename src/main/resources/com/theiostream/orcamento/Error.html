@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<meta charset="utf-8">
+
+<head>
+	<link rel="stylesheet" href="/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/d3.css">
+	<link rel="stylesheet" href="/css/typeahead.css">
+	
+	<script src="/js/jquery.min.js"></script>
+	<script src="/js/typeahead.js"></script>
+	<script src="/js/bs-dropdown.js"></script>
+	
+	<script src="/js/navsearch.js"></script>
+	<title>Erro – Orçamento</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-default rect" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">Orçamento</a>
+		</div>
+		<div class="col-md-8"><div class="navbar-form navbar-left">
+			<form action="/cs" method="GET" class="form-inline">
+				<div class="form-group" style="display: inline;">
+					<input type="hidden" name="y" id="ddyear">
+					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
+					<div class="input-group" style="display: table;" id="search">
+						<div class="input-group-btn" style="width: 1%;">
+							<button type="button" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
+							<ul class="dropdown-menu yearmenu">
+							</ul>
+						</div>
+						<input class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
+						<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
+					</div>
+				</div>
+			</form>
+		</div></div>
+	</div>
+</nav>
+
+<div class="main" style="text-align: center;">
+	<h2>Erro.</h2>
+	<p class="lead">O conteúdo solicitado não existe.</p>
+</div>
+
+<script>
+	var translatetype = {
+		"Orgao": "Órgão",
+		"UnidadeOrcamentaria": "Unidade Orçamentária",
+		"Funcao": "Função",
+		"Subfuncao": "Subfunção",
+		"Programa": "Programa",
+		"Acao": "Ação"
+	};
+
+	setSearchyear("2000");
+	addTypeahead($("#search"), true);
+</script>
+
+</body>
