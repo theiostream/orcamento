@@ -1,0 +1,17 @@
+/* thx stackoverflow */
+
+a[data-title]:hover:after {
+  content: attr(data-title);
+  font-size: 10px;
+  color: #fff;
+  padding: 4px 8px;
+  background-color: #000;
+  position: absolute;
+  left: 105%;
+  z-index: 20;
+  white-space: nowrap;
+
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+}
