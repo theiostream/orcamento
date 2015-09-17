@@ -12,7 +12,7 @@ This is licensed under the GNU General Public License, version 3.
 
 *** INSTRUCTIONS
 
-0. Download Apache Jena binaries from http://jena.apache.org and set $LOADERPATH on gettdb.sh in order to point to tdbloader2.
+0. Download Apache Jena 2.1.12 (Jena 3 is not yet supported!) binaries from http://jena.apache.org and set $LOADERPATH on gettdb.sh in order to point to tdbloader2.
 
 1. Build the website
 $ mvn package

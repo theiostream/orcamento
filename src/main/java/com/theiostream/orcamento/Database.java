@@ -64,6 +64,7 @@ public class Database {
 
 	public String getLabelForResource(Resource r) {
 		Statement stmt = r.getProperty(label);
+		if (stmt == null) { return null; }
 		return stmt.getString();
 	}
 

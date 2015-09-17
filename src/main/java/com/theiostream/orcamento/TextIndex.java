@@ -38,6 +38,8 @@ public class TextIndex {
 				String cod = db.getCodigoForResource(r);
 				String name = db.getLabelForResource(r);
 				
+				if (cod == null || name == null) continue;
+				
 				String t = type;
 				if (t.equals("Projeto") || t.equals("Atividade") || t.equals("OperacaoEspecial"))
 					t = "Acao";
