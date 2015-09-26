@@ -4,7 +4,8 @@ var translatetype = {
 	"Funcao": "Função",
 	"Subfuncao": "Subfunção",
 	"Programa": "Programa",
-	"Acao": "Ação"
+	"Acao": "Ação",
+	"GND": "Grupo de Natureza de Despesa"
 };
 
 function getURLParameter(name) {

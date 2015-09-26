@@ -16,7 +16,8 @@ var translatetype = {
 	"Funcao": "Função",
 	"Subfuncao": "Subfunção",
 	"Programa": "Programa",
-	"Acao": "Ação"
+	"Acao": "Ação",
+	"GND": "Grupo de Natureza de Despesa"
 };
 var translation = {
 	"loa": "LOA",

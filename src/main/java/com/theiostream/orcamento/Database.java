@@ -56,6 +56,9 @@ public class Database {
 					return r;
 				}
 			}
+			else if (type.equals("GND")) {
+				if (t.equals("GrupoNatDespesa")) return r;
+			}
 			else if (t.equals(type)) return r;
 		}
 		
@@ -170,11 +173,15 @@ public class Database {
 		if (typeString.equals("Atividade") || typeString.equals("Projeto") || typeString.equals("OperacaoEspecial")) {
 			typeString = "Acao";
 		}
+		else if (typeString.equals("GrupoNatDespesa")) {
+			typeString = "GND";
+		}
 
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("tem" + typeString)), resource);
 	}
 	
 	public ResIterator getAll(String type) {
+		if (type.equals("GND")) type = "GrupoNatDespesa";
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA(type)));		
 	}
 
