@@ -164,6 +164,10 @@ function fillInfo() {
 				+ '	<a class="btn ' + (hierarchy ? 'btn-success' : 'btn-danger') + '" onclick="toggleHierarchy(this);" data-title="Seguir Hierarquia ' + (hierarchy ? '✓' : '✖') + '"><span class="glyphicon glyphicon-sort-by-attributes"></span></a>'
 				+ '</div>';
 		}
+		else if (i.req == "a") {
+			var hb = document.getElementById('headerbtn');
+			hb.innerHTML = '<div class="btn-group-vertical"><a class="btn btn-default" onclick="if(slideout.isOpen()) { slideout.close(); } else { slideout.o=true; slideout.open(); }" data-title="Filtros"><span class="glyphicon glyphicon-filter"></span></a></div>'
+		}
 	});
 
 	if (i.req == "r" || i.req == "i" || i.req == "a") setSearchyear(i.year);

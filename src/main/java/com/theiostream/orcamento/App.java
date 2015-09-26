@@ -6,6 +6,8 @@ package com.theiostream.orcamento;
 
 import static spark.Spark.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ResIteratorImpl;
+
 
 import com.theiostream.orcamento.Database;
 import com.theiostream.orcamento.TextIndex;
@@ -34,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ArrayDeque;
 
 class IntegerComparator implements Comparator<Integer>{
 	public int compare(Integer o1, Integer o2) {
@@ -103,6 +106,17 @@ public class App {
 		});
 		get("/a/:year/:type", (request, response) -> {
 			response.type("application/json");
+			
+			HashMap<String, ArrayList<String> > xfilter = null;
+			if (request.queryParams("xf") != null) {
+				try {
+					String xjson = request.queryParams("xf");
+					xfilter = xjson == null ? null : new ObjectMapper().readValue(java.net.URLDecoder.decode(xjson, "UTF-8"), HashMap.class);
+				}
+				catch (Exception e) {
+					xfilter = null;
+				}
+			}
 
 			Database db = databases.get(request.params(":year"));
 			String ret = "{\"name\": \"flare\", \"children\": [";
@@ -111,9 +125,20 @@ public class App {
 			ResIterator all = db.getAll(request.params(":type"));
 			while (all.hasNext()) {
 				Resource r = all.nextResource();
-				String name = db.getLabelForResource(r);
 				
+				String name = db.getLabelForResource(r);
 				ResIterator ds = db.getDespesasForResource(r);
+				
+				if (xfilter != null) {
+					ArrayDeque<Resource> filtered = new ArrayDeque<Resource>();
+					while (ds.hasNext()) {
+						Resource despesa = ds.nextResource();
+						if (!db.performExclusionFilter(despesa, xfilter)) continue;
+						filtered.add(despesa);
+					}
+					ds = new ResIteratorImpl(filtered.iterator());
+				}
+
 				HashMap<String, Long> value = db.valueForDespesas(ds);
 				
 				String codigo = db.getCodigoForResource(r);
