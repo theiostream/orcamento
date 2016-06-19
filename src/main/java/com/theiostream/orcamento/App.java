@@ -89,22 +89,23 @@ public class App {
 			return readFile(App.class.getResource("index.html"));
 		});
 		
-		get("/a/:year", (request, response) -> {
-			Database db = databases.get(request.params(":year"));
+		get("/a/:set/:year", (request, response) -> {
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 			if (db == null) return ErrorPage();
 			
 			URL str = App.class.getResource("Resource.html");
-			URL js = App.class.getResource("All.js");
-			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
+			URL common = App.class.getResource(request.params(":set") + "/Common.js");
+			URL js = App.class.getResource(request.params(":set") + "/All.js");
+			return readFile(str) + "\n<script>" + readFile(common) + ";" + readFile(js) + "</script>";
 		});
-		get("/a/:year/i", (request, response) -> {
-			URL vt = App.class.getResource("vt/" + request.params(":year") + ".txt");
+		get("/a/:set/:year/i", (request, response) -> {
+			URL vt = App.class.getResource("vt/" + request.params(":set") + "/" + request.params(":year") + ".txt");
 			String f = readFile(vt);
 			String[] v = f.split("\n");
 
 			return "{ \"name\": \"Orçamento Federal (" + request.params(":year") + ")\", \"values\": { \"Valor LOA\": " + v[0] + ", \"Valor Pago\": " + v[1] + "} }";
 		});
-		get("/a/:year/:type", (request, response) -> {
+		get("/a/:set/:year/:type", (request, response) -> {
 			response.type("application/json");
 			
 			HashMap<String, ArrayList<String> > xfilter = null;
@@ -118,7 +119,7 @@ public class App {
 				}
 			}
 
-			Database db = databases.get(request.params(":year"));
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 			String ret = "{\"name\": \"flare\", \"children\": [";
 
 			long s1 = System.currentTimeMillis();
@@ -127,8 +128,9 @@ public class App {
 				Resource r = all.nextResource();
 				
 				String name = db.getLabelForResource(r);
+				String codigo = db.getCodigoForResource(r);
 				ResIterator ds = db.getDespesasForResource(r);
-				
+
 				if (xfilter != null) {
 					ArrayDeque<Resource> filtered = new ArrayDeque<Resource>();
 					while (ds.hasNext()) {
@@ -138,12 +140,21 @@ public class App {
 					}
 					ds = new ResIteratorImpl(filtered.iterator());
 				}
-
-				HashMap<String, Long> value = db.valueForDespesas(ds);
 				
-				String codigo = db.getCodigoForResource(r);
+				HashMap<String, Object> value = db.valueForDespesas(ds);
+				value.put("name", name);
+				value.put("cod", codigo);				
+				
+				String valuestring;
+				try {
+					valuestring = new ObjectMapper().writeValueAsString(value);
+				}
+				catch (Exception e) {
+					valuestring = "";
+				}
 
-				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + value.get("DotacaoInicial") + ", \"real\":" + value.get("Pago") + ", \"cod\": \"" + codigo + "\"" + "}] },");
+
+				ret = ret.concat(valuestring + ",");
 			}
 			System.out.println("all() took " + (System.currentTimeMillis() - s1));
 			
@@ -151,21 +162,22 @@ public class App {
 			return ret.concat("]}");
 		});
 
-		get("/r/:year/:type/:org", (request, response) -> {
-			Database db = databases.get(request.params(":year"));
+		get("/r/:set/:year/:type/:org", (request, response) -> {
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 			if (db == null) return ErrorPage();
 			String type = request.params(":type");
 			Resource res = db.getResourceForCodigo(request.params(":org"), type);
 			if (res == null) return ErrorPage();
 			
 			URL str = App.class.getResource("Resource.html");
-			URL js = App.class.getResource(request.params(":type") + ".js");
+			URL common = App.class.getResource(request.params(":set") + "/Common.js");
+			URL js = App.class.getResource(request.params(":set") + "/" + request.params(":type") + ".js");
 
-			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
+			return readFile(str) + "\n<script>" + readFile(common) + ";" + readFile(js) + "</script>";
 		});
-		get("/r/:year/:type/:org/i", (request, response) -> {
+		get("/r/:set/:year/:type/:org/i", (request, response) -> {
 			response.type("application/json");
-			Database db = databases.get(request.params(":year"));
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 
 			String type = request.params(":type");
 			Resource res = db.getResourceForCodigo(request.params(":org"), type);
@@ -206,9 +218,9 @@ public class App {
 
 			return "{" + r + "}";
 		});
-		get("/r/:year/:type/:org/:par", (request, response) -> {
+		get("/r/:set/:year/:type/:org/:par", (request, response) -> {
 			response.type("application/json");
-			Database db = databases.get(request.params(":year"));
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 
 			String ret = "{\"name\": \"flare\", \"children\": [";
 			
@@ -250,13 +262,21 @@ public class App {
 				}
 				
 				String name = db.getLabelForResource(function.getResource());
-				
-				/*HashMap<String, Double> value;
-				value = db.valueForDespesas(function.getDespesas());*/
-				
 				String codigo = db.getCodigoForResource(function.getResource());
 
-				ret = ret.concat("{ \"name\": \"" + name + "\", \"children\": [{ \"name\": \"" + name + "\", \"size\":" + function.getValorLoa() + ", \"real\":" + function.getValorPago() + ", \"cod\": \"" + codigo + "\"" + "}] },");
+				HashMap<String, Object> value = function.getValores();
+				value.put("name", name);
+				value.put("cod", codigo);
+				
+				String valuestring;
+				try {
+					valuestring = new ObjectMapper().writeValueAsString(value);
+				}
+				catch (Exception e) {
+					valuestring = "";
+				}				
+
+				ret = ret.concat(valuestring + ",");
 			}
 			System.out.println("iter took  " + (System.currentTimeMillis() - s2));
 			
@@ -264,83 +284,127 @@ public class App {
 			return ret.concat("]}");			
 		});
 		
-		get("/i/:year/:p/:a/:s", (request, response) -> {
-			Database db = databases.get(request.params(":year"));
+		get("/i/:set/:year/:type/:cod", (request, response) -> {
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 			if (db == null) return ErrorPage();
 			
-			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
-			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
-			if (programa == null || action == null) return ErrorPage();
+			String cod = request.params(":cod");
+			Resource res;
 
-			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
+			if (request.params(":type").equals("Subtitulo")) {
+				String p = cod.substring(0, 4);
+				String a = cod.substring(5, 8);
+				String s = cod.substring(9, 12);
+				
+				Resource programa = db.getResourceForCodigo(p, "UnidadeOrcamentaria");
+				Resource action = db.getResourceForCodigo(a, "Acao");
+				if (programa == null || action == null) return ErrorPage();
+
+				res = db.getSubtitleWithProgramaAndAcao(programa, action, s);
+			}
+			else
+				res = db.getResourceForCodigo(cod, request.params(":type"));
+
 			if (res == null) return ErrorPage();
 
-			URL str = App.class.getResource("Resource.html");			
-			URL js = App.class.getResource("Subtitle.js");
+			URL str = App.class.getResource("Resource.html");
+			URL common = App.class.getResource(request.params(":set") + "/Common.js");			
+			URL js = App.class.getResource(request.params(":set") + "/Table-" + request.params(":type") + ".js");
 
-			return readFile(str) + "\n<script>" + readFile(js) + "</script>";
+			return readFile(str) + "\n<script>" + readFile(common) + ";" + readFile(js) + "</script>";
 		});
-		get("/i/:year/:p/:a/:s/i", (request, response) -> {
+		get("/i/:set/:year/:type/:cod/i", (request, response) -> {
 			response.type("application/json");
-			Database db = databases.get(request.params(":year"));
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
 			
-			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
-			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
-			Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
-			
-			String name = db.getLabelForResource(res);
-			String parent = db.getLabelForResource(action);
-			String pname = db.getLabelForResource(programa);
+			String cod = request.params(":cod");
 
-			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
-			return "{ \"name\": \"" + parent + "\", \"parent\": \"" + name + "\", \"programa\": { \"name\": \"" + pname + "\" }, \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}}";
-
-		});
-		get("/i/:year/:p/:a/:s/d", (request, response) -> {
-			response.type("application/json");
-			Database db = databases.get(request.params(":year"));
-
-			Resource programa = db.getResourceForCodigo(request.params(":p"), "UnidadeOrcamentaria");
-			Resource action = db.getResourceForCodigo(request.params(":a"), "Acao");
-			Resource s = db.getSubtitleWithProgramaAndAcao(programa, action, request.params(":s"));
-
-			String loaArray = "";
-			String pagoArray = "";
-			
-			ResIterator despesas = db.getDespesasForResource(s);
-			while (despesas.hasNext()) {
-				Resource res = despesas.nextResource();
-
-				Resource plano = db.getPropertyForDespesa(res, "PlanoOrcamentario");
-				String pl = db.getLabelForResource(plano);
-
-				Resource modalidade = db.getPropertyForDespesa(res, "ModalidadeAplicacao");
-				String md = db.getLabelForResource(modalidade);
+			if (request.params(":type").equals("Subtitulo")) {
+				String p = cod.substring(0, 4);
+				String a = cod.substring(5, 8);
+				String s = cod.substring(9, 12);
 				
-				Resource elemento = db.getPropertyForDespesa(res, "ElementoDespesa");
-				String ed = db.getLabelForResource(elemento);
+				Resource programa = db.getResourceForCodigo(p, "UnidadeOrcamentaria");
+				Resource action = db.getResourceForCodigo(a, "Acao");
+				if (programa == null || action == null) return ErrorPage();
 
-				Resource fonte = db.getPropertyForDespesa(res, "FonteRecursos");
-				String fr = db.getLabelForResource(fonte);
+				Resource res = db.getSubtitleWithProgramaAndAcao(programa, action, s);
+				
+				String name = db.getLabelForResource(res);
+				String parent = db.getLabelForResource(action);
+				String pname = db.getLabelForResource(programa);
 
-				String common = "\"Plano Orçamentário\": \"" + pl + "\", \"Modalidade de Aplicação\": \"" + md + "\", \"Elemento de Despesa\": \"" + ed + "\", \"Fonte de Recursos\": \"" + fr + "\",";
-				
-				double dot = db.getValorPropertyForDespesa(res, "DotacaoInicial");
-				double pago = db.getValorPropertyForDespesa(res, "Pago");
-				
-				if (dot == 0)
-					pagoArray = pagoArray.concat("{" + common + "\"Valor\": " + pago + "},");
-				else
-					loaArray = loaArray.concat("{" + common + "\"Valor\": " + dot + "},");
+				HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
+				return "{ \"name\": \"" + parent + "\", \"parent\": \"" + name + "\", \"programa\": { \"name\": \"" + pname + "\" }, \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "}}";
 			}
 			
-			pagoArray = pagoArray.substring(0, pagoArray.length()-1);
-			loaArray = loaArray.substring(0, loaArray.length()-1);
+			Resource res = db.getResourceForCodigo(cod, request.params(":type"));
+			String name = db.getLabelForResource(res);
+			HashMap<String, Long> values = db.valueForDespesas(db.getDespesasForResource(res));
+			
+			return "{ \"name\": \"" + name + "\", \"values\": { \"Valor LOA\": " + values.get("DotacaoInicial") + ", \"Valor Pago\": " + values.get("Pago") + "} }";
 
-			return "{ \"Itens Previstos para Cumprimento da LOA\": [" + loaArray + "], \"Itens Pagos (Classificação da SIOP)\": [" + pagoArray + "]}";
+		});
+		get("/i/:set/:year/:type/:cod/d", (request, response) -> {
+			/* TODO: There is an implementation dilemma here.
+			 * At the SOF ontology, ItemDespesas have one value and all others are nil. Therefore,
+			 * it makes sense for all paid and all LOA to be aggregated.
+			 * However, in the USP ontologies values should *ideally* be in the same ItemDespesa.
+			 * In this branch, this logic has been changed to list all items without aggregating. */
+			
+			response.type("application/json");
+			Database db = databases.get(request.params(":set") + "_" + request.params(":year"));
+
+			String cod = request.params(":cod");
+			Resource res;
+
+			if (request.params(":type").equals("Subtitulo")) {
+				String p = cod.substring(0, 4);
+				String a = cod.substring(5, 8);
+				String s = cod.substring(9, 12);
+				
+				Resource programa = db.getResourceForCodigo(p, "UnidadeOrcamentaria");
+				Resource action = db.getResourceForCodigo(a, "Acao");
+				if (programa == null || action == null) return ErrorPage();
+
+				res = db.getSubtitleWithProgramaAndAcao(programa, action, s);
+			}
+			else
+				res = db.getResourceForCodigo(cod, request.params(":type"));			
+			
+			String ret = "[";
+
+			ResIterator despesas = db.getDespesasForResource(res);
+			while (despesas.hasNext()) {
+				ret = ret.concat("{");
+				Resource despesa = despesas.nextResource();
+
+				StmtIterator properties = db.getPropertiesForDespesa(despesa);
+				while (properties.hasNext()) {
+					Statement stmt = properties.nextStatement();
+					Property property = stmt.getPredicate();
+					
+					boolean valor = property.getLocalName().startsWith("valor");
+					Object s = valor ? Long.valueOf(stmt.getLong()) : db.getLabelForResource(stmt.getResource());
+					
+					String pname = valor ? property.getLocalName().substring(5) : property.getLocalName().substring(3);
+					
+					// FIXME TEMPORARY: This is necessary until the ontology gives up on a "valor".
+					// This is terrible.
+					if (valor && pname.equals("")) pname = "Generico";
+
+					ret = ret.concat("\"" + pname + "\": \"" + s + "\",");
+				}
+				
+				ret = ret.substring(0, ret.length()-1);
+				ret = ret.concat("},");
+			}
+			
+			ret = ret.substring(0, ret.length()-1);
+			return ret.concat("]");
 		});
 
-		get("/h/:type/:org", (request, response) -> {
+		get("/h/:set/:type/:org", (request, response) -> {
 			int c = 0;
 			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
 				Database db = entry.getValue();
@@ -354,7 +418,7 @@ public class App {
 			return readFile(str) + "<script>fillInfo(); createGraphHistory('lol', 'Bozos'); reloadDataHistory('lol', 1);</script>";
 
 		});
-		get("/h/:type/:org/i", (request, response) -> {
+		get("/h/:set/:type/:org/i", (request, response) -> {
 			response.type("application/json");
 			
 			TreeMap<String, ArrayList> years = new TreeMap<String, ArrayList>();
@@ -389,7 +453,7 @@ public class App {
 
 			return "{ \"name\": \"" + years.lastEntry().getKey() + "\", \"parent\": \"Despesas Históricas\", \"values\": " + values + "}";
 		});
-		get("/h/:type/:org/d", (request, response) -> {
+		get("/h/:set/:type/:org/d", (request, response) -> {
 			int rinfo = Integer.parseInt(request.queryParams("rinfo"));
 			
 			HashMap<String, Double> inflation;

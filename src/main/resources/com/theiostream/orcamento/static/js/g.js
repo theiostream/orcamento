@@ -32,6 +32,9 @@ var filter = {};
 var hierarchy = false;
 var info;
 
+var keymap;
+var table_keymap;
+
 /* Utilities {{{ */
 
 function getURLParameter(name) {
@@ -87,10 +90,11 @@ function dots(v) {
 function urlinfo() {
 	var s = location.pathname.split('/');
 	return {
-		req: s[1],
-		year: s[2],
-		type: s[3],
-		cod: s[4]
+    set: s[1],
+		req: s[2],
+		year: s[3],
+		type: s[4],
+		cod: s[5]
 	};
 }
 
@@ -192,6 +196,11 @@ function addHeader(tit) {
 	container.appendChild(row);
 }
 
+function goToTable(type, codigo) {
+  var i = urlinfo();
+  window.location = "/i/" + i.set + "/" + i.year + "/" + type + "/" + codigo;
+}
+
 /* }}} */
 
 /* Table & Treemap (Resource) {{{ */
@@ -201,7 +210,7 @@ function preloadTreemap(uoDiv_) {
 	return uoTreemap = d3.layout.treemap()
 		.size([uoDiv_.offsetWidth, uoDiv_.offsetHeight])
 		.sticky(true)
-		.value(function(d) { return d.size; });
+		.value(function(d) { return d[keymap[0]]; });
 }
 function reloadTreemap(id, color, uoDiv_, uoDiv, data, uoTreemap) {
 	if (data == null) data = /*$.extend(true, {}, */datacache[id]/*)*/;
@@ -224,13 +233,12 @@ function reloadTreemap(id, color, uoDiv_, uoDiv, data, uoTreemap) {
 		.attr("class", "node")
 		.call(position)
 		.style("background", function(d) {
-			if(d.name=="flare") return "#ffffff";
+      if(d.name=="flare") return "#ffffff";
 			var c = hexToRgb(color(d.name));
-			return d.children ? "rgba(" + [c.r, c.g, c.b, 1.0].join() + ")" : null; 
+			return "rgba(" + [c.r, c.g, c.b, 1.0].join() + ")";
 		})
 		.text(function(d) {
 			if (d.name == "flare") return "";
-			if (!d.children) return null;
 			
 			if (this.offsetWidth*this.offsetHeight < getTextWidth(d.name)*10) return "";
 			return d.name;
@@ -303,7 +311,7 @@ function reloadBubbles(id, color, uoDiv_, uoDiv, data, bubble) {
 	x.append("title").text(function(d) { return d.name; })
 	x.append("circle")
 		.attr("r", function(d){return d.r;})
-		.style("fill", function(d){return color(d.packageName);})
+		.style("fill", function(d){return color(d.name);})
 		.attr("cursor", "pointer");
 	x.append("text")
 		.attr("cursor", "pointer")
@@ -357,14 +365,18 @@ function createGraph_(id, tit, type, sz) {
 	treemap.setAttribute("class", "treemap");
 	treemap.setAttribute("id", id + "-treemap");
 	
+  var btngrp = '';
+  for (var i = 0; i < keymap.length; i++) {
+    btngrp += '<button type="button" class="btn btn-default btn-sm' + (i==0 ? ' active' : '') + '" data-key="' + keymap[i] + '">'+ keymap[i] + '</button>';
+  }
+
 	row.innerHTML =
 		  '<div class="cell">'
 		+ '	<div class="graphcontent ' + sz + '">'
 		+ '		<div class="panel panel-default legendac">'
 		+ '			<div class="panel-heading">'
 		+ '				<div class="btn-group pull-right prfix" id="' + id + '-group">'
-		+ '					<button type="button" class="btn btn-default btn-sm active" data-key="size">LOA</button>'
-		+ '					<button type="button" class="btn btn-default btn-sm" data-key="real">Pago</button>'
+    +           btngrp
 		+ '				</div>'
 		+ '				<span class="panel-title">'
 		+					tit
@@ -406,9 +418,11 @@ function createGraph_(id, tit, type, sz) {
 			// FIXME dont make copy
 			var click = function(d) {
 				var i = urlinfo();
-				if (type == "Subtitulo") window.location = "/i/" + i.year + "/" + programa + "/" + i.cod + "/" + d.cod;
+				if (type == "Subtitulo") {
+          goToTable(type, programa + i.cod + d.cod);
+        }
 				else {
-					var wl = "/r/" + i.year + "/" + type + "/" + d.cod;
+					var wl = "/r/" + i.set + "/" + i.year + "/" + type + "/" + d.cod;
 
 					if (hierarchy) {
 						var obj = [];
@@ -452,11 +466,11 @@ function createItemTable(id) {
 }
 
 function populateItemTables(ids) {
-	d3.json(documentURL() + "/d", function(data) {
-		var columns = ["Plano Orçamentário", "Modalidade de Aplicação", "Elemento de Despesa", "Fonte de Recursos", "Valor"];
+  d3.json(documentURL() + "/d", function(data) {
+		var columns = table_keymap;
 		
 		for (var i = 0; i<ids.length; i++) {
-			document.getElementById(ids[i] + "-itemslabel").innerHTML = Object.keys(data)[i];
+			//document.getElementById(ids[i] + "-itemslabel").innerHTML = Object.keys(data)[i];
 
 			var table = d3.select("#" + ids[i] + "-items");
 			var thead = table.append("thead");
@@ -469,12 +483,13 @@ function populateItemTables(ids) {
 				.text(function(d) { return d; });
 
 			var rows = tbody.selectAll("tr")
-				.data(data[Object.keys(data)[i]])
+				.data(data)
 				.enter().append('tr');
 
 			var cells = rows.selectAll('td')
 				.data(function(row) {
-					return columns.map(function(column) {
+					console.log(row);
+          return columns.map(function(column) {
 						return { column: column, value: row[column] };
 					});
 				})
@@ -538,28 +553,31 @@ function reloadDataG(id, type, g, fi) {
 	
 	var i = urlinfo();
 	var click = function(d) {
-		var i = urlinfo();
-		if (type == "Subtitulo") window.location = "/i/" + i.year + "/" + programa + "/" + i.cod + "/" + d.cod;
-		else {
-			var wl = "/r/" + i.year + "/" + type + "/" + d.cod;
+    var i = urlinfo();
+    
+    if (type == "Subtitulo") {
+      goToTable(type, programa + i.cod + d.cod);
+    }    
+    else {
+      var wl = "/r/" + i.set + "/" + i.year + "/" + type + "/" + d.cod;
 
-			if (hierarchy) {
-				var obj = [];
-				if (getURLParameter("f")) obj = JSON.parse(decodeURIComponent(getURLParameter("f")));
-				obj.push({name: info.name, type: i.type, cod: i.cod});
+      if (hierarchy) {
+        var obj = [];
+        if (getURLParameter("f")) obj = JSON.parse(decodeURIComponent(getURLParameter("f")));
+        obj.push({name: info.name, type: i.type, cod: i.cod});
 
-				wl += "?f=" + encodeURIComponent(JSON.stringify(obj)) + "&h=1";
-			}
-			window.location = wl;
-		}
-	}
+        wl += "?f=" + encodeURIComponent(JSON.stringify(obj)) + "&h=1";
+      }
+      window.location = wl;
+    }
+  }
 
 	d3.json(url, function(error, root) {
 		var uoNodes = reloadGraph(id, color, uoDiv_, uoDiv, root, uoTreemap).on('click', click);
 
 		if (!fi) reloadFilter(id, type, root);
 		
-		var columns = ["name", "size"];
+		var columns = ["name", keymap[0]];
 		uoThead.append('tr')
 			.selectAll('th')
 			.data(columns)
@@ -571,12 +589,12 @@ function reloadDataG(id, type, g, fi) {
 			.enter().append('tr')
 			.style('cursor', 'pointer')
 			.on('click', function(d) {
-				window.location = "/r/" + i.year + "/" + type + "/" + d.cod;
+				window.location = "/r/" + i.set + "/" + i.year + "/" + type + "/" + d.cod;
 			});
 		var cells = rows.selectAll('td')
 			.data(function(row) {
 				return columns.map(function(column) {
-					return {column: column, value: row[column], cod: row.cod};
+          return {column: column, value: row[column], cod: row.cod};
 				});
 			})
 			.enter().append('td')
@@ -646,7 +664,14 @@ function classes(root) {
 
   function recurse(name, node) {
     if (node.children) node.children.forEach(function(child) { recurse(node.name, child); });
-    else classes.push({packageName: name, name: node.name, size: node.size, real: node.real, cod: node.cod});
+    else {
+      var start = {name: node.name, cod: node.cod};
+      for (var i = 0; i < keymap.length; i++) {
+        var obj = keymap[i];
+        start[obj] = node[obj];
+      }
+      classes.push(start);
+    }
   }
 
   recurse(null, root);
@@ -690,7 +715,7 @@ function addProgramaSelector() {
 			for (var i=0; i<p.length; i++) {
 				var n = p[i].name;
 				var c = p[i].children[0].cod;
-				var v = p[i].children[0].size;
+				var v = p[i].children[0][keymap[0]];
 
 				var li = document.createElement("li");
 				li.innerHTML = '<a onclick="makePrograma(this, \'' + c + '\');">' + n + '<br><small>R$' + dots(v) + '</small></a>';

@@ -7,6 +7,7 @@ import com.theiostream.orcamento.OResource;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ResIteratorImpl;
+import com.hp.hpl.jena.rdf.model.impl.StmtIteratorImpl;
 import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.query.*;
 
@@ -21,28 +22,65 @@ public class Database {
 	protected Dataset dataset;
 	protected Model model;
 	
-	protected Property propertyDotacaoInicial;
-	protected Property propertyPago;
-	protected Property label;
+	private static final Property propertyPrevisto;
+	private static final Property propertyLancado;
+	private static final Property propertyArrecadado;
+	private static final Property propertyRecolhido;
 
+	private static final Property propertyProjetoLei;
+	private static final Property propertyDotacaoInicial;
+	private static final Property propertyLeiMaisCreditos;
+	private static final Property propertyEmpenhado;
+	private static final Property propertyLiquidado;
+	private static final Property propertyPago;
+
+	private static final Property propertyValor;
+
+	private static final Property label;
+
+	private static final HashMap<String, Property> propertyMapper;
+	static {
+		propertyPrevisto = ResourceFactory.createProperty(LOA("valorPrevisto"));
+		propertyLancado = ResourceFactory.createProperty(LOA("valorLancado"));
+		propertyArrecadado = ResourceFactory.createProperty(LOA("valorArrecadado"));
+		propertyRecolhido = ResourceFactory.createProperty(LOA("valorRecolhido"));
+
+		propertyProjetoLei = ResourceFactory.createProperty(LOA("valorProjetoLei"));
+		propertyDotacaoInicial = ResourceFactory.createProperty(LOA("valorDotacaoInicial"));
+		propertyLeiMaisCreditos = ResourceFactory.createProperty(LOA("valorLeiMaisCreditos"));
+		propertyEmpenhado = ResourceFactory.createProperty(LOA("valorEmpenhado"));
+		propertyLiquidado = ResourceFactory.createProperty(LOA("valorLiquidado"));
+		propertyPago = ResourceFactory.createProperty(LOA("valorPago"));
+
+		propertyValor = ResourceFactory.createProperty(LOA("valor"));
+		
+		label = ResourceFactory.createProperty(DC("title"));
+		
+		propertyMapper = new HashMap<String, Property>();
+		propertyMapper.put("Previsto", propertyPrevisto);
+		propertyMapper.put("Lancado", propertyLancado);
+		propertyMapper.put("Arrecadado", propertyArrecadado);
+		propertyMapper.put("Recolhido", propertyRecolhido);
+
+		propertyMapper.put("ProjetoLei", propertyProjetoLei);
+		propertyMapper.put("DotacaoInicial", propertyDotacaoInicial);
+		propertyMapper.put("LeiMaisCreditos", propertyLeiMaisCreditos);
+		propertyMapper.put("Empenhado", propertyEmpenhado);
+		propertyMapper.put("Liquidado", propertyLiquidado);
+		propertyMapper.put("Pago", propertyPago);
+	}
+	
 	public Database(String year) {
-		//TDBFactory.performTest();
-
-		//dataset = TDBFactory.createDataset(Database.class.getResource("tdb/" + year).getPath());
-		//dataset = TDBFactory.createDataset("/Users/Daniel/test/orcamento/tdbtest/" + year);
 		dataset = TDBFactory.createDataset(year);
 		model = dataset.getDefaultModel();
 
-		propertyDotacaoInicial = ResourceFactory.createProperty(LOA("valorDotacaoInicial"));
-		propertyPago = ResourceFactory.createProperty(LOA("valorPago"));
-		label = ResourceFactory.createProperty(RDF2("label"));
 	}
 	
 	// General
 	public String getTypeForResource(Resource resource) {
-		Resource type = model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getResource();
-		String[] s = type.getURI().split("#");
-		return s[1];	
+		String type = model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getLiteral().getString();
+		String[] s = type.split("/");
+		return s[s.length - 1];
 	}
 
 	public Resource getResourceForCodigo(String cod, String type) {
@@ -132,20 +170,19 @@ public class Database {
 			}
 			else
 				r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
-			
+
+			OResource resource;
 			if (map.containsKey(r)) {
-				OResource resource = (OResource)map.get(r);
-				resource.addDespesa(despesa);
-				resource.addValorLoa(getValorPropertyForDespesa(despesa, "DotacaoInicial"));
-				resource.addValorPago(getValorPropertyForDespesa(despesa, "Pago"));
+				resource = (OResource)map.get(r);
 			}
 			else {
-				OResource resource = new OResource(r);
-				resource.addDespesa(despesa);
-				resource.addValorLoa(getValorPropertyForDespesa(despesa, "DotacaoInicial"));
-				resource.addValorPago(getValorPropertyForDespesa(despesa, "Pago"));
-				
+				resource = new OResource(r);
 				map.put(r, resource);
+			}
+			
+			resource.addDespesa(despesa);
+			for (String key : propertyMapper.keySet()) {
+				resource.addValor(key, getValorPropertyForDespesa(despesa, key));
 			}
 		}
 
@@ -182,30 +219,20 @@ public class Database {
 	
 	public ResIterator getAll(String type) {
 		if (type.equals("GND")) type = "GrupoNatDespesa";
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA(type)));		
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), model.createLiteral(LOA(type)));		
 	}
 
 	// Orgao
 	public ResIterator getAllOrgaos() {
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("Orgao")));
+		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), model.createLiteral(LOA("Orgao")));
 	}
 	
 	public ResIterator getUnidadesForOrgao(Resource orgao) {
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temOrgao")), orgao);
 	}
-
-	// Unidade Orçamentária
-	public ResIterator getAllUnidades() {
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("UnidadeOrcamentaria")));
-	}
-
+	
 	public Resource getOrgaoForUnidade(Resource unidade) {
 		return model.getProperty(unidade, ResourceFactory.createProperty(LOA("temOrgao"))).getResource();
-	}
-
-	// Functions
-	public ResIterator getAllFunctions() {
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), ResourceFactory.createResource(LOA("Funcao")));
 	}
 
 	// Subtitle
@@ -235,6 +262,20 @@ public class Database {
 	}
 
 	// ItemDespesa
+	public StmtIterator getPropertiesForDespesa(Resource despesa) {
+		ArrayDeque<Statement> d = new ArrayDeque<Statement>();		
+
+		StmtIterator properties = despesa.listProperties();
+		while (properties.hasNext()) {
+			Statement stmt = properties.nextStatement();
+			Property property = stmt.getPredicate();
+			if (property.getLocalName().startsWith("tem") || property.getLocalName().startsWith("valor"))
+				d.add(stmt);
+		}
+
+		return new StmtIteratorImpl(d.iterator());
+	}
+
 	public Resource getPropertyForDespesa(Resource despesa, String property) {
 		if (property.equals("Orgao")) {
 			Resource unidade = getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
@@ -245,29 +286,32 @@ public class Database {
 		return stmt.getResource();
 	}
 	public long getValorPropertyForDespesa(Resource despesa, String property) {
-		Statement stmt = model.getProperty(despesa, property.equals("DotacaoInicial") ? propertyDotacaoInicial : propertyPago);
+		Statement stmt = model.getProperty(despesa, propertyMapper.get(property));
+		if (stmt == null) {
+			stmt = model.getProperty(despesa, propertyValor);
+			if (stmt == null) {
+				return 0;
+			}
+		}
+
 		return stmt.getLong();
 	}
 	
-	public HashMap<String, Long> valueForDespesas(ResIterator despesas) {
+	public HashMap valueForDespesas(ResIterator despesas) {
 		return valueForDespesas(despesas, null);
 	}
 
-	public HashMap<String, Long> valueForDespesas(ResIterator despesas, ArrayList<HashMap<String, String> > filter) {
+	public HashMap valueForDespesas(ResIterator despesas, ArrayList<HashMap<String, String> > filter) {
 		HashMap<String, Long> hm = new HashMap<String, Long>();
 		
-		long dotInicial = 0;
-		long pago = 0;
 		while (despesas.hasNext()) {
 			Resource r = despesas.nextResource();
 			if (filter != null && !performFilter(r, filter)) continue;
-
-			dotInicial += getValorPropertyForDespesa(r, "DotacaoInicial");
-			pago += getValorPropertyForDespesa(r, "Pago");
+			
+			for (String key : propertyMapper.keySet()) {
+				hm.put(key, (hm.get(key) != null ? hm.get(key) : 0) + getValorPropertyForDespesa(r, key));
+			}
 		}
-		
-		hm.put("DotacaoInicial", dotInicial);
-		hm.put("Pago", pago);
 
 		return hm;
 	}
