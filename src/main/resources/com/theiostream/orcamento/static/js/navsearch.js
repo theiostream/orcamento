@@ -1,7 +1,24 @@
+var datasets = {
+  "Despesas Federais": "federal",
+  "Despesas Estado de São Paulo": "estadual",
+  "Despesas Municípios de São Paulo": "municipal",
+  "Despesas Município de São Paulo": "sampa",
+  "Receitas Federais": "federalr",
+  "Receitas Estado de São Paulo": "estadualr",
+  "Receitas Municípios de São Paulo": "municipalr"
+}
+
 var searchyear;
+var searchset;
+
 function setSearchyear(s) {
 	searchyear = s;
 	$("#ddyear").attr("value", searchyear);
+}
+
+function setSearchset(s) {
+  searchset = s;
+  $("#ddset").attr("value", searchset);
 }
 
 function addTypeahead(el, isSearch, pfn, tfn) {
@@ -9,7 +26,7 @@ function addTypeahead(el, isSearch, pfn, tfn) {
 	var f = function(q, cb) {
 		if (timeout) clearTimeout(timeout);
 		timeout = setTimeout(function() {
-			$.post("/s", {year: el.find('.yearmenu').attr('data-sel'), query: q, count: 6}, function(data){
+			$.post("/s", {year: el.find('.yearmenu').attr('data-sel'), set: el.find('.setmenu').attr('data-sel'), query: q, count: 6}, function(data){
 				cb(JSON.parse(data));
 			});
 		}, 500);
@@ -35,7 +52,7 @@ function addTypeahead(el, isSearch, pfn, tfn) {
 	}).on("typeahead:selected", function(obj, data, name) {
 		if (data.type == 'placeholder') return;
 
-		if (isSearch) window.location = "/r/" + searchyear + "/" + data.type + "/" + data.codigo;
+		if (isSearch) window.location = "/r/" + searchset + "/" + searchyear + "/" + data.type + "/" + data.codigo;
 		else pfn(this, data);
 	});
 
@@ -45,20 +62,41 @@ function addTypeahead(el, isSearch, pfn, tfn) {
 	
 	// FIXME
 	var dd = el.find(".yearmenu");
-	for (var i=2000; i<2016; i++) {
+	for (var i=2000; i<2017; i++) {
 		dd.append('<li><a>' + i + '</a></li>');
 	}
+
+  var ee = el.find(".setmenu");
+  for (var i in datasets) {
+    ee.append('<li><a>' + i + '</a></li>');
+  }
 
 	if (isSearch) {
 		el.find(".yearbtn").html(searchyear + ' <span class="caret"></span>');
 		dd.attr('data-sel', searchyear);
+		
+    // FIXME this is likely the biggest gambiarra ive done in 5 years of programming
+    // i need to finish this i wanna go play civilization v
+    // i swear i dont do things like this at work
+    var x
+    for (x in datasets) {
+      if (datasets[x] == searchset) {
+        break
+      }
+    }
+
+    el.find(".setbtn").html(x + ' <span class="caret"></span>');
+		dd.attr('data-sel', searchset);
 	}
 	el.find('.dropdown-menu li a').on('click', function(){
-		if (isSearch) setSearchyear($(this).text()); /* danger: this assumes the only dropdown in isSearch cases is the year one */
-		
 		var dropdown = $(this).parent().parent();
+		if (isSearch) {
+      if (dropdown.hasClass('yearmenu')) setSearchyear($(this).text());
+      else if (dropdown.hasClass('setmenu')) setSearchset(datasets[$(this).text()])
+    }
+		
 		dropdown.siblings('button').html($(this).text() + ' <span class="caret"></span>');
-		dropdown.attr("data-sel", $(this).text());
+		dropdown.attr("data-sel", dropdown.hasClass('yearmenu') ? $(this).text() : datasets[$(this).text()]);
 
 		if (tfn != null) tfn(dropdown, $(this).text());
 	});

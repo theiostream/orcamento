@@ -26,8 +26,14 @@
 			<form action="/cs" method="GET" class="form-inline">
 				<div class="form-group" style="display: inline;">
 					<input type="hidden" name="y" id="ddyear">
+					<input type="hidden" name="set" id="ddset">					
 					<label class="sr-only" for="search">Pesquisa no Orçamento</label>
 					<div class="input-group" style="display: table;" id="search">
+						<div class="input-group-btn" style="width: 1%;">
+							<button type="button" class="btn btn-default dropdown-toggle setbtn" data-toggle="dropdown">Dataset <span class="caret"></span></button>
+							<ul class="dropdown-menu setmenu">
+							</ul>
+						</div>						
 						<div class="input-group-btn" style="width: 1%;">
 							<button type="button" class="btn btn-default dropdown-toggle yearbtn" data-toggle="dropdown">Ano <span class="caret"></span></button>
 							<ul class="dropdown-menu yearmenu">
@@ -35,7 +41,7 @@
 						</div>
 						<input class="form-control" type="text" name="s" placeholder="Pesquisa no Orçamento">
 						<div class="input-group-btn"><button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-search"></span></button></div>
-					</div>
+					</div>					
 				</div>
 			</form>
 		</div></div>

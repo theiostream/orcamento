@@ -90,8 +90,8 @@ function dots(v) {
 function urlinfo() {
 	var s = location.pathname.split('/');
 	return {
-    set: s[1],
-		req: s[2],
+    set: s[2],
+		req: s[1],
 		year: s[3],
 		type: s[4],
 		cod: s[5]
@@ -174,8 +174,15 @@ function fillInfo() {
 		}
 	});
 
-	if (i.req == "r" || i.req == "i" || i.req == "a") setSearchyear(i.year);
-	else setSearchyear("2000");
+	if (i.req == "r" || i.req == "i" || i.req == "a") {
+    console.log('set cool stuffz ' + i)
+    setSearchset(i.set);
+    setSearchyear(i.year);
+  }
+	else {
+    setSearchset("federal");
+    setSearchyear("2000");
+  }
 	
 	addTypeahead($("#search"), true);
 

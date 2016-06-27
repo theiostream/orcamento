@@ -526,7 +526,7 @@ public class App {
 				String ret = "[";
 
 				BrazilianAnalyzer analyzer = new BrazilianAnalyzer();
-				Path p = Paths.get("/Users/Daniel/test/orcamento/lucenetest/" + request.queryParams("year"));
+				Path p = Paths.get("/Users/Daniel/test/orcamento/lucenetest/" + request.queryParams("set") + "_" + request.queryParams("year"));
 				Directory dir = FSDirectory.open(p);
 
 				DirectoryReader reader = DirectoryReader.open(dir);
@@ -534,7 +534,7 @@ public class App {
 
 				QueryParser parser = new QueryParser("label", analyzer);
 				Query query = parser.parse(java.net.URLDecoder.decode(request.queryParams("query"), "UTF-8"));
-
+				
 				ScoreDoc[] hits = searcher.search(query, null, Integer.parseInt(request.queryParams("count"))).scoreDocs;
 				for (int i=0; i<hits.length; i++) {
 					Document hitDoc = searcher.doc(hits[i].doc);

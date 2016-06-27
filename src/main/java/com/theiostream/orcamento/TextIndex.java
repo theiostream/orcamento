@@ -28,7 +28,8 @@ public class TextIndex {
 		IndexWriter iwriter = new IndexWriter(dir, config);
 
 		int i=0;
-		String[] types = { "Orgao", "UnidadeOrcamentaria", "Funcao", "Subfuncao", "Programa", "Projeto", "OperacaoEspecial", "Atividade" };
+		// FIXME This should be config-dependent
+		String[] types = { "Alinea", "Origem", "Subalinea", "Rubrica", "ElementoDeDespesa", "GND", "Funcao", "Subfuncao", "Programa", "Acao", "Credor", "Municipio", "Orgao", "OrgaoSuperior", "UnidadeGestora", "UnidadeOrcamentaria" };
 		for (String type : types) {
 			ResIterator all = db.getAll(type);
 			while (all.hasNext()) {
@@ -41,9 +42,6 @@ public class TextIndex {
 				if (cod == null || name == null) continue;
 				
 				String t = type;
-				if (t.equals("Projeto") || t.equals("Atividade") || t.equals("OperacaoEspecial"))
-					t = "Acao";
-
 				doc.add(new Field("codigo", cod, TextField.TYPE_STORED));
 				doc.add(new Field("type", t, TextField.TYPE_STORED));
 				doc.add(new Field("label", name, TextField.TYPE_STORED));

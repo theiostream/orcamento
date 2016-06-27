@@ -37,7 +37,7 @@ var cache = null;
 var filter = {};
 function reload() {
 	if (cache == null) {
-		$.post("/s", {year: getURLParameter("y"), query: getURLParameter("s"), count: 1000}, function(data){
+		$.post("/s", {year: getURLParameter("y"), set: getURLParameter("set"), query: getURLParameter("s"), count: 1000}, function(data){
 			cache = JSON.parse(data);
 			reload_(filter);
 		});
@@ -53,7 +53,7 @@ function reload_(filter) {
 		if (filter[d.type] == true) return;
 
 		var style =
-			'<a style="text-decoration: none;" href="/r/' + getURLParameter("y") + "/" + d.type + "/" + d.codigo + '">'
+			'<a style="text-decoration: none;" href="/r/' + getURLParameter("set") + "/" + getURLParameter("y") + "/" + d.type + "/" + d.codigo + '">'
 			+ '	<p class="lead" style="color: #0066CC;">' + d.value + '</p>'
 			+ '	<p style="margin-top: -7px; font-size: 13pt; color: #757575;">' + translatetype[d.type] + ' – ' + d.codigo + '</p>'
 			+ '</a>';
