@@ -3,8 +3,8 @@
 # inflacao.sh
 # Get inflation data from Brazilian Central Bank and print to stdout 
 
-CURRENT_DATE="03%2F2015"
-YEAR="2015"
+CURRENT_DATE="03%2F2016"
+YEAR="2016"
 
 function inflation_year() {
 	RQ="aba=1&dataInicial=01%2F${1}&dataFinal=${CURRENT_DATE}&valorCorrecao=1%2C00&idIndice=&nomeIndicePadrao=&selIndice=10764IPC-E"

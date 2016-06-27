@@ -454,6 +454,8 @@ public class App {
 			return "{ \"name\": \"" + years.lastEntry().getKey() + "\", \"parent\": \"Despesas Históricas\", \"values\": " + values + "}";
 		});
 		get("/h/:set/:type/:org/d", (request, response) -> {
+			response.type("application/json");			
+			
 			int rinfo = Integer.parseInt(request.queryParams("rinfo"));
 			
 			HashMap<String, Double> inflation;
@@ -468,19 +470,25 @@ public class App {
 			String ret = "[";
 
 			for (HashMap.Entry<String, Database> entry : databases.entrySet()) {
+				String[] info = entry.getKey().split("_");
+				String dataset = info[0];
+				if (!dataset.equals(request.params(":set"))) continue;
+				String year = info[1];
+				
 				Database db = entry.getValue();
 				Resource r = db.getResourceForCodigo(request.params(":org"), request.params(":type"));
 				if (r == null) { continue; }
 
 				double inf;
-				if (inflation != null) inf = 1 + (inflation.get(entry.getKey()) / 100);
+				double i = inflation.get(year);
+				if (inflation != null) inf = 1 + (i / 100);
 				else inf = 0;
 
 				HashMap<String, Long> value = db.valueForDespesas(db.getDespesasForResource(r));
 				
 				switch (rinfo) {
 					case 1:
-						ret = ret.concat("{ \"letter\": \"" + entry.getKey() + "\", \"loa\": " + value.get("DotacaoInicial") + ", \"pago\": " + value.get("Pago") + ", \"infloa\": " + value.get("DotacaoInicial")*inf + ", \"infpago\": " + value.get("Pago")*inf + "},");
+						ret = ret.concat("{ \"letter\": \"" + year + "\", \"loa\": " + value.get("DotacaoInicial") + ", \"pago\": " + value.get("Pago") + ", \"infloa\": " + value.get("DotacaoInicial")*inf + ", \"infpago\": " + value.get("Pago")*inf + "},");
 						break;
 					default:
 						break;
