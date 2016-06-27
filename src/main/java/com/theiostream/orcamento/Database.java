@@ -6,6 +6,8 @@ import static com.theiostream.orcamento.OrcamentoUtils.*;
 import com.theiostream.orcamento.OResource;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.ontology.*;
+
 import com.hp.hpl.jena.rdf.model.impl.ResIteratorImpl;
 import com.hp.hpl.jena.rdf.model.impl.StmtIteratorImpl;
 import com.hp.hpl.jena.tdb.TDBFactory;
@@ -17,10 +19,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.net.URL;
+import java.io.InputStream;
 
 public class Database {
 	protected Dataset dataset;
 	protected Model model;
+	protected OntModel ontologyModel;
 	
 	private static final Property propertyPrevisto;
 	private static final Property propertyLancado;
@@ -73,12 +78,26 @@ public class Database {
 	public Database(String year) {
 		dataset = TDBFactory.createDataset(year);
 		model = dataset.getDefaultModel();
-
+		
+		ontologyModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+		try {
+			URL ont = Database.class.getResource("OrcamentoFederalBrasileiro.owl");
+			InputStream in = ont.openStream();
+			ontologyModel.read(in, null);
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			ontologyModel = null;
+		}
 	}
 	
 	// General
+	public String getRawTypeForResource(Resource resource) {
+		return model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getLiteral().getString();
+	}
+
 	public String getTypeForResource(Resource resource) {
-		String type = model.getProperty(resource, ResourceFactory.createProperty(RDF("type"))).getLiteral().getString();
+		String type = getRawTypeForResource(resource);
 		String[] s = type.split("/");
 		return s[s.length - 1];
 	}
@@ -89,15 +108,7 @@ public class Database {
 			Resource r = res.nextResource();
 			String t = getTypeForResource(r);
 
-			if (type.equals("Acao")) {
-				if (t.equals(type) || t.equals("OperacaoEspecial") || t.equals("Projeto") || t.equals("Atividade")) {
-					return r;
-				}
-			}
-			else if (type.equals("GND")) {
-				if (t.equals("GrupoNatDespesa")) return r;
-			}
-			else if (t.equals(type)) return r;
+			if (t.equals(type)) return r;
 		}
 		
 		return null;
@@ -163,10 +174,18 @@ public class Database {
 				}
 			}
 			
-			Resource r;
-			if (rname.equals("Orgao")) {
-				Resource u = model.getProperty(despesa, ResourceFactory.createProperty(LOA("temUnidadeOrcamentaria"))).getResource();
-				r = model.getProperty(u, ResourceFactory.createProperty(LOA("temOrgao"))).getResource();
+			Resource r = null;
+			OntClass cl = ontologyModel.getOntClass(LOA(rname));
+			if (cl.hasSuperClass(ontologyModel.getOntClass(LOA("Gestor")))) {
+				Resource g = model.getProperty(despesa, ResourceFactory.createProperty(LOA("temGestor"))).getResource();
+				while (g != null) {
+					if (getTypeForResource(g).equals(rname)) {
+						r = g;
+						break;
+					}
+
+					g = model.getProperty(g, ResourceFactory.createProperty(LOA("temSubgestor"))).getResource();
+				}
 			}
 			else
 				r = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + rname))).getResource();
@@ -190,49 +209,31 @@ public class Database {
 	}	
 
 	public ResIterator getDespesasForResource(Resource resource) {
-		String typeString = getTypeForResource(resource);
+		String type = getRawTypeForResource(resource);
+		String typeString;
 		
-		if (typeString.equals("Orgao")) {
-			ArrayDeque<Resource> d = new ArrayDeque<Resource>();
-
-			ResIterator unidades = getUnidadesForOrgao(resource);
-			while (unidades.hasNext()) {
-				Resource unidade = unidades.nextResource();
-				ResIterator despesas = getDespesasForResource(unidade);
-				
-				while (despesas.hasNext())
-					d.add(despesas.nextResource());
+		OntClass cl = ontologyModel.getOntClass(type);
+		if (cl.hasSuperClass(ontologyModel.getOntClass(LOA("Gestor")))) {
+			Resource superGestor = resource;
+			while (true) {
+				ResIterator superGestores = model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temSubgestor")), superGestor);
+				if (!superGestores.hasNext()) {
+					break;
+				}
+				superGestor = superGestores.nextResource();
 			}
-
-			return new ResIteratorImpl(d.iterator());
+			
+			resource = superGestor;
+			typeString = "Gestor";
 		}
-
-		if (typeString.equals("Atividade") || typeString.equals("Projeto") || typeString.equals("OperacaoEspecial")) {
-			typeString = "Acao";
-		}
-		else if (typeString.equals("GrupoNatDespesa")) {
-			typeString = "GND";
-		}
-
+		else
+			typeString = getTypeForResource(resource);
+		
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("tem" + typeString)), resource);
 	}
 	
 	public ResIterator getAll(String type) {
-		if (type.equals("GND")) type = "GrupoNatDespesa";
 		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), model.createLiteral(LOA(type)));		
-	}
-
-	// Orgao
-	public ResIterator getAllOrgaos() {
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(RDF("type")), model.createLiteral(LOA("Orgao")));
-	}
-	
-	public ResIterator getUnidadesForOrgao(Resource orgao) {
-		return model.listSubjectsWithProperty(ResourceFactory.createProperty(LOA("temOrgao")), orgao);
-	}
-	
-	public Resource getOrgaoForUnidade(Resource unidade) {
-		return model.getProperty(unidade, ResourceFactory.createProperty(LOA("temOrgao"))).getResource();
 	}
 
 	// Subtitle
@@ -277,11 +278,15 @@ public class Database {
 	}
 
 	public Resource getPropertyForDespesa(Resource despesa, String property) {
-		if (property.equals("Orgao")) {
-			Resource unidade = getPropertyForDespesa(despesa, "UnidadeOrcamentaria");
-			return getOrgaoForUnidade(unidade);
-		}
-
+		OntClass cl = ontologyModel.getOntClass(LOA(property));
+		if (cl.hasSuperClass(ontologyModel.getOntClass(LOA("Gestor")))) {
+			Resource gestor = model.getProperty(despesa, ResourceFactory.createProperty(LOA("temGestor"))).getResource();
+			while ((gestor = model.getProperty(gestor, ResourceFactory.createProperty(LOA("temSubgestor"))).getResource()) != null) {
+				if (getTypeForResource(gestor).equals(property)) return gestor;
+			}
+			return null;
+		}		
+		
 		Statement stmt = model.getProperty(despesa, ResourceFactory.createProperty(LOA("tem" + property)));
 		return stmt.getResource();
 	}

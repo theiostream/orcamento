@@ -185,11 +185,11 @@ public class App {
 			String name = db.getLabelForResource(res);
 
 			String parent = null, org = null;
-			if (type.equals("UnidadeOrcamentaria")) {
+			/*if (type.equals("UnidadeOrcamentaria")) {
 				Resource orgao = db.getOrgaoForUnidade(res);
 				parent = db.getLabelForResource(orgao);
 				org = "\"Órgão\":\""+parent+"\",";
-			}
+			}*/
 
 			ResIterator despesas = db.getDespesasForResource(res);
 			
