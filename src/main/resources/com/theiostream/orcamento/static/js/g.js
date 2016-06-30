@@ -33,7 +33,6 @@ var hierarchy = false;
 var info;
 
 var keymap;
-var table_keymap;
 
 /* Utilities {{{ */
 
@@ -472,9 +471,9 @@ function createItemTable(id) {
 	container.appendChild(row);
 }
 
-function populateItemTables(ids) {
+function populateItemTables(ids, keys) {
   d3.json(documentURL() + "/d", function(data) {
-		var columns = table_keymap;
+		var columns = keys;
 		
 		for (var i = 0; i<ids.length; i++) {
 			//document.getElementById(ids[i] + "-itemslabel").innerHTML = Object.keys(data)[i];
@@ -483,7 +482,7 @@ function populateItemTables(ids) {
 			var thead = table.append("thead");
 			var tbody = table.append("tbody");
 
-			thead.append("tr")
+      thead.append("tr")
 				.selectAll("th")
 				.data(columns)
 				.enter().append("th")
