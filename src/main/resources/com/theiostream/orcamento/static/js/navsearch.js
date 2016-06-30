@@ -2,7 +2,7 @@ var datasets = {
   "Despesas Federais": "federal",
   "Despesas Estado de São Paulo": "estadual",
   "Despesas Municípios de São Paulo": "municipal",
-  "Despesas Município de São Paulo": "sampa",
+  "Despesas Município de São Paulo": "capital",
   "Receitas Federais": "federalr",
   "Receitas Estado de São Paulo": "estadualr",
   "Receitas Municípios de São Paulo": "municipalr"
@@ -86,7 +86,7 @@ function addTypeahead(el, isSearch, pfn, tfn) {
     }
 
     el.find(".setbtn").html(x + ' <span class="caret"></span>');
-		dd.attr('data-sel', searchset);
+		ee.attr('data-sel', searchset);
 	}
 	el.find('.dropdown-menu li a').on('click', function(){
 		var dropdown = $(this).parent().parent();
