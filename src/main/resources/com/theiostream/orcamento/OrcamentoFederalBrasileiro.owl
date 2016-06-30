@@ -1,0 +1,2103 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY terms "http://purl.org/dc/terms/" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY swrl "http://www.w3.org/2003/11/swrl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY swrlb "http://www.w3.org/2003/11/swrlb#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY skos "http://www.w3.org/2004/02/skos/core#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY OrcamentoPublicoBrasileiro "http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#" >
+    <!ENTITY bra "http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/" >
+]>
+
+
+<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
+     xml:base="http://www.w3.org/2002/07/owl"
+     xmlns:bra="http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:OrcamentoPublicoBrasileiro="http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <Ontology rdf:about="http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl">
+        <rdfs:comment rdf:datatype="&xsd;string">Ontologia do Orçamento Público Federal Brasileiro. Esta ontologia foi desenvolvida de acordo com o Manual Técnico do Orçamento - MTO 2012.</rdfs:comment>
+        <dc:creator rdf:resource="&bra;Livio_Cravo_Martins"/>
+    </Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/creator -->
+
+    <rdf:Description rdf:about="&dc;creator">
+        <rdfs:label xml:lang="en">Creator</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">An entity primarily responsible for making the resource.</rdfs:comment>
+        <terms:description xml:lang="en">Examples of a Creator include a person, an organization, or a service. Typically, the name of a Creator should be used to indicate the entity.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#creator-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    
+
+
+    <!-- http://purl.org/dc/terms/description -->
+
+    <AnnotationProperty rdf:about="&terms;description"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/hasVersion -->
+
+    <AnnotationProperty rdf:about="&terms;hasVersion"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/issued -->
+
+    <AnnotationProperty rdf:about="&terms;issued"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/modified -->
+
+    <AnnotationProperty rdf:about="&terms;modified"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/publisher -->
+
+    <AnnotationProperty rdf:about="&terms;publisher"/>
+    
+
+
+    <!-- http://purl.org/dc/terms/title -->
+
+    <AnnotationProperty rdf:about="&terms;title"/>
+    
+
+
+    <!-- http://www.w3.org/2004/02/skos/core#note -->
+
+    <AnnotationProperty rdf:about="&skos;note"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#date -->
+
+    <rdfs:Datatype rdf:about="&xsd;date"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/acaoTem -->
+
+    <ObjectProperty rdf:about="&bra;acaoTem">
+        <rdfs:domain rdf:resource="&bra;Acao"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/compoeProjeto -->
+
+    <ObjectProperty rdf:about="&bra;compoeProjeto"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/despesaTem -->
+
+    <ObjectProperty rdf:about="&bra;despesaTem">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&bra;Despesa"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/eCompostoPorEtapa -->
+
+    <ObjectProperty rdf:about="&bra;eCompostoPorEtapa">
+        <rdfs:range rdf:resource="&bra;Etapa"/>
+        <rdfs:domain rdf:resource="&bra;Projeto"/>
+        <inverseOf rdf:resource="&bra;compoeProjeto"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/eDetalhadoPorEspecificacaoDaFonteDestinacao -->
+
+    <ObjectProperty rdf:about="&bra;eDetalhadoPorEspecificacaoDaFonteDestinacao">
+        <rdfs:range rdf:resource="&bra;EspecificacaoDaFonteDestinacao"/>
+        <rdfs:domain rdf:resource="&bra;GrupoDaFonteDestinacao"/>
+        <inverseOf rdf:resource="&bra;temDetalhamentoDoGrupoDaFonteDestinacao"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/eDetalhadoPorEspecificacaoDoGrupoDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;eDetalhadoPorEspecificacaoDoGrupoDaReceita">
+        <rdfs:range rdf:resource="&bra;EspecificacaoGrupoDaReceita"/>
+        <rdfs:domain rdf:resource="&bra;SubgrupoDaReceita"/>
+        <inverseOf rdf:resource="&bra;temDetalhamentoDoSubgrupoDaReceita"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/eDetalhadoPorSubgrupoDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;eDetalhadoPorSubgrupoDaReceita">
+        <rdfs:domain rdf:resource="&bra;GrupoDaReceita"/>
+        <rdfs:range rdf:resource="&bra;SubgrupoDaReceita"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/eImpactadaPorProjeto -->
+
+    <ObjectProperty rdf:about="&bra;eImpactadaPorProjeto">
+        <rdfs:range rdf:resource="&bra;Projeto"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;acaoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/impactaAcao -->
+
+    <ObjectProperty rdf:about="&bra;impactaAcao">
+        <rdfs:range rdf:resource="&bra;Acao"/>
+        <rdfs:domain rdf:resource="&bra;Projeto"/>
+        <inverseOf rdf:resource="&bra;eImpactadaPorProjeto"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/orcamentoTem -->
+
+    <ObjectProperty rdf:about="&bra;orcamentoTem">
+        <rdfs:domain rdf:resource="&bra;Orcamento"/>
+        <inverseOf rdf:resource="&bra;pertenceAOrcamento"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/pertenceAOrcamento -->
+
+    <ObjectProperty rdf:about="&bra;pertenceAOrcamento">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;Orcamento"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/receitaTem -->
+
+    <ObjectProperty rdf:about="&bra;receitaTem">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&bra;Receita"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temAcao -->
+
+    <ObjectProperty rdf:about="&bra;temAcao">
+        <rdfs:range rdf:resource="&bra;Acao"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temAlinea -->
+
+    <ObjectProperty rdf:about="&bra;temAlinea">
+        <rdfs:range rdf:resource="&bra;Alinea"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                    <rdf:Description rdf:about="&bra;Rubrica"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temBaseLegal -->
+
+    <ObjectProperty rdf:about="&bra;temBaseLegal">
+        <rdfs:range rdf:resource="&bra;BaseLegal"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;acaoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temCategoriaEconomicaDaDespesa -->
+
+    <ObjectProperty rdf:about="&bra;temCategoriaEconomicaDaDespesa">
+        <rdfs:range rdf:resource="&bra;CategoriaEconomicaDaDespesa"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temCategoriaEconomicaDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;temCategoriaEconomicaDaReceita">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;CategoriaEconomicaDaReceita"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;receitaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temClassificacaoDoGrupoDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;temClassificacaoDoGrupoDaReceita">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;EspecificacaoGrupoDaReceita"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;receitaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temCredor -->
+
+    <ObjectProperty rdf:about="&bra;temCredor">
+        <rdfs:range rdf:resource="&bra;Credor"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temDespesa -->
+
+    <ObjectProperty rdf:about="&bra;temDespesa">
+        <rdfs:range rdf:resource="&bra;Despesa"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;orcamentoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temDestino -->
+
+    <ObjectProperty rdf:about="&bra;temDestino">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;EspecificacaoDaFonteDestinacao"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;receitaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temDetalhamentoDoGrupoDaFonteDestinacao -->
+
+    <ObjectProperty rdf:about="&bra;temDetalhamentoDoGrupoDaFonteDestinacao">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&bra;EspecificacaoDaFonteDestinacao"/>
+        <rdfs:range rdf:resource="&bra;GrupoDaFonteDestinacao"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temDetalhamentoDoGrupoDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;temDetalhamentoDoGrupoDaReceita">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;GrupoDaReceita"/>
+        <rdfs:domain rdf:resource="&bra;SubgrupoDaReceita"/>
+        <inverseOf rdf:resource="&bra;eDetalhadoPorSubgrupoDaReceita"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temDetalhamentoDoSubgrupoDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;temDetalhamentoDoSubgrupoDaReceita">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:domain rdf:resource="&bra;EspecificacaoGrupoDaReceita"/>
+        <rdfs:range rdf:resource="&bra;SubgrupoDaReceita"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temElementoDeDespesa -->
+
+    <ObjectProperty rdf:about="&bra;temElementoDeDespesa">
+        <rdfs:range rdf:resource="&bra;ElementoDeDespesa"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;ModalidadeDeAplicacao"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temEsfera -->
+
+    <ObjectProperty rdf:about="&bra;temEsfera">
+        <rdfs:range rdf:resource="&bra;Esfera"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temEspecie -->
+
+    <ObjectProperty rdf:about="&bra;temEspecie">
+        <rdfs:range rdf:resource="&bra;Especie"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Origem"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temFonte -->
+
+    <ObjectProperty rdf:about="&bra;temFonte">
+        <rdfs:range rdf:resource="&bra;EspecificacaoDaFonteDestinacao"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temFormaDeImplementacao -->
+
+    <ObjectProperty rdf:about="&bra;temFormaDeImplementacao">
+        <rdfs:range rdf:resource="&bra;FormaDeImplementacao"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;acaoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temFuncao -->
+
+    <ObjectProperty rdf:about="&bra;temFuncao">
+        <rdfs:range rdf:resource="&bra;Funcao"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temGND -->
+
+    <ObjectProperty rdf:about="&bra;temGND">
+        <rdfs:range rdf:resource="&bra;GND"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;CategoriaEconomicaDaDespesa"/>
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temGestor -->
+
+    <ObjectProperty rdf:about="&bra;temGestor">
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temIDOC -->
+
+    <ObjectProperty rdf:about="&bra;temIDOC">
+        <rdfs:range rdf:resource="&bra;Idoc"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temIDResultadoPrimarioDaDespesa -->
+
+    <ObjectProperty rdf:about="&bra;temIDResultadoPrimarioDaDespesa">
+        <rdfs:range rdf:resource="&bra;IdentificadorResultadoPrimarioDespesa"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temIDResultadoPrimarioDaReceita -->
+
+    <ObjectProperty rdf:about="&bra;temIDResultadoPrimarioDaReceita">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;IdentificadorResultadoPrimarioReceita"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;receitaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temIDUSO -->
+
+    <ObjectProperty rdf:about="&bra;temIDUSO">
+        <rdfs:range rdf:resource="&bra;Iduso"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temMeta -->
+
+    <ObjectProperty rdf:about="&bra;temMeta">
+        <rdfs:range rdf:resource="&bra;Meta"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;acaoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temModalidadeDeAplicacao -->
+
+    <ObjectProperty rdf:about="&bra;temModalidadeDeAplicacao">
+        <rdfs:range rdf:resource="&bra;ModalidadeDeAplicacao"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;GrupoDaFonteDestinacao"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temOrigem -->
+
+    <ObjectProperty rdf:about="&bra;temOrigem">
+        <rdfs:range rdf:resource="&bra;Origem"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;CategoriaEconomicaDaReceita"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temPrograma -->
+
+    <ObjectProperty rdf:about="&bra;temPrograma">
+        <rdfs:range rdf:resource="&bra;Programa"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;despesaTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temReceita -->
+
+    <ObjectProperty rdf:about="&bra;temReceita">
+        <rdfs:range rdf:resource="&bra;Receita"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;orcamentoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temRubrica -->
+
+    <ObjectProperty rdf:about="&bra;temRubrica">
+        <rdfs:range rdf:resource="&bra;Rubrica"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Especie"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temSubalinea -->
+
+    <ObjectProperty rdf:about="&bra;temSubalinea">
+        <rdfs:range rdf:resource="&bra;Subalinea"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Alinea"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temSubelemento -->
+
+    <ObjectProperty rdf:about="&bra;temSubelemento">
+        <rdfs:range rdf:resource="&bra;Subelemento"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;ElementoDeDespesa"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temSubfuncao -->
+
+    <ObjectProperty rdf:about="&bra;temSubfuncao">
+        <rdfs:range rdf:resource="&bra;Subfuncao"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;Funcao"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temSubgestor -->
+
+    <ObjectProperty rdf:about="&bra;temSubgestor">
+        <rdfs:range rdf:resource="&bra;Gestor"/>
+        <rdfs:domain rdf:resource="&bra;Gestor"/>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temSubtitulo -->
+
+    <ObjectProperty rdf:about="&bra;temSubtitulo">
+        <rdfs:range rdf:resource="&bra;Subtitulo"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Acao"/>
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/temUnidadeDeMedida -->
+
+    <ObjectProperty rdf:about="&bra;temUnidadeDeMedida">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&bra;UnidadeDeMedida"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;acaoTem"/>
+    </ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/title -->
+
+    <DatatypeProperty rdf:about="&dc;title">
+        <rdfs:label xml:lang="en">Title</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <rdfs:comment xml:lang="en">A name given to the resource.</rdfs:comment>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#title-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/title/date -->
+
+    <DatatypeProperty rdf:about="&dc;title/date">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&rdfs;Literal"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#custoTotalEstimado -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;custoTotalEstimado">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#descricao -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;descricao">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#detalhamento -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;detalhamento">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#especificacaoDoProduto -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;especificacaoDoProduto">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#justificativaDoImpacto -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;justificativaDoImpacto">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#mes -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;mes">
+        <rdfs:subPropertyOf rdf:resource="&dc;title/date"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#numero -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;numero">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;int"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl#status -->
+
+    <DatatypeProperty rdf:about="&OrcamentoPublicoBrasileiro;status">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/codigo -->
+
+    <DatatypeProperty rdf:about="&bra;codigo">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/cronograma -->
+
+    <DatatypeProperty rdf:about="&bra;cronograma">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/dataDeAtualizacao -->
+
+    <DatatypeProperty rdf:about="&bra;dataDeAtualizacao">
+        <rdfs:label xml:lang="pt">Data de Atualização</rdfs:label>
+        <rdfs:comment xml:lang="pt">Informa a data em que o dado foi inserido/modificado na base.</rdfs:comment>
+        <rdfs:subPropertyOf rdf:resource="&dc;title/date"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/dataDeInicio -->
+
+    <DatatypeProperty rdf:about="&bra;dataDeInicio">
+        <rdfs:label xml:lang="pt">Data de Início</rdfs:label>
+        <rdfs:comment xml:lang="pt">Informa a data de início de uma etapa de um projeto.</rdfs:comment>
+        <rdfs:subPropertyOf rdf:resource="&dc;title/date"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/dataDeTermino -->
+
+    <DatatypeProperty rdf:about="&bra;dataDeTermino">
+        <rdfs:label xml:lang="pt">Data de Término</rdfs:label>
+        <rdfs:comment xml:lang="pt">Informa a data do término de uma etapa de um projeto.</rdfs:comment>
+        <rdfs:subPropertyOf rdf:resource="&dc;title/date"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/exercicio -->
+
+    <DatatypeProperty rdf:about="&bra;exercicio">
+        <rdfs:label xml:lang="pt">Exercício</rdfs:label>
+        <rdfs:subPropertyOf rdf:resource="&dc;title/date"/>
+        <rdfs:domain>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                </unionOf>
+            </Class>
+        </rdfs:domain>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/finalidade -->
+
+    <DatatypeProperty rdf:about="&bra;finalidade">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/totalFisico -->
+
+    <DatatypeProperty rdf:about="&bra;totalFisico">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;integer"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/unidadeResponsavel -->
+
+    <DatatypeProperty rdf:about="&bra;unidadeResponsavel">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valor -->
+
+    <DatatypeProperty rdf:about="&bra;valor">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:range rdf:resource="&xsd;double"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorArrecadado -->
+
+    <DatatypeProperty rdf:about="&bra;valorArrecadado">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorBrutoArrecadado -->
+
+    <DatatypeProperty rdf:about="&bra;valorBrutoArrecadado">
+        <rdfs:subPropertyOf rdf:resource="&bra;valorArrecadado"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorDotacaoInicial -->
+
+    <DatatypeProperty rdf:about="&bra;valorDotacaoInicial">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorEmpenhado -->
+
+    <DatatypeProperty rdf:about="&bra;valorEmpenhado">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorLancado -->
+
+    <DatatypeProperty rdf:about="&bra;valorLancado">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorLeiMaisCreditos -->
+
+    <DatatypeProperty rdf:about="&bra;valorLeiMaisCreditos">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorLiquidado -->
+
+    <DatatypeProperty rdf:about="&bra;valorLiquidado">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorLiquidoArrecadado -->
+
+    <DatatypeProperty rdf:about="&bra;valorLiquidoArrecadado">
+        <rdfs:subPropertyOf rdf:resource="&bra;valorArrecadado"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorPago -->
+
+    <DatatypeProperty rdf:about="&bra;valorPago">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorPrevisto -->
+
+    <DatatypeProperty rdf:about="&bra;valorPrevisto">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorProjetoLei -->
+
+    <DatatypeProperty rdf:about="&bra;valorProjetoLei">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/valorRecolhido -->
+
+    <DatatypeProperty rdf:about="&bra;valorRecolhido">
+        <rdfs:subPropertyOf rdf:resource="&bra;valor"/>
+    </DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://purl.org/dc/terms/Agent -->
+
+    <Class rdf:about="&terms;Agent"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Acao -->
+
+    <Class rdf:about="&bra;Acao">
+        <rdfs:label xml:lang="en">Action</rdfs:label>
+        <rdfs:label xml:lang="pt">Ação</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <intersectionOf rdf:parseType="Collection">
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;temBaseLegal"/>
+                        <someValuesFrom rdf:resource="&bra;BaseLegal"/>
+                    </Restriction>
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;temFormaDeImplementacao"/>
+                        <someValuesFrom rdf:resource="&bra;FormaDeImplementacao"/>
+                    </Restriction>
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;temMeta"/>
+                        <someValuesFrom rdf:resource="&bra;Meta"/>
+                    </Restriction>
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;temUnidadeDeMedida"/>
+                        <someValuesFrom rdf:resource="&bra;UnidadeDeMedida"/>
+                    </Restriction>
+                </intersectionOf>
+            </Class>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Operação da qual resultam produtos (bens ou serviços) que contribuem para atender ao objetivo de um programa. Incluem-se também no conceito de ação as transferências obrigatórias ou voluntárias a outros entes da Federação e a pessoas físicas e jurídicas, na forma de subsídios, subvenções, auxílios, contribuições, entre outros, e os financiamentos.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Alinea -->
+
+    <Class rdf:about="&bra;Alinea">
+        <rdfs:label xml:lang="en">Paragraph</rdfs:label>
+        <rdfs:label xml:lang="pt">Alínea</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A alínea é o detalhamento da rubrica e identifica o nome da receita que receberá o registro pela entrada de recursos financeiros. Por exemplo, a alínea Imposto sobre a Renda e Proventos de Qualquer Natureza corresponde ao detalhamento da rubrica Impostos sobre o Patrimônio e a Renda. Corresponde ao 5º e 6º dígitos da Natureza.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Atividade -->
+
+    <Class rdf:about="&bra;Atividade">
+        <rdfs:label xml:lang="en">Activity</rdfs:label>
+        <rdfs:label xml:lang="pt">Atividade</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Acao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Instrumento de programação utilizado para alcançar o objetivo de um programa, envolvendo um conjunto de operações que se realizam de modo contínuo e permanente, das quais resulta um produto ou serviço necessário à manutenção da ação de Governo. Exemplo: ação 4339 Qualificação da Regulação e Fiscalização da Saúde Suplementar. O Código inicia com os números 2,4,6 ou 8.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/BaseLegal -->
+
+    <Class rdf:about="&bra;BaseLegal">
+        <rdfs:label xml:lang="en">LegalGrounds</rdfs:label>
+        <rdfs:label xml:lang="pt">Base Legal</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment xml:lang="pt">Informa qual lei regula aquela receita/despesa.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/CategoriaEconomicaDaDespesa -->
+
+    <Class rdf:about="&bra;CategoriaEconomicaDaDespesa">
+        <rdfs:label xml:lang="en">EconomicCategoryOfSpending</rdfs:label>
+        <rdfs:label xml:lang="pt">Categoria Econômica da Despesa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A despesa, assim como a receita, é classificada em duas categorias econômicas, com os seguintes códigos:
+3 – Despesas Correntes: as que não contribuem, diretamente, para a formação ou aquisição de um bem de capital.
+4 – Despesas de Capital: as que contribuem, diretamente, para a formação ou aquisição de um bem de capital.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/CategoriaEconomicaDaReceita -->
+
+    <Class rdf:about="&bra;CategoriaEconomicaDaReceita">
+        <rdfs:label xml:lang="en">EconomicCategoryOfRevenue</rdfs:label>
+        <rdfs:label xml:lang="pt">Categoria Econômica da Receita</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Nível de menor detalhe da classificação por natureza de uma receita. Representa o primeiro digito da classificação por natureza.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Credor -->
+
+    <Class rdf:about="&bra;Credor">
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Despesa -->
+
+    <Class rdf:about="&bra;Despesa">
+        <rdfs:label xml:lang="en">Expense</rdfs:label>
+        <rdfs:label xml:lang="pt">Despesa Orçamentária</rdfs:label>
+        <rdfs:comment rdf:datatype="&xsd;string">Classe na qual o usuário irá inserir as despesas do governo. Uma instância de Despesa pertence a um orçamento, possui uma Ação, um Idoc, uma Esfera, uma Especificação da Fonte, um Identificador de Resultado Primário e uma Classificação da Natureza da Despesa.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Despesa2010 -->
+
+    <Class rdf:about="&bra;Despesa2010">
+        <rdfs:label xml:lang="en">Expense2010</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <Class>
+                        <complementOf rdf:resource="&bra;Despesas/Despesa2011"/>
+                    </Class>
+                </intersectionOf>
+            </Class>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;Despesa"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/ElementoDeDespesa -->
+
+    <Class rdf:about="&bra;ElementoDeDespesa">
+        <rdfs:label xml:lang="en">ExpenseElement</rdfs:label>
+        <rdfs:label xml:lang="pt">Elemento de Depesa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">O elemento de despesa tem por finalidade identificar os objetos de gasto, tais como vencimentos e vantagens fixas, juros, diárias, material de consumo, serviços de terceiros prestados sob qualquer forma, subvenções sociais, obras e instalações, equipamentos e material permanente, auxílios, amortização e outros que a Administração Pública utiliza para a consecução de seus fins.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/EntidadeVinculada -->
+
+    <Class rdf:about="&bra;EntidadeVinculada">
+        <rdfs:label xml:lang="pt">Entidade Vinculada</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Gestor"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Esfera -->
+
+    <Class rdf:about="&bra;Esfera">
+        <rdfs:label xml:lang="en">Sphere</rdfs:label>
+        <rdfs:label xml:lang="pt">Esfera</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Na LOA, a esfera tem por finalidade identificar se a despesa pertence ao Orçamento Fiscal (F), da Seguridade Social (S) ou de Investimento das Empresas Estatais (I), conforme disposto no § 5o do art. 165 da CF.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Especie -->
+
+    <Class rdf:about="&bra;Especie">
+        <rdfs:label xml:lang="en">Kind</rdfs:label>
+        <rdfs:label xml:lang="pt">Espécie</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A espécie, nível de classificação vinculado à origem, permite qualificar com maior detalhe o fato gerador das receitas. Por exemplo, dentro da origem Receita Tributária, identificam-se as espécies Impostos, Taxas e Contribuição de Melhoria. Representa o 3º dígito da Natureza da Receita.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/EspecificacaoDaFonteDestinacao -->
+
+    <Class rdf:about="&bra;EspecificacaoDaFonteDestinacao">
+        <rdfs:label xml:lang="en">SpecificationOfTheSource/Destination</rdfs:label>
+        <rdfs:label xml:lang="pt">Especificação da Fonte/Destinação</rdfs:label>
+        <equivalentClass>
+            <Restriction>
+                <onProperty rdf:resource="&bra;temDetalhamentoDoGrupoDaFonteDestinacao"/>
+                <someValuesFrom rdf:resource="&bra;GrupoDaFonteDestinacao"/>
+            </Restriction>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A classificação por fonte/destinação de recursos tem como objetivo identificar as fontes de financiamento dos gastos públicos. As fontes/destinações de recursos reúnem naturezas de receita conforme regras previamente estabelecidas. Por meio do orçamento público, essas fontes/destinações são associadas a determinadas despesas de forma a evidenciar os meios para atingir os objetivos públicos.</rdfs:comment>
+        <rdfs:comment rdf:datatype="&xsd;string">Representa o 2º e o 3º dígito da classificação fonte/destinação de uma receita ou despesa.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/EspecificacaoGrupoDaReceita -->
+
+    <Class rdf:about="&bra;EspecificacaoGrupoDaReceita">
+        <rdfs:label xml:lang="en">SpecificationOfGroupRevenue</rdfs:label>
+        <rdfs:label xml:lang="pt">Especificação do Grupo da Receita</rdfs:label>
+        <equivalentClass>
+            <Restriction>
+                <onProperty rdf:resource="&bra;temDetalhamentoDoSubgrupoDaReceita"/>
+                <someValuesFrom rdf:resource="&bra;SubgrupoDaReceita"/>
+            </Restriction>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment xml:lang="pt">Detalha o subgrupo da Receita.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Etapa -->
+
+    <Class rdf:about="&bra;Etapa">
+        <rdfs:label xml:lang="en">Stage</rdfs:label>
+        <rdfs:label xml:lang="pt">Etapa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Atributo específico dos projetos. Os projetos e, em alguns casos, os subtítulos (localizadores de gasto) podem ter suas etapas intermediárias detalhadas.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/FormaDeImplementacao -->
+
+    <Class rdf:about="&bra;FormaDeImplementacao">
+        <rdfs:label xml:lang="en">FormOfImplementation</rdfs:label>
+        <rdfs:label xml:lang="pt">Forma de Implementação</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Descrição de todas as etapas do processo até a entrega do produto, inclusive as desenvolvidas por parceiros.
+a) direta: ação executada diretamente ou sob contratação pela unidade responsável, sem que ocorra transferência de recursos financeiros para outros entes da Federação (Estados, Distrito Federal e Municípios). É o caso do exemplo citado (Construção de Trecho Rodoviário), cuja ação é executada diretamente pelo Governo Federal;
+b) descentralizada: atividade ou projeto, na área de competência da União, executado por outro ente da Federação (Estado, Município ou Distrito Federal), com recursos repassados pela União. Exemplo: ação 8658 Prevenção, Controle e Erradicação de Doenças dos Animais, de responsabilidade da União, executada por governos estaduais com repasse de recursos da União;
+c) transferência:
+c.1) obrigatória: operação especial que transfere recursos, por determinação constitucional ou legal, aos Estados, Distrito Federal e Municípios. Exemplo: ação 0515 Dinheiro Direto na Escola para a Educação Básica; e
+c.2) outras: operação especial que transfere recursos a entidades privadas sem fins lucrativos, organizações não governamentais e outras instituições. Exemplo: ação 00B9 Contribuição à Organização das Nações Unidas para a Educação, a Ciência e a Cultura - UNESCO (MEC); e
+d) linha de crédito: ação realizada mediante empréstimo de recursos aos beneficiários da ação. Enquadram-se também nessa classificação os casos de empréstimos concedidos por estabelecimento oficial de crédito a Estados e Distrito Federal, Municípios e ao Setor Privado. Exemplo: ação NCD7 - Financiamento de projetos de pesquisa científica e formação de recursos humanos.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Funcao -->
+
+    <Class rdf:about="&bra;Funcao">
+        <rdfs:label xml:lang="en">Function</rdfs:label>
+        <rdfs:label xml:lang="pt">Função</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A função pode ser traduzida como o maior nível de agregação das diversas áreas de atuação do setor público. Reflete a competência institucional do órgão, como, por exemplo, cultura, educação, saúde, defesa, que guarda relação com os respectivos Ministérios.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/GND -->
+
+    <Class rdf:about="&bra;GND">
+        <rdfs:label xml:lang="en">GroupNatureOfExpense</rdfs:label>
+        <rdfs:label xml:lang="pt">Grupo de Natureza da Despesa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">O GND é um agregador de elemento de despesa com as mesmas características quanto ao objeto de gasto.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Gestao -->
+
+    <Class rdf:about="&bra;Gestao">
+        <rdfs:label xml:lang="pt">Gestão</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Gestor"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Gestor -->
+
+    <Class rdf:about="&bra;Gestor">
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/GrupoDaFonteDestinacao -->
+
+    <Class rdf:about="&bra;GrupoDaFonteDestinacao">
+        <rdfs:label xml:lang="en">GroupOfSource/Destination</rdfs:label>
+        <rdfs:label xml:lang="pt">Grupo da Fonte/Destinação</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Representa o 1º dígito da classificação fonte/destinação de uma receita ou despesa.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/GrupoDaReceita -->
+
+    <Class rdf:about="&bra;GrupoDaReceita">
+        <rdfs:label xml:lang="en">GroupRevenue</rdfs:label>
+        <rdfs:label xml:lang="pt">Grupo da Receita</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment>Classifica a receita em grupos</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/IdentificadorResultadoPrimarioDespesa -->
+
+    <Class rdf:about="&bra;IdentificadorResultadoPrimarioDespesa">
+        <rdfs:label xml:lang="en">IdentifierPrimaryResultOfSpending</rdfs:label>
+        <rdfs:label xml:lang="pt">Identificador do Resultado Primário da Despesa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">O identificador de resultado primário, de caráter indicativo, tem como finalidade auxiliar a apuração do resultado primário previsto na LDO, devendo constar no PLOA e na respectiva Lei em todos os GNDs, identificando, de acordo com a metodologia de cálculo das necessidades de financiamento, cujo demonstrativo constará em anexo à LOA. De acordo com o estabelecido no § 5o do art. 7o do PLDO 2012, nenhuma ação poderá conter, simultaneamente, dotações destinadas a despesas financeiras e primárias, ressalvada a reserva de contingência.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/IdentificadorResultadoPrimarioReceita -->
+
+    <Class rdf:about="&bra;IdentificadorResultadoPrimarioReceita">
+        <rdfs:label xml:lang="en">IdentifierPrimaryResultOfRevenue</rdfs:label>
+        <rdfs:label xml:lang="pt">Identificador do Resultado Primário da Receita</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Conforme esta classificação, as receitas do Governo Federal podem ser divididas em: a) primárias (P), quando seus valores são incluídos na apuração do resultado primário (diferença entre as receitas primárias e as despesas primárias); e b) não primárias ou financeiras (F), quando não são incluídas nesse cálculo</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Idoc -->
+
+    <Class rdf:about="&bra;Idoc">
+        <rdfs:label xml:lang="en">IdentifierGrantAndLoanOperations</rdfs:label>
+        <rdfs:label xml:lang="pt">Identificador de Doação e de Operação de Crédito</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">O IDOC identifica as doações de entidades internacionais ou operações de crédito contratuais alocadas nas ações orçamentárias, com ou sem contrapartida de recursos da União. Os gastos referentes à contrapartida de empréstimos serão programados com o IDUSO igual a “1”, “2”, “3” ou “4” e o IDOC com o número da respectiva operação de crédito, enquanto que, para as contrapartidas de doações, serão utilizados o IDUSO “5” e respectivo IDOC.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Iduso -->
+
+    <Class rdf:about="&bra;Iduso">
+        <rdfs:label xml:lang="en">IdentifierOfUse</rdfs:label>
+        <rdfs:label xml:lang="pt">Identificador de Uso</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Esse código vem completar a informação concernente à aplicação dos recursos e destina-se a indicar se os recursos compõem contrapartida nacional de empréstimos ou de doações ou destinam-se a outras aplicações, constando da LOA e de seus créditos adicionais. Conforme § 11 do art. 7o do PLDO 2012.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/ItemDeClassificacao -->
+
+    <Class rdf:about="&bra;ItemDeClassificacao">
+        <rdfs:label xml:lang="en">ClassificationItem</rdfs:label>
+        <rdfs:label xml:lang="pt">Item de Classificação Orçamentária</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <intersectionOf rdf:parseType="Collection">
+                    <Restriction>
+                        <onProperty rdf:resource="&dc;title"/>
+                        <someValuesFrom rdf:resource="&xsd;string"/>
+                    </Restriction>
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;codigo"/>
+                        <someValuesFrom rdf:resource="&xsd;string"/>
+                    </Restriction>
+                </intersectionOf>
+            </Class>
+        </equivalentClass>
+        <rdfs:comment xml:lang="pt">Itens que são utilizados para detalhar as informações das Receitas e Despesas Orçamentárias.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Meta -->
+
+    <Class rdf:about="&bra;Meta">
+        <rdfs:label xml:lang="en">Goal</rdfs:label>
+        <rdfs:label xml:lang="pt">Meta ou produto</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment xml:lang="pt">Informa qual é o produto final da Ação.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/ModalidadeDeAplicacao -->
+
+    <Class rdf:about="&bra;ModalidadeDeAplicacao">
+        <rdfs:label xml:lang="en">MethodOfApplication</rdfs:label>
+        <rdfs:label xml:lang="pt">Modalidade de Aplicação</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A modalidade de aplicação indica se os recursos serão aplicados mediante transferência financeira, inclusive a decorrente de descentralização orçamentária para outros níveis de Governo, seus órgãos ou entidades, ou diretamente para entidades privadas sem fins lucrativos e outras instituições; ou, então, diretamente pela unidade detentora do crédito orçamentário, ou por outro órgão ou entidade no âmbito do mesmo nível de Governo.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Municipio -->
+
+    <Class rdf:about="&bra;Municipio">
+        <rdfs:label xml:lang="pt">Município</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Gestor"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/OperacaoEspecial -->
+
+    <Class rdf:about="&bra;OperacaoEspecial">
+        <rdfs:label xml:lang="en">SpecialOperation</rdfs:label>
+        <rdfs:label xml:lang="pt">Operação Especial</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Acao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Despesas que não contribuem para a manutenção, expansão ou aperfeiçoamento das ações de governo, das quais não resulta um produto e não geram contraprestação direta sob a forma de bens ou serviços. O código inicia com 0.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Orcamento -->
+
+    <Class rdf:about="&bra;Orcamento">
+        <rdfs:label xml:lang="en">Budget</rdfs:label>
+        <rdfs:label xml:lang="pt">Orçamento</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <unionOf rdf:parseType="Collection">
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;temDespesa"/>
+                        <someValuesFrom rdf:resource="&bra;Despesa"/>
+                    </Restriction>
+                    <Restriction>
+                        <onProperty rdf:resource="&bra;temReceita"/>
+                        <someValuesFrom rdf:resource="&bra;Receita"/>
+                    </Restriction>
+                </unionOf>
+            </Class>
+        </equivalentClass>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Orgao -->
+
+    <Class rdf:about="&bra;Orgao">
+        <rdfs:label xml:lang="en">Organ</rdfs:label>
+        <rdfs:label xml:lang="pt">Órgão</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Gestor"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Um órgão ou uma UO não correspondem necessariamente a uma estrutura administrativa, como ocorre, por exemplo, com alguns fundos especiais e com os órgãos Transferências a Estados, Distrito Federal e Municípios, Encargos Financeiros da União, Operações Oficiais de Crédito, Refinanciamento da Dívida Pública Mobiliária Federal e Reserva de Contingência.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/OrgaoSuperior -->
+
+    <Class rdf:about="&bra;OrgaoSuperior">
+        <rdfs:label xml:lang="pt">Órgão Superior</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Orgao"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Origem -->
+
+    <Class rdf:about="&bra;Origem">
+        <rdfs:label xml:lang="en">Origin</rdfs:label>
+        <rdfs:label xml:lang="pt">Origem</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A origem é o detalhamento das categorias econômicas Receitas Correntes e Receitas de Capital, com vistas a identificar a procedência das receitas no momento em que ingressam nos cofres públicos. Representa o segundo digito da Classificação por Natureza da Receita.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Programa -->
+
+    <Class rdf:about="&bra;Programa">
+        <rdfs:label xml:lang="en">Program</rdfs:label>
+        <rdfs:label xml:lang="pt">Programa</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Toda ação do Governo está estruturada em programas orientados para a realização dos objetivos estratégicos definidos para o período do PPA, ou seja, quatro anos.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/ProgramaDeGestaoManutencaoEServicosAoEstado -->
+
+    <Class rdf:about="&bra;ProgramaDeGestaoManutencaoEServicosAoEstado">
+        <rdfs:label xml:lang="en">ProgramManagementMaintenanceAndServicesToTheState</rdfs:label>
+        <rdfs:label xml:lang="pt">Programa de Gestão, Manutenção e Serviços ao Estado</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Programa"/>
+        <disjointWith rdf:resource="&bra;ProgramaTematico"/>
+        <rdfs:comment rdf:datatype="&xsd;string">É instrumento do Plano que classifica um conjunto de ações destinadas ao apoio, à gestão e à manutenção da atuação governamental, bem como as ações não tratadas nos Programas Temáticos por meio de suas iniciativas.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/ProgramaTematico -->
+
+    <Class rdf:about="&bra;ProgramaTematico">
+        <rdfs:label xml:lang="en">ThematicProgram</rdfs:label>
+        <rdfs:label xml:lang="pt">Programa Temático</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Programa"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Retrata no PPA a agenda de governo organizada pelos Temas das Políticas Públicas e orienta a ação governamental. Sua abrangência deve ser a necessária para representar os desafios e organizar a gestão, o monitoramento, a avaliação, as transversalidades, as multissetorialidades e a territorialidade. O Programa Temático se desdobra em objetivos e iniciativas.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Projeto -->
+
+    <Class rdf:about="&bra;Projeto">
+        <rdfs:label xml:lang="en">Project</rdfs:label>
+        <rdfs:label xml:lang="pt">Projeto</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Acao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Instrumento de programação utilizado para alcançar o objetivo de um programa, envolvendo um conjunto de operações, limitadas no tempo, das quais resulta um produto que concorre para a expansão ou o aperfeiçoamento da ação de governo. Exemplo: ação 7M64 Construção de Trecho Rodoviário – Entroncamento BR-472 – Fronteira Brasil/Argentina – na BR-468 – no Estão do Rio Grande do Sul. Corresponde ao 1º dígito 1,3,5 ou 7 do código da acão.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Receita -->
+
+    <Class rdf:about="&bra;Receita">
+        <rdfs:label xml:lang="en">Revenue</rdfs:label>
+        <rdfs:label xml:lang="pt">Receita Orçamentária</rdfs:label>
+        <rdfs:comment rdf:datatype="&xsd;string">Classe na qual os usuários irão inserir os dados de cada Receita.</rdfs:comment>
+        <rdfs:comment rdf:datatype="&xsd;string">Disponibilidades de recursos financeiros que ingressam durante o exercício e constituem elemento novo para o patrimônio público. Instrumento por meio do qual se viabiliza a execução das políticas públicas, a receita orçamentária é fonte de recursos utilizada pelo Estado em programas e ações cuja finalidade precípua é atender às necessidades públicas e demandas da sociedade.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Rubrica -->
+
+    <Class rdf:about="&bra;Rubrica">
+        <rdfs:label xml:lang="en">Rubric</rdfs:label>
+        <rdfs:label xml:lang="pt">Rubrica</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A rubrica detalha a espécie por meio da identificação dos recursos financeiros cujas características próprias sejam semelhantes. Por exemplo, a rubrica Impostos sobre o Patrimônio e a Renda corresponde ao detalhamento da espécie Impostos. Corresponde ao 4º dígito da Natureza.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Subalinea -->
+
+    <Class rdf:about="&bra;Subalinea">
+        <rdfs:label xml:lang="en">Point</rdfs:label>
+        <rdfs:label xml:lang="pt">Subalínea</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A subalínea constitui o nível mais analítico da receita, utilizado quando há necessidade de se detalhar a alínea com maior especificidade. Por exemplo, a subalínea Pessoas Físicas corresponde ao detalhamento da alínea Imposto sobre a Renda e Proventos de Qualquer Natureza. Corresponde ao 7º e 8º dígitos da Natureza da Receita.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Subelemento -->
+
+    <Class rdf:about="&bra;Subelemento">
+        <rdfs:label xml:lang="en">Subelement</rdfs:label>
+        <rdfs:label xml:lang="pt">Subelemento</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Detalhamento do Elemento de Despesa</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Subfuncao -->
+
+    <Class rdf:about="&bra;Subfuncao">
+        <rdfs:label xml:lang="en">Subfunction</rdfs:label>
+        <rdfs:label xml:lang="pt">Subfunção</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">A subfunção representa um nível de agregação imediatamente inferior à função e deve evidenciar cada área da atuação governamental, por intermédio da identificação da natureza das ações. As subfunções podem ser combinadas com funções diferentes daquelas relacionadas na Portaria MOG no 42, de 1999.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/SubgrupoDaReceita -->
+
+    <Class rdf:about="&bra;SubgrupoDaReceita">
+        <rdfs:label xml:lang="en">SubgroupOfRevenue</rdfs:label>
+        <rdfs:label xml:lang="pt">Subgrupo da Receita</rdfs:label>
+        <equivalentClass>
+            <Restriction>
+                <onProperty rdf:resource="&bra;temDetalhamentoDoGrupoDaReceita"/>
+                <someValuesFrom rdf:resource="&bra;GrupoDaReceita"/>
+            </Restriction>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Subtitulo -->
+
+    <Class rdf:about="&bra;Subtitulo">
+        <rdfs:label xml:lang="en">Caption</rdfs:label>
+        <rdfs:label xml:lang="pt">Subtítulo</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment rdf:datatype="&xsd;string">As atividades, os projetos e as operações especiais serão detalhados em subtítulos, utilizados especialmente para identificar a localização física da ação, não podendo haver, por conseguinte, alteração da finalidade da ação, do produto e das metas estabelecidas. Vale ressaltar que o critério para a priorização da localização física da ação no território é o da localização dos respectivos beneficiados.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/UnidadeDeMedida -->
+
+    <Class rdf:about="&bra;UnidadeDeMedida">
+        <rdfs:label xml:lang="en">UnitOfMeasure</rdfs:label>
+        <rdfs:label xml:lang="pt">Unidade de Medida</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;ItemDeClassificacao"/>
+        <rdfs:comment xml:lang="pt">Informa qual a unidade de medida que será utilizada para verificar o sucesso, ou não, de uma ação.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/UnidadeGestora -->
+
+    <Class rdf:about="&bra;UnidadeGestora">
+        <rdfs:label xml:lang="pt">Unidade Gestora</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Gestor"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/UnidadeOrcamentaria -->
+
+    <Class rdf:about="&bra;UnidadeOrcamentaria">
+        <rdfs:label xml:lang="en">BudgetaryUnit</rdfs:label>
+        <rdfs:label xml:lang="pt">Unidade Orçamentária</rdfs:label>
+        <rdfs:subClassOf rdf:resource="&bra;Gestor"/>
+        <rdfs:comment rdf:datatype="&xsd;string">Um órgão ou uma UO não correspondem necessariamente a uma estrutura administrativa, como ocorre, por exemplo, com alguns fundos especiais e com os órgãos Transferências a Estados, Distrito Federal e Municípios, Encargos Financeiros da União, Operações Oficiais de Crédito, Refinanciamento da Dívida Pública Mobiliária Federal e Reserva de Contingência.</rdfs:comment>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Despesas/Despesa2011 -->
+
+    <Class rdf:about="&bra;Despesas/Despesa2011">
+        <rdfs:label xml:lang="en">Expense2011</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Despesa"/>
+                    <Class>
+                        <complementOf rdf:resource="&bra;Despesa2010"/>
+                    </Class>
+                </intersectionOf>
+            </Class>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;Despesa"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Receita/Receita2010 -->
+
+    <Class rdf:about="&bra;Receita/Receita2010">
+        <rdfs:label xml:lang="en">Revenue2010</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                    <Class>
+                        <complementOf rdf:resource="&bra;Receita/Receita2011"/>
+                    </Class>
+                </intersectionOf>
+            </Class>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;Receita"/>
+    </Class>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Receita/Receita2011 -->
+
+    <Class rdf:about="&bra;Receita/Receita2011">
+        <rdfs:label xml:lang="en">Revenue2011</rdfs:label>
+        <equivalentClass>
+            <Class>
+                <intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&bra;Receita"/>
+                    <Class>
+                        <complementOf rdf:resource="&bra;Receita/Receita2010"/>
+                    </Class>
+                </intersectionOf>
+            </Class>
+        </equivalentClass>
+        <rdfs:subClassOf rdf:resource="&bra;Receita"/>
+    </Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Orcamento/LOA2010 -->
+
+    <NamedIndividual rdf:about="&bra;Orcamento/LOA2010"/>
+    
+
+
+    <!-- http://www.semanticweb.org/ontologies/OrcamentoPublicoBrasileiro.owl/Orcamento/LOA2011 -->
+
+    <NamedIndividual rdf:about="&bra;Orcamento/LOA2011"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotations
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description rdf:about="&dc;contributor">
+        <rdfs:label xml:lang="en">Contributor</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">An entity responsible for making contributions to the resource.</rdfs:comment>
+        <terms:description xml:lang="en">Examples of a Contributor include a person, an organization, or a service. Typically, the name of a Contributor should be used to indicate the entity.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#contributor-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;publisher">
+        <rdfs:label xml:lang="en">Publisher</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">An entity responsible for making the resource available.</rdfs:comment>
+        <terms:description xml:lang="en">Examples of a Publisher include a person, an organization, or a service. Typically, the name of a Publisher should be used to indicate the entity.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#publisher-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;relation">
+        <rdfs:label xml:lang="en">Relation</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <rdfs:comment xml:lang="en">A related resource.</rdfs:comment>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">Recommended best practice is to identify the related resource by means of a string conforming to a formal identification system. </terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#relation-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;source">
+        <rdfs:label xml:lang="en">Source</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <rdfs:comment xml:lang="en">A related resource from which the described resource is derived.</rdfs:comment>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">The described resource may be derived from the related resource in whole or in part. Recommended best practice is to identify the related resource by means of a string conforming to a formal identification system.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#source-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;language">
+        <rdfs:label xml:lang="en">Language</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <rdfs:comment xml:lang="en">A language of the resource.</rdfs:comment>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">Recommended best practice is to use a controlled vocabulary such as RFC 4646 [RFC4646].</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#language-007"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+        <rdfs:seeAlso rdf:resource="http://www.ietf.org/rfc/rfc4646.txt"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;date">
+        <rdfs:label xml:lang="en">Date</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <rdfs:comment xml:lang="en">A point or period of time associated with an event in the lifecycle of the resource.</rdfs:comment>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">Date may be used to express temporal information at any level of granularity.  Recommended best practice is to use an encoding scheme, such as the W3CDTF profile of ISO 8601 [W3CDTF].</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#date-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;coverage">
+        <rdfs:label xml:lang="en">Coverage</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">Spatial topic and spatial applicability may be a named place or a location specified by its geographic coordinates. Temporal topic may be a named period, date, or date range. A jurisdiction may be a named administrative entity or a geographic place to which the resource applies. Recommended best practice is to use a controlled vocabulary such as the Thesaurus of Geographic Names [TGN]. Where appropriate, named places or time periods can be used in preference to numeric identifiers such as sets of coordinates or date ranges.</terms:description>
+        <rdfs:comment xml:lang="en">The spatial or temporal topic of the resource, the spatial applicability of the resource, or the jurisdiction under which the resource is relevant.</rdfs:comment>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#coverage-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="http://purl.org/dc/elements/1.1/">
+        <terms:modified rdf:datatype="&xsd;date">2012-06-14</terms:modified>
+        <terms:title xml:lang="en">Dublin Core Metadata Element Set, Version 1.1</terms:title>
+        <terms:publisher rdf:resource="http://purl.org/dc/aboutdcmi#DCMI"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;subject">
+        <rdfs:label xml:lang="en">Subject</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2012-06-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">The topic of the resource.</rdfs:comment>
+        <terms:description xml:lang="en">Typically, the subject will be represented using keywords, key phrases, or classification codes. Recommended best practice is to use a controlled vocabulary.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#subject-007"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;type">
+        <rdfs:label xml:lang="en">Type</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">Recommended best practice is to use a controlled vocabulary such as the DCMI Type Vocabulary [DCMITYPE]. To describe the file format, physical medium, or dimensions of the resource, use the Format element.</terms:description>
+        <rdfs:comment xml:lang="en">The nature or genre of the resource.</rdfs:comment>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#type-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;description">
+        <rdfs:label xml:lang="en">Description</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">An account of the resource.</rdfs:comment>
+        <terms:description xml:lang="en">Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#description-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;identifier">
+        <rdfs:label xml:lang="en">Identifier</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">An unambiguous reference to the resource within a given context.</rdfs:comment>
+        <terms:description xml:lang="en">Recommended best practice is to identify the resource by means of a string conforming to a formal identification system. </terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#identifier-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;rights">
+        <rdfs:label xml:lang="en">Rights</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <rdfs:comment xml:lang="en">Information about rights held in and over the resource.</rdfs:comment>
+        <terms:description xml:lang="en">Typically, rights information includes a statement about various property rights associated with the resource, including intellectual property rights.</terms:description>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#rights-006"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="&dc;format">
+        <rdfs:label xml:lang="en">Format</rdfs:label>
+        <terms:issued rdf:datatype="&xsd;date">1999-07-02</terms:issued>
+        <terms:modified rdf:datatype="&xsd;date">2008-01-14</terms:modified>
+        <skos:note xml:lang="en">A second property with the same name as this property has been declared in the dcterms: namespace (http://purl.org/dc/terms/).  See the Introduction to the document &quot;DCMI Metadata Terms&quot; (http://dublincore.org/documents/dcmi-terms/) for an explanation.</skos:note>
+        <terms:description xml:lang="en">Examples of dimensions include size and duration. Recommended best practice is to use a controlled vocabulary such as the list of Internet Media Types [MIME].</terms:description>
+        <rdfs:comment xml:lang="en">The file format, physical medium, or dimensions of the resource.</rdfs:comment>
+        <terms:hasVersion rdf:resource="http://dublincore.org/usage/terms/history/#format-007"/>
+        <rdfs:isDefinedBy rdf:resource="http://purl.org/dc/elements/1.1/"/>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&bra;Alinea"/>
+            <rdf:Description rdf:about="&bra;CategoriaEconomicaDaReceita"/>
+            <rdf:Description rdf:about="&bra;Especie"/>
+            <rdf:Description rdf:about="&bra;Origem"/>
+            <rdf:Description rdf:about="&bra;Rubrica"/>
+            <rdf:Description rdf:about="&bra;Subalinea"/>
+        </members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&bra;Atividade"/>
+            <rdf:Description rdf:about="&bra;OperacaoEspecial"/>
+            <rdf:Description rdf:about="&bra;Projeto"/>
+        </members>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&owl;AllDisjointClasses"/>
+        <members rdf:parseType="Collection">
+            <rdf:Description rdf:about="&bra;Despesa"/>
+            <rdf:Description rdf:about="&bra;ItemDeClassificacao"/>
+            <rdf:Description rdf:about="&bra;Orcamento"/>
+            <rdf:Description rdf:about="&bra;Receita"/>
+        </members>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Rules
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <rdf:Description rdf:about="urn:swrl#d">
+        <rdf:type rdf:resource="&swrl;Variable"/>
+    </rdf:Description>
+    <rdf:Description rdf:about="urn:swrl#r">
+        <rdf:type rdf:resource="&swrl;Variable"/>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&swrl;Imp"/>
+        <swrl:body>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:rest>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;AtomList"/>
+                        <rdf:first>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                                <swrl:classPredicate rdf:resource="&bra;Orcamento"/>
+                                <swrl:argument1 rdf:resource="&bra;Orcamento/LOA2010"/>
+                            </rdf:Description>
+                        </rdf:first>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;AtomList"/>
+                                <rdf:rest rdf:resource="&rdf;nil"/>
+                                <rdf:first>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="&swrl;IndividualPropertyAtom"/>
+                                        <swrl:propertyPredicate rdf:resource="&bra;pertenceAOrcamento"/>
+                                        <swrl:argument2 rdf:resource="&bra;Orcamento/LOA2010"/>
+                                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                                    </rdf:Description>
+                                </rdf:first>
+                            </rdf:Description>
+                        </rdf:rest>
+                    </rdf:Description>
+                </rdf:rest>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Despesa"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                    </rdf:Description>
+                </rdf:first>
+            </rdf:Description>
+        </swrl:body>
+        <swrl:head>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:rest rdf:resource="&rdf;nil"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Despesa2010"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                    </rdf:Description>
+                </rdf:first>
+            </rdf:Description>
+        </swrl:head>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&swrl;Imp"/>
+        <swrl:body>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:rest>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;AtomList"/>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;AtomList"/>
+                                <rdf:rest rdf:resource="&rdf;nil"/>
+                                <rdf:first>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="&swrl;IndividualPropertyAtom"/>
+                                        <swrl:propertyPredicate rdf:resource="&bra;pertenceAOrcamento"/>
+                                        <swrl:argument2 rdf:resource="&bra;Orcamento/LOA2011"/>
+                                        <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                                    </rdf:Description>
+                                </rdf:first>
+                            </rdf:Description>
+                        </rdf:rest>
+                        <rdf:first>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                                <swrl:classPredicate rdf:resource="&bra;Receita"/>
+                                <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                            </rdf:Description>
+                        </rdf:first>
+                    </rdf:Description>
+                </rdf:rest>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Orcamento"/>
+                        <swrl:argument1 rdf:resource="&bra;Orcamento/LOA2011"/>
+                    </rdf:Description>
+                </rdf:first>
+            </rdf:Description>
+        </swrl:body>
+        <swrl:head>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:rest rdf:resource="&rdf;nil"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Receita/Receita2011"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                    </rdf:Description>
+                </rdf:first>
+            </rdf:Description>
+        </swrl:head>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&swrl;Imp"/>
+        <swrl:body>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Orcamento"/>
+                        <swrl:argument1 rdf:resource="&bra;Orcamento/LOA2010"/>
+                    </rdf:Description>
+                </rdf:first>
+                <rdf:rest>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;AtomList"/>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;AtomList"/>
+                                <rdf:rest rdf:resource="&rdf;nil"/>
+                                <rdf:first>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="&swrl;IndividualPropertyAtom"/>
+                                        <swrl:propertyPredicate rdf:resource="&bra;pertenceAOrcamento"/>
+                                        <swrl:argument2 rdf:resource="&bra;Orcamento/LOA2010"/>
+                                        <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                                    </rdf:Description>
+                                </rdf:first>
+                            </rdf:Description>
+                        </rdf:rest>
+                        <rdf:first>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                                <swrl:classPredicate rdf:resource="&bra;Receita"/>
+                                <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                            </rdf:Description>
+                        </rdf:first>
+                    </rdf:Description>
+                </rdf:rest>
+            </rdf:Description>
+        </swrl:body>
+        <swrl:head>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:rest rdf:resource="&rdf;nil"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Receita/Receita2010"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#r"/>
+                    </rdf:Description>
+                </rdf:first>
+            </rdf:Description>
+        </swrl:head>
+    </rdf:Description>
+    <rdf:Description>
+        <rdf:type rdf:resource="&swrl;Imp"/>
+        <swrl:body>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Despesa"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                    </rdf:Description>
+                </rdf:first>
+                <rdf:rest>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;AtomList"/>
+                        <rdf:first>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                                <swrl:classPredicate rdf:resource="&bra;Orcamento"/>
+                                <swrl:argument1 rdf:resource="&bra;Orcamento/LOA2011"/>
+                            </rdf:Description>
+                        </rdf:first>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&swrl;AtomList"/>
+                                <rdf:rest rdf:resource="&rdf;nil"/>
+                                <rdf:first>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="&swrl;IndividualPropertyAtom"/>
+                                        <swrl:propertyPredicate rdf:resource="&bra;pertenceAOrcamento"/>
+                                        <swrl:argument2 rdf:resource="&bra;Orcamento/LOA2011"/>
+                                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                                    </rdf:Description>
+                                </rdf:first>
+                            </rdf:Description>
+                        </rdf:rest>
+                    </rdf:Description>
+                </rdf:rest>
+            </rdf:Description>
+        </swrl:body>
+        <swrl:head>
+            <rdf:Description>
+                <rdf:type rdf:resource="&swrl;AtomList"/>
+                <rdf:rest rdf:resource="&rdf;nil"/>
+                <rdf:first>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&swrl;ClassAtom"/>
+                        <swrl:classPredicate rdf:resource="&bra;Despesas/Despesa2011"/>
+                        <swrl:argument1 rdf:resource="urn:swrl#d"/>
+                    </rdf:Description>
+                </rdf:first>
+            </rdf:Description>
+        </swrl:head>
+    </rdf:Description>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.5.1) http://owlapi.sourceforge.net -->
+
